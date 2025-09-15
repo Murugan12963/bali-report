@@ -1,102 +1,150 @@
-import Image from "next/image";
+import { Suspense } from 'react';
+import Header from '@/components/Header';
+import ArticleCard from '@/components/ArticleCard';
+import { rssAggregator } from '@/lib/rss-parser';
 
-export default function Home() {
+/**
+ * Homepage for Bali Report - BRICS-aligned news aggregation.
+ */
+export default async function Home() {
+  // Fetch latest articles from RSS sources
+  const articles = await rssAggregator.fetchAllSources();
+  const featuredArticles = articles.slice(0, 2);
+  const latestArticles = articles.slice(2, 14);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <section className="mb-12">
+          <div className="bg-gradient-to-r from-red-600 to-amber-600 text-white rounded-xl p-8 shadow-lg">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Multi-Polar News Perspective
+            </h1>
+            <p className="text-xl text-red-100 mb-6 max-w-3xl">
+              Breaking free from Western media monopoly. Get balanced perspectives from BRICS nations, 
+              Indonesia insights, and Bali local coverage that mainstream media won't show you.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
+                🇷🇺 Russia • 🇨🇳 China • 🇮🇳 India • 🇧🇷 Brazil • 🇿🇦 South Africa
+              </span>
+              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
+                🇮🇩 Indonesia • 🏝️ Bali Local
+              </span>
+            </div>
+          </div>
+        </section>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        {/* Loading State */}
+        <Suspense fallback={
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading latest news from BRICS sources...</p>
+          </div>
+        }>
+          {articles.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">Unable to fetch news at the moment.</p>
+              <p className="text-sm text-gray-500">
+                This could be due to RSS feed issues or network connectivity. Please try again later.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Featured Articles */}
+              {featuredArticles.length > 0 && (
+                <section className="mb-12">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-red-600 pb-2">
+                    🔥 Featured Stories
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {featuredArticles.map((article) => (
+                      <ArticleCard key={article.id} article={article} featured={true} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Latest News Grid */}
+              {latestArticles.length > 0 && (
+                <section>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-amber-600 pb-2">
+                    📰 Latest News
+                  </h2>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {latestArticles.map((article) => (
+                      <ArticleCard key={article.id} article={article} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Stats Section */}
+              <section className="mt-12 bg-white rounded-lg shadow-md p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-red-600">{articles.length}</div>
+                    <div className="text-sm text-gray-600">Articles Today</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-amber-600">
+                      {articles.filter(a => a.category === 'BRICS').length}
+                    </div>
+                    <div className="text-sm text-gray-600">BRICS News</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-yellow-600">
+                      {articles.filter(a => a.category === 'Indonesia').length}
+                    </div>
+                    <div className="text-sm text-gray-600">Indonesia</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {new Set(articles.map(a => a.source)).size}
+                    </div>
+                    <div className="text-sm text-gray-600">Sources</div>
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+        </Suspense>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8 mt-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-bold text-lg mb-4">Bali Report</h3>
+              <p className="text-gray-300 text-sm">
+                Independent news aggregation focused on BRICS perspectives and Indonesian insights. 
+                Fighting information monopoly one article at a time.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Categories</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="/brics" className="text-gray-300 hover:text-yellow-300">BRICS News</a></li>
+                <li><a href="/indonesia" className="text-gray-300 hover:text-yellow-300">Indonesia</a></li>
+                <li><a href="/bali" className="text-gray-300 hover:text-yellow-300">Bali Local</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Mission</h4>
+              <p className="text-gray-300 text-sm">
+                Providing alternative perspectives to Western mainstream media through 
+                aggregation of BRICS-aligned sources and local Indonesian coverage.
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
+            <p>© 2024 Bali Report. Content aggregated from external sources; views are those of original authors.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
