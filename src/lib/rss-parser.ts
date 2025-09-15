@@ -34,38 +34,62 @@ export const NEWS_SOURCES: NewsSource[] = [
     category: 'BRICS',
     active: true,
   },
+  // Global Times has RSS issues - replaced with TASS
   {
-    name: 'Global Times',
-    url: 'https://www.globaltimes.cn/rss/china.xml',
+    name: 'TASS',
+    url: 'https://tass.com/rss/v2.xml',
+    category: 'BRICS',
+    active: true,
+  },
+  {
+    name: 'Xinhua News',
+    url: 'http://www.xinhuanet.com/english/rss/worldrss.xml',
     category: 'BRICS',
     active: true,
   },
   // Indonesia/Bali sources - using working alternatives
   {
     name: 'Antara News',
-    url: 'https://en.antaranews.com/rss/latest.xml',
+    url: 'https://www.antaranews.com/rss/terkini.xml',
     category: 'Indonesia',
     active: true,
   },
   {
-    name: 'Jakarta Globe',
-    url: 'https://jakartaglobe.id/feed',
+    name: 'BBC Asia News',
+    url: 'https://feeds.bbci.co.uk/news/world/asia/rss.xml',
     category: 'Indonesia',
     active: true,
   },
-  // Backup BRICS source
   {
-    name: 'TASS',
-    url: 'https://tass.com/rss/v2.xml',
+    name: 'Press TV',
+    url: 'https://www.presstv.ir/rss.xml',
     category: 'BRICS',
-    active: false, // Keep as backup for now
+    active: false, // Disabled - not aligned with BRICS/Indonesia focus
+  },
+  {
+    name: 'Al Jazeera',
+    url: 'https://www.aljazeera.com/xml/rss/all.xml',
+    category: 'BRICS',
+    active: true,
   },
   // Disabled sources that need fixing
+  {
+    name: 'Global Times',
+    url: 'https://www.globaltimes.cn/rss/china.xml',
+    category: 'BRICS',
+    active: false, // Disabled due to 404 errors
+  },
   {
     name: 'Sputnik Globe',
     url: 'https://sputnikglobe.com/rss/',
     category: 'BRICS',
     active: false, // Disabled due to parsing issues
+  },
+  {
+    name: 'Jakarta Globe',
+    url: 'https://jakartaglobe.id/feed',
+    category: 'Indonesia',
+    active: false, // Still returns 404 even with better User-Agent
   },
   {
     name: 'Jakarta Post',
@@ -87,9 +111,12 @@ class RSSAggregator {
 
   constructor(sources: NewsSource[] = NEWS_SOURCES) {
     this.parser = new Parser({
-      timeout: 10000,
+      timeout: 15000,
       headers: {
-        'User-Agent': 'Bali-Report/1.0 (+https://bali.report)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'application/rss+xml, application/xml, text/xml',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'no-cache',
       },
     });
     this.sources = sources;
@@ -105,61 +132,60 @@ class RSSAggregator {
    *   Promise<Article[]>: Array of parsed articles.
    */
   async fetchFromSource(source: NewsSource): Promise<Article[]> {
-    try {
-      console.log(`Fetching RSS from ${source.name}...`);
-      
-      const feed = await this.parser.parseURL(source.url);
-      
-      const articles: Article[] = feed.items.map((item, index) => ({
-        id: `${source.name.toLowerCase().replace(/\\s+/g, '-')}-${index}-${Date.now()}`,
-        title: item.title || 'No title',
-        link: item.link || '',
-        description: this.extractDescription(item.contentSnippet || item.description || ''),
-        pubDate: item.pubDate || new Date().toISOString(),
-        author: item.creator || item.author,
-        category: source.category,
-        source: source.name,
-        sourceUrl: source.url,
-        imageUrl: this.extractImageUrl(item),
-      }));
-
-      console.log(`Successfully fetched ${articles.length} articles from ${source.name}`);
-      return articles;
-    } catch (error) {
-      console.error(`Error fetching from ${source.name}:`, error);
-      return [];
-    }
-  }
-
-  /**
-   * Fetch articles from all active sources.
-   * 
-   * Returns:
-   *   Promise<Article[]>: Combined array of articles from all sources.
-   */
-  async fetchAllSources(): Promise<Article[]> {
-    const activeSources = this.sources.filter(source => source.active);
-    const promises = activeSources.map(source => this.fetchFromSource(source));
+    const maxRetries = 2;
+    let lastError: Error | null = null;
     
-    try {
-      const results = await Promise.allSettled(promises);
-      const articles: Article[] = [];
-      
-      results.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          articles.push(...result.value);
-        } else {
-          console.error(`Failed to fetch from ${activeSources[index].name}:`, result.reason);
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Fetching RSS from ${source.name}... (attempt ${attempt}/${maxRetries})`);
+        
+        const feed = await this.parser.parseURL(source.url);
+        
+        if (!feed.items || feed.items.length === 0) {
+          throw new Error(`No articles found in RSS feed for ${source.name}`);
         }
-      });
-      
-      // Sort articles by publication date (newest first)
-      return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
-    } catch (error) {
-      console.error('Error fetching from multiple sources:', error);
-      return [];
+        
+        const articles: Article[] = feed.items.map((item, index) => ({
+          id: `${source.name.toLowerCase().replace(/\\s+/g, '-')}-${index}-${Date.now()}`,
+          title: item.title || 'No title',
+          link: item.link || '',
+          description: this.extractDescription(item.contentSnippet || item.description || ''),
+          pubDate: item.pubDate || new Date().toISOString(),
+          author: item.creator || item.author,
+          category: source.category,
+          source: source.name,
+          sourceUrl: source.url,
+          imageUrl: this.extractImageUrl(item),
+        }));
+
+        console.log(`✅ Successfully fetched ${articles.length} articles from ${source.name}`);
+        return articles;
+      } catch (error) {
+        lastError = error as Error;
+        
+        if (error instanceof Error) {
+          const errorType = error.message.includes('Status code 404') ? '404 Not Found' :
+                           error.message.includes('Status code 403') ? '403 Forbidden' :
+                           error.message.includes('ENOTFOUND') ? 'DNS Resolution Failed' :
+                           error.message.includes('timeout') ? 'Timeout' :
+                           'Parse Error';
+          
+          console.warn(`⚠️  Attempt ${attempt}/${maxRetries} failed for ${source.name} (${errorType}): ${error.message}`);
+        }
+        
+        if (attempt < maxRetries) {
+          // Wait before retrying (exponential backoff)
+          const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, etc.
+          console.log(`   Retrying in ${delay/1000}s...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
     }
+    
+    console.error(`❌ Failed to fetch from ${source.name} after ${maxRetries} attempts:`, lastError?.message || 'Unknown error');
+    return [];
   }
+
 
   /**
    * Fetch articles from sources by category.
@@ -192,6 +218,46 @@ class RSSAggregator {
       return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
     } catch (error) {
       console.error(`Error fetching ${category} sources:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch articles from all active sources.
+   * 
+   * Returns:
+   *   Promise<Article[]>: Combined array of articles from all sources.
+   */
+  async fetchAllSources(): Promise<Article[]> {
+    const activeSources = this.sources.filter(source => source.active);
+    console.log(`🌍 Fetching articles from ${activeSources.length} active sources...`);
+    
+    const promises = activeSources.map(source => this.fetchFromSource(source));
+    
+    try {
+      const results = await Promise.allSettled(promises);
+      const articles: Article[] = [];
+      let successCount = 0;
+      let failureCount = 0;
+      
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          articles.push(...result.value);
+          if (result.value.length > 0) {
+            successCount++;
+          }
+        } else {
+          failureCount++;
+          console.error(`Failed to fetch from ${activeSources[index].name}:`, result.reason);
+        }
+      });
+      
+      console.log(`📊 Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
+      
+      // Sort articles by publication date (newest first)
+      return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+    } catch (error) {
+      console.error('❌ Critical error fetching from multiple sources:', error);
       return [];
     }
   }

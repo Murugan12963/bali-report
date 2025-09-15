@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import SearchBar from './SearchBar';
 
 /**
  * Header component with navigation and BRICS branding.
@@ -24,24 +25,31 @@ const Header: React.FC = () => {
             </Link>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="hover:text-yellow-300 transition-colors font-medium">
-              Home
-            </Link>
-            <Link href="/brics" className="hover:text-yellow-300 transition-colors font-medium">
-              BRICS
-            </Link>
-            <Link href="/indonesia" className="hover:text-yellow-300 transition-colors font-medium">
-              Indonesia
-            </Link>
-            <Link href="/bali" className="hover:text-yellow-300 transition-colors font-medium">
-              Bali
-            </Link>
-            <Link href="/about" className="hover:text-yellow-300 transition-colors font-medium">
-              About
-            </Link>
-          </nav>
+          {/* Navigation & Search */}
+          <div className="hidden md:flex items-center space-x-6">
+            <nav className="flex items-center space-x-6">
+              <Link href="/" className="hover:text-yellow-300 transition-colors font-medium">
+                Home
+              </Link>
+              <Link href="/brics" className="hover:text-yellow-300 transition-colors font-medium">
+                BRICS
+              </Link>
+              <Link href="/indonesia" className="hover:text-yellow-300 transition-colors font-medium">
+                Indonesia
+              </Link>
+              <Link href="/bali" className="hover:text-yellow-300 transition-colors font-medium">
+                Bali
+              </Link>
+              <Link href="/about" className="hover:text-yellow-300 transition-colors font-medium">
+                About
+              </Link>
+            </nav>
+            
+            {/* Search Bar */}
+            <div className="w-80">
+              <SearchBar placeholder="Search news..." />
+            </div>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">

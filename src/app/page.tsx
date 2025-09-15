@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
+import PropellerAds from '@/components/PropellerAds';
 import { rssAggregator } from '@/lib/rss-parser';
 
 /**
@@ -36,6 +37,11 @@ export default async function Home() {
               </span>
             </div>
           </div>
+        </section>
+
+        {/* Leaderboard Ad */}
+        <section className="mb-8">
+          <PropellerAds type="leaderboard" className="mx-auto" />
         </section>
 
         {/* Loading State */}
@@ -74,10 +80,26 @@ export default async function Home() {
                   <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-amber-600 pb-2">
                     📰 Latest News
                   </h2>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {latestArticles.map((article) => (
-                      <ArticleCard key={article.id} article={article} />
-                    ))}
+                  <div className="grid lg:grid-cols-4 gap-6">
+                    {/* Articles */}
+                    <div className="lg:col-span-3 grid md:grid-cols-2 gap-6">
+                      {latestArticles.map((article) => (
+                        <ArticleCard key={article.id} article={article} />
+                      ))}
+                    </div>
+                    
+                    {/* Sidebar with ads */}
+                    <div className="lg:col-span-1 space-y-6">
+                      <PropellerAds type="sidebar" />
+                      <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                        <h3 className="font-bold text-red-800 mb-2">📢 Support Independent Media</h3>
+                        <p className="text-red-700 text-sm">
+                          Bali Report provides alternative perspectives free from Western media bias. 
+                          Your support helps us maintain independence.
+                        </p>
+                      </div>
+                      <PropellerAds type="native" />
+                    </div>
                   </div>
                 </section>
               )}
