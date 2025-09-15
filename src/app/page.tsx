@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import PropellerAds from '@/components/PropellerAds';
 import { rssAggregator } from '@/lib/rss-parser';
+import { StructuredData, websiteStructuredData, organizationStructuredData } from '@/components/SEOHead';
 
 /**
  * Homepage for Bali Report - BRICS-aligned news aggregation.
@@ -14,8 +15,11 @@ export default async function Home() {
   const latestArticles = articles.slice(2, 14);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <>
+      <StructuredData type="WebSite" data={websiteStructuredData} />
+      <StructuredData type="Organization" data={organizationStructuredData} />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
+        <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
@@ -25,8 +29,8 @@ export default async function Home() {
               Multi-Polar News Perspective
             </h1>
             <p className="text-xl text-red-100 mb-6 max-w-3xl">
-              Breaking free from Western media monopoly. Get balanced perspectives from BRICS nations, 
-              Indonesia insights, and Bali local coverage that mainstream media won't show you.
+                Breaking free from Western media monopoly. Get balanced perspectives from BRICS nations, 
+                Indonesia insights, and Bali local coverage that mainstream media won&apos;t show you.
             </p>
             <div className="flex flex-wrap gap-4">
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
@@ -105,29 +109,29 @@ export default async function Home() {
               )}
 
               {/* Stats Section */}
-              <section className="mt-12 bg-white rounded-lg shadow-md p-6">
+              <section className="mt-12 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 theme-transition">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold text-red-600">{articles.length}</div>
-                    <div className="text-sm text-gray-600">Articles Today</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 theme-transition">Articles Today</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-amber-600">
+                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                       {articles.filter(a => a.category === 'BRICS').length}
                     </div>
-                    <div className="text-sm text-gray-600">BRICS News</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 theme-transition">BRICS News</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-yellow-600">
+                    <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                       {articles.filter(a => a.category === 'Indonesia').length}
                     </div>
-                    <div className="text-sm text-gray-600">Indonesia</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 theme-transition">Indonesia</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                       {new Set(articles.map(a => a.source)).size}
                     </div>
-                    <div className="text-sm text-gray-600">Sources</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 theme-transition">Sources</div>
                   </div>
                 </div>
               </section>
@@ -137,12 +141,12 @@ export default async function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 mt-12">
+      <footer className="bg-gray-900 dark:bg-gray-950 text-white py-8 mt-12 theme-transition">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <h3 className="font-bold text-lg mb-4">Bali Report</h3>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-300 dark:text-gray-400 text-sm theme-transition">
                 Independent news aggregation focused on BRICS perspectives and Indonesian insights. 
                 Fighting information monopoly one article at a time.
               </p>
@@ -150,24 +154,25 @@ export default async function Home() {
             <div>
               <h4 className="font-semibold mb-4">Categories</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="/brics" className="text-gray-300 hover:text-yellow-300">BRICS News</a></li>
-                <li><a href="/indonesia" className="text-gray-300 hover:text-yellow-300">Indonesia</a></li>
-                <li><a href="/bali" className="text-gray-300 hover:text-yellow-300">Bali Local</a></li>
+                <li><a href="/brics" className="text-gray-300 dark:text-gray-400 hover:text-yellow-300 dark:hover:text-yellow-200 theme-transition">BRICS News</a></li>
+                <li><a href="/indonesia" className="text-gray-300 dark:text-gray-400 hover:text-yellow-300 dark:hover:text-yellow-200 theme-transition">Indonesia</a></li>
+                <li><a href="/bali" className="text-gray-300 dark:text-gray-400 hover:text-yellow-300 dark:hover:text-yellow-200 theme-transition">Bali Local</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Mission</h4>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-300 dark:text-gray-400 text-sm theme-transition">
                 Providing alternative perspectives to Western mainstream media through 
                 aggregation of BRICS-aligned sources and local Indonesian coverage.
               </p>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
+          <div className="border-t border-gray-700 dark:border-gray-800 mt-8 pt-4 text-center text-sm text-gray-400 dark:text-gray-500 theme-transition">
             <p>© 2024 Bali Report. Content aggregated from external sources; views are those of original authors.</p>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

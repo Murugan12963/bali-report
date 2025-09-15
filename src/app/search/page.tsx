@@ -22,13 +22,35 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = searchParams.q || '';
   const allArticles = await rssAggregator.fetchAllSources();
   
-  // Filter articles based on search query
+  // Enhanced search functionality with better scoring and filtering
   const filteredArticles = query.trim() 
-    ? allArticles.filter(article => 
-        article.title.toLowerCase().includes(query.toLowerCase()) ||
-        article.description.toLowerCase().includes(query.toLowerCase()) ||
-        article.source.toLowerCase().includes(query.toLowerCase())
-      )
+    ? allArticles.filter(article => {
+        const searchQuery = query.toLowerCase();
+        const titleMatch = article.title.toLowerCase().includes(searchQuery);
+        const descMatch = article.description.toLowerCase().includes(searchQuery);
+        const sourceMatch = article.source.toLowerCase().includes(searchQuery);
+        const categoryMatch = article.category?.toLowerCase().includes(searchQuery);
+        const authorMatch = article.author?.toLowerCase().includes(searchQuery) || false;
+        
+        return titleMatch || descMatch || sourceMatch || categoryMatch || authorMatch;
+      })
+      // Sort by relevance: title matches first, then description, then other fields
+      .sort((a, b) => {
+        const searchQuery = query.toLowerCase();
+        const aTitle = a.title.toLowerCase().includes(searchQuery) ? 3 : 0;
+        const bTitle = b.title.toLowerCase().includes(searchQuery) ? 3 : 0;
+        const aDesc = a.description.toLowerCase().includes(searchQuery) ? 2 : 0;
+        const bDesc = b.description.toLowerCase().includes(searchQuery) ? 2 : 0;
+        const aSource = a.source.toLowerCase().includes(searchQuery) ? 1 : 0;
+        const bSource = b.source.toLowerCase().includes(searchQuery) ? 1 : 0;
+        
+        const aScore = aTitle + aDesc + aSource;
+        const bScore = bTitle + bDesc + bSource;
+        
+        if (aScore !== bScore) return bScore - aScore;
+        // If relevance is equal, sort by date (newest first)
+        return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
+      })
     : [];
 
   const featuredResults = filteredArticles.slice(0, 2);

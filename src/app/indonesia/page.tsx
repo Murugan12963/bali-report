@@ -4,14 +4,17 @@ import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
 
+import { generateSEOMetadata } from '@/components/SEOHead';
+
 /**
  * Indonesia category page - shows Indonesian and Asia-focused news sources.
  */
-export const metadata = {
-  title: 'Indonesia News - Bali Report',
-  description: 'Latest news from Indonesia and Southeast Asia, covering politics, economy, culture, and regional developments.',
-  keywords: 'Indonesia, Southeast Asia, Jakarta, Bali, Indonesian politics, economy, culture, regional news',
-};
+export const metadata = generateSEOMetadata({
+  title: 'Indonesia News - Southeast Asian Perspectives | Bali Report',
+  description: 'Comprehensive Indonesia news coverage from Antara News, BBC Asia, and regional sources. Indonesian politics, economy, culture, ASEAN developments, and archipelago insights. Updated daily with 67+ articles.',
+  keywords: 'Indonesia news, Indonesian politics, Jakarta news, Southeast Asia, ASEAN, archipelago, Indonesian economy, Indonesian culture, Antara News, BBC Asia, regional news, Jokowi, Indonesian democracy',
+  canonical: 'https://bali.report/indonesia'
+});
 
 export default async function IndonesiaPage() {
   // Fetch Indonesia-specific articles

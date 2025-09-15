@@ -31,46 +31,46 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, featured = false }) 
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'BRICS':
-        return 'bg-red-600 text-white';
+        return 'bg-red-600 dark:bg-red-500 text-white';
       case 'Indonesia':
-        return 'bg-yellow-600 text-white';
+        return 'bg-yellow-600 dark:bg-yellow-500 text-white';
       case 'Bali':
-        return 'bg-amber-600 text-white';
+        return 'bg-amber-600 dark:bg-amber-500 text-white';
       default:
-        return 'bg-gray-600 text-white';
+        return 'bg-gray-600 dark:bg-gray-500 text-white';
     }
   };
 
   if (featured) {
     return (
-      <article className="relative overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <article className="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl dark:hover:shadow-2xl transition-all duration-300 theme-transition">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getCategoryColor(article.category)}`}>
+            <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getCategoryColor(article.category)} theme-transition`}>
               {article.category}
             </span>
-            <span className="text-sm text-gray-600">{article.source}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 theme-transition">{article.source}</span>
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-3 hover:text-red-700 transition-colors">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 hover:text-red-700 dark:hover:text-red-400 transition-colors">
             <a href={article.link} target="_blank" rel="noopener noreferrer" className="block">
               {article.title}
             </a>
           </h2>
           
-          <p className="text-gray-700 mb-4 leading-relaxed">
+          <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed theme-transition">
             {article.description}
           </p>
           
           <div className="flex items-center justify-between">
-            <time className="text-sm text-gray-500">
+            <time className="text-sm text-gray-500 dark:text-gray-400 theme-transition">
               {formatDate(article.pubDate)}
             </time>
             <a
               href={article.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-red-600 hover:text-red-700 font-medium text-sm transition-colors"
+              className="inline-flex items-center text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium text-sm transition-colors"
             >
               Read More
               <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,34 +84,34 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, featured = false }) 
   }
 
   return (
-    <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+    <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 overflow-hidden theme-transition">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)}`}>
+          <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)} theme-transition`}>
             {article.category}
           </span>
-          <span className="text-xs text-gray-500">{article.source}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 theme-transition">{article.source}</span>
         </div>
         
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-red-700 transition-colors line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-red-700 dark:hover:text-red-400 transition-colors line-clamp-2">
           <a href={article.link} target="_blank" rel="noopener noreferrer" className="block">
             {article.title}
           </a>
         </h3>
         
-        <p className="text-gray-600 mb-3 text-sm leading-relaxed line-clamp-3">
+        <p className="text-gray-600 dark:text-gray-300 mb-3 text-sm leading-relaxed line-clamp-3 theme-transition">
           {article.description}
         </p>
         
         <div className="flex items-center justify-between">
-          <time className="text-xs text-gray-400">
+          <time className="text-xs text-gray-400 dark:text-gray-500 theme-transition">
             {formatDate(article.pubDate)}
           </time>
           <a
             href={article.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-red-600 hover:text-red-700 font-medium text-sm transition-colors"
+            className="inline-flex items-center text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium text-sm transition-colors"
           >
             Read
             <svg className="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

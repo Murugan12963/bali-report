@@ -4,14 +4,17 @@ import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
 
+import { generateSEOMetadata } from '@/components/SEOHead';
+
 /**
  * Bali category page - shows Bali-specific local news.
  */
-export const metadata = {
-  title: 'Bali Local News - Bali Report',
-  description: 'Local news from Bali covering tourism, culture, politics, festivals, and community developments in the Island of the Gods.',
-  keywords: 'Bali, Bali news, tourism, culture, festivals, Denpasar, Ubud, local news, Island of the Gods',
-};
+export const metadata = generateSEOMetadata({
+  title: 'Bali Local News - Island of the Gods Coverage | Bali Report',
+  description: 'Local Bali news covering tourism updates, cultural events, Hindu festivals, Denpasar politics, Ubud developments, and environmental issues. Island of the Gods local perspective with dedicated Balinese sources.',
+  keywords: 'Bali local news, Bali tourism, Bali culture, Hindu festivals, Denpasar, Ubud, Canggu, Sanur, Balinese culture, Island of the Gods, Bali politics, Bali environment, Nyepi, Galungan, Kuningan',
+  canonical: 'https://bali.report/bali'
+});
 
 export default async function BaliPage() {
   // Fetch Bali-specific articles

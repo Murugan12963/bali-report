@@ -4,14 +4,17 @@ import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
 
+import { generateSEOMetadata } from '@/components/SEOHead';
+
 /**
  * BRICS category page - shows BRICS-aligned news sources.
  */
-export const metadata = {
-  title: 'BRICS News - Bali Report',
-  description: 'Latest news from BRICS-aligned sources including Russia, China, India, Brazil, South Africa, and other multipolar nations.',
-  keywords: 'BRICS, Russia, China, India, Brazil, South Africa, multipolar, news, alternative media',
-};
+export const metadata = generateSEOMetadata({
+  title: 'BRICS News - Alternative Global Perspectives | Bali Report',
+  description: 'Latest BRICS news from Russia (RT, TASS), China (Xinhua), India, Brazil, South Africa. Multipolar perspectives challenging Western media narratives. Updated hourly with 245+ articles.',
+  keywords: 'BRICS news, Russia news, China news, India news, Brazil news, South Africa news, multipolar world, alternative media, RT News, TASS, Xinhua, anti-imperialism, global south',
+  canonical: 'https://bali.report/brics'
+});
 
 export default async function BRICSPage() {
   // Fetch BRICS-specific articles

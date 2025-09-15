@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import Analytics from '@/components/Analytics';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,7 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = 'width=device-width, initial-scale=1';
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bali.report'),
   title: {
     template: '%s | Bali Report',
     default: 'Bali Report - Multi-polar News Perspectives'
@@ -44,7 +49,6 @@ export const metadata: Metadata = {
     description: 'Independent news aggregation platform providing BRICS-aligned perspectives and Indonesian insights.',
     images: ['/og-image.jpg']
   },
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   category: 'news'
 };
@@ -55,11 +59,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased theme-transition`}
       >
-        {children}
+        <ThemeProvider>
+          <Analytics />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

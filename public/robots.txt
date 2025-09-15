@@ -1,0 +1,32 @@
+# Bali Report - Robots.txt
+# Multi-polar news aggregation platform
+
+User-agent: *
+Allow: /
+
+# Main pages
+Allow: /brics
+Allow: /indonesia  
+Allow: /bali
+Allow: /search
+Allow: /about
+
+# Sitemap location
+Sitemap: https://bali.report/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Block common bot traps (if any)
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Allow search engines to index images
+User-agent: Googlebot-Image
+Allow: /
+
+# Allow news crawlers
+User-agent: Googlebot-News
+Allow: /
