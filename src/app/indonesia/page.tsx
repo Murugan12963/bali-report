@@ -23,55 +23,65 @@ export default async function IndonesiaPage() {
   const latestArticles = articles.slice(2);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-yellow-600">Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+            <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition">🌊 Home</Link>
             <span>›</span>
-            <span className="font-medium text-yellow-600">Indonesia News</span>
+            <span className="font-medium text-cyan-600 dark:text-cyan-400 theme-transition">🏝️ Indonesia Islands</span>
           </div>
         </nav>
 
         {/* Page Header */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-yellow-600 to-amber-600 text-white rounded-xl p-8 shadow-lg">
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">🇮🇩</span>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold">
-                  Indonesia News
-                </h1>
-                <p className="text-yellow-200 mt-2">
-                  Archipelago insights and Southeast Asian perspectives
-                </p>
-              </div>
+          <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 dark:from-cyan-700 dark:via-blue-700 dark:to-indigo-700 text-white rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden theme-transition">
+            {/* Tropical decorative elements */}
+            <div className="absolute top-0 right-0 opacity-10">
+              <div className="text-6xl transform rotate-12">🏝️</div>
             </div>
-            <p className="text-xl text-yellow-100 mb-6 max-w-4xl">
-              Comprehensive coverage of Indonesian politics, economy, culture, and regional developments 
-              from local and international sources focused on the world's largest archipelago nation.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                📰 Antara News
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🌏 BBC Asia
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🏝️ Southeast Asia Focus
-              </span>
+            <div className="absolute bottom-0 left-0 opacity-10">
+              <div className="text-4xl transform -rotate-12">🌊</div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl mr-4">🏝️</span>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
+                    Indonesia Islands
+                  </h1>
+                  <p className="text-cyan-200 dark:text-blue-200 mt-2 theme-transition">
+                    🌊 Archipelago wisdom from tropical waters
+                  </p>
+                </div>
+              </div>
+              <p className="text-xl text-cyan-100 dark:text-blue-100 mb-6 max-w-4xl theme-transition">
+                Sacred journalism flowing from the world's largest island paradise. Politics, economy, 
+                culture, and regional waves from 17,508 tropical islands spreading their wisdom.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🌊 Antara Ocean News
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🏝️ BBC Island Asia
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  ⛩️ Southeast Temple Focus
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
         <Suspense fallback={
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading Indonesia news sources...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
+            <p className="text-teal-700 dark:text-teal-300 theme-transition">🌊 Loading island paradise sources...</p>
           </div>
         }>
           {articles.length === 0 ? (
@@ -87,8 +97,8 @@ export default async function IndonesiaPage() {
               {/* Featured Indonesia Articles */}
               {featuredArticles.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-yellow-600 pb-2">
-                    🔥 Featured Indonesia Stories
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-cyan-600 dark:border-cyan-400 pb-2 theme-transition">
+                    🏝️ Featured Island Paradise Stories
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -101,8 +111,8 @@ export default async function IndonesiaPage() {
               {/* All Indonesia Articles */}
               {latestArticles.length > 0 && (
                 <section>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-amber-600 pb-2">
-                    📰 All Indonesia News ({latestArticles.length} articles)
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-blue-600 dark:border-blue-400 pb-2 theme-transition">
+                    🌊 All Island Waters ({latestArticles.length} flowing articles)
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {latestArticles.map((article) => (
@@ -112,55 +122,55 @@ export default async function IndonesiaPage() {
                 </section>
               )}
 
-              {/* Indonesia Stats */}
-              <section className="mt-12 bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">📊 Indonesia Coverage</h3>
+              {/* Tropical Indonesia Stats */}
+              <section className="mt-12 bg-gradient-to-r from-white via-cyan-50/30 to-blue-50/30 dark:from-gray-800 dark:via-cyan-900/10 dark:to-blue-900/10 rounded-2xl shadow-xl shadow-cyan-100/20 dark:shadow-cyan-900/10 p-6 border border-cyan-100 dark:border-cyan-800/30 theme-transition">
+                <h3 className="text-xl font-bold text-cyan-900 dark:text-cyan-100 mb-4 theme-transition">🏝️ Island Paradise Flow</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-yellow-600">{articles.length}</div>
-                    <div className="text-sm text-gray-600">Total Articles</div>
+                  <div className="p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400 theme-transition">{articles.length}</div>
+                    <div className="text-sm text-cyan-700 dark:text-cyan-300 theme-transition font-medium">🌊 Island Articles</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-amber-600">
+                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 theme-transition">
                       {new Set(articles.map(a => a.source)).size}
                     </div>
-                    <div className="text-sm text-gray-600">Sources</div>
+                    <div className="text-sm text-blue-700 dark:text-blue-300 theme-transition font-medium">⛩️ Sacred Sources</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-yellow-700">
+                  <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 theme-transition">
                       {articles.filter(a => new Date(a.pubDate) > new Date(Date.now() - 24*60*60*1000)).length}
                     </div>
-                    <div className="text-sm text-gray-600">Last 24h</div>
+                    <div className="text-sm text-indigo-700 dark:text-indigo-300 theme-transition font-medium">🏝️ Last Paradise Day</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-orange-600">
+                  <div className="p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400 theme-transition">
                       {Math.round(articles.length / new Set(articles.map(a => a.source)).size)}
                     </div>
-                    <div className="text-sm text-gray-600">Avg/Source</div>
+                    <div className="text-sm text-cyan-700 dark:text-cyan-300 theme-transition font-medium">🌊 Avg/Island</div>
                   </div>
                 </div>
               </section>
 
-              {/* Regional Context */}
-              <section className="mt-8 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">🌏 Regional Context</h3>
-                <p className="text-gray-700 mb-4">
-                  Indonesia, the world's fourth-most populous country and largest archipelago, plays a crucial role 
-                  in Southeast Asian geopolitics and the global economy. As a member of ASEAN, G20, and emerging 
-                  middle power, Indonesia's developments significantly impact regional stability and growth.
+              {/* Tropical Regional Context */}
+              <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-teal-50/50 to-cyan-50/50 dark:from-emerald-900/10 dark:via-teal-900/10 dark:to-cyan-900/10 rounded-2xl p-6 border border-teal-200/50 dark:border-teal-800/30 theme-transition">
+                <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-4 theme-transition">🌏 Paradise Regional Wisdom</h3>
+                <p className="text-teal-800 dark:text-teal-200 mb-4 theme-transition">
+                  Indonesia, the sacred archipelago of 17,508 islands, flows like ancient temple waters through 
+                  Southeast Asian paradise. As guardian of ASEAN temple wisdom and G20 sacred councils, 
+                  these island voices shape regional harmony and tropical prosperity.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-amber-700">🏛️ Political</div>
-                    <div className="text-gray-600">Democratic transitions, regional autonomy</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 theme-transition">⛩️ Sacred Political</div>
+                    <div className="text-teal-700 dark:text-teal-300 theme-transition">Temple democracy, island autonomy flows</div>
                   </div>
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-yellow-700">💰 Economic</div>
-                    <div className="text-gray-600">Natural resources, manufacturing growth</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-cyan-700 dark:text-cyan-300 theme-transition">🌴 Ocean Economic</div>
+                    <div className="text-teal-700 dark:text-teal-300 theme-transition">Paradise resources, tropical growth</div>
                   </div>
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-orange-700">🌍 Geopolitical</div>
-                    <div className="text-gray-600">ASEAN leadership, China-US balance</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-blue-700 dark:text-blue-300 theme-transition">🌊 Geopolitical Waters</div>
+                    <div className="text-teal-700 dark:text-teal-300 theme-transition">ASEAN temple leadership, balanced currents</div>
                   </div>
                 </div>
               </section>

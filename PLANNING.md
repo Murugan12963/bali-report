@@ -29,7 +29,7 @@
 - **Error Handling**: Exponential backoff and graceful failures
 
 ### Monetization & Analytics ✅
-- **Ads**: PropellerAds JavaScript SDK (production ready)
+- **Ads**: Google AdSense integration (production ready)
 - **Analytics**: Google Analytics 4 integration ready
 - **SEO**: Dynamic sitemap, robots.txt, structured data
 - **Future**: Newsletter (Mailchimp), Comments (Disqus)
@@ -66,12 +66,12 @@
 
 ## 💰 Monetization Strategy
 
-### PropellerAds Integration
+### Google AdSense Integration
 - **Ad Formats**:
   - Leaderboard banners (728x90) on homepage
-  - Sidebar banners (300x250) on articles
-  - Pop-unders with exit intent
-  - Optional native ads
+  - Sidebar banners (300x250) on articles  
+  - Responsive ads that adapt to screen size
+  - Native ads for seamless content integration
 
 ## 🔧 Development Notes
 
@@ -108,7 +108,7 @@ npm run type-check
 - **Responsive UI**: Mobile-first with dark/light themes
 - **Performance**: <7ms response, 91KB bundle
 - **SEO**: Sitemap, structured data, social sharing
-- **Monetization**: PropellerAds integration ready
+- **Monetization**: Google AdSense integration ready
 - **Error Handling**: 404 pages, RSS fallbacks
 
 ### 🚀 **Deployment Ready**

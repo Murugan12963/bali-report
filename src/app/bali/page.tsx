@@ -32,47 +32,60 @@ export default async function BaliPage() {
   const latestArticles = baliRelatedArticles.slice(2);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-amber-600">Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+            <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition">🌊 Home</Link>
             <span>›</span>
-            <span className="font-medium text-amber-600">Bali Local</span>
+            <span className="font-medium text-amber-600 dark:text-amber-400 theme-transition">⛩️ Sacred Bali</span>
           </div>
         </nav>
 
         {/* Page Header */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-xl p-8 shadow-lg">
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">🏝️</span>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold">
-                  Bali Local News
-                </h1>
-                <p className="text-amber-200 mt-2">
-                  Island of the Gods • Local perspectives and developments
-                </p>
-              </div>
+          <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 dark:from-amber-700 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl p-8 shadow-2xl shadow-amber-500/20 relative overflow-hidden theme-transition">
+            {/* Sacred Balinese decorative elements */}
+            <div className="absolute top-0 right-0 opacity-15">
+              <div className="text-8xl transform rotate-12">⛩️</div>
             </div>
-            <p className="text-xl text-amber-100 mb-6 max-w-4xl">
-              Covering local developments in Bali including tourism updates, cultural events, 
-              festivals, environmental issues, and community news from across the island's regencies.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🏛️ Denpasar • Ubud • Canggu
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🎭 Culture & Festivals
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🏖️ Tourism & Environment
-              </span>
+            <div className="absolute bottom-0 left-0 opacity-15">
+              <div className="text-6xl transform -rotate-12">🌺</div>
+            </div>
+            <div className="absolute top-1/2 right-1/4 opacity-10">
+              <div className="text-5xl transform rotate-45">🕏</div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl mr-4">⛩️</span>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
+                    Sacred Bali Temple
+                  </h1>
+                  <p className="text-amber-200 dark:text-orange-200 mt-2 theme-transition">
+                    🌺 Island of the Gods • 🕏 Divine local wisdom
+                  </p>
+                </div>
+              </div>
+              <p className="text-xl text-amber-100 dark:text-orange-100 mb-6 max-w-4xl theme-transition">
+                Sacred journalism from the divine Island of the Gods. Temple ceremonies, spiritual festivals, 
+                holy tourism, and blessed community wisdom flowing from Bali's nine sacred regencies.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  ⛩️ Denpasar Temple • 🌺 Ubud Sacred • 🌊 Canggu Waves
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🕏 Divine Culture & Sacred Festivals
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🌺 Holy Tourism & Temple Environment
+                </span>
+              </div>
             </div>
           </div>
         </section>
@@ -80,7 +93,7 @@ export default async function BaliPage() {
         <Suspense fallback={
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading Bali local sources...</p>
+            <p className="text-teal-700 dark:text-teal-300 theme-transition">⛩️ Loading sacred temple sources...</p>
           </div>
         }>
           {baliRelatedArticles.length === 0 ? (
@@ -119,8 +132,8 @@ export default async function BaliPage() {
               {/* Featured Bali Articles */}
               {featuredArticles.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-amber-600 pb-2">
-                    🔥 Featured Bali Stories
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-amber-600 dark:border-amber-400 pb-2 theme-transition">
+                    ⛩️ Featured Sacred Temple Stories
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -133,8 +146,8 @@ export default async function BaliPage() {
               {/* All Bali Articles */}
               {latestArticles.length > 0 && (
                 <section>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-orange-500 pb-2">
-                    📰 All Bali Coverage ({latestArticles.length} articles)
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-orange-600 dark:border-orange-400 pb-2 theme-transition">
+                    🌺 All Sacred Wisdom ({latestArticles.length} divine articles)
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {latestArticles.map((article) => (
@@ -144,53 +157,53 @@ export default async function BaliPage() {
                 </section>
               )}
 
-              {/* Bali Stats */}
-              <section className="mt-12 bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">📊 Bali Coverage</h3>
+              {/* Sacred Bali Stats */}
+              <section className="mt-12 bg-gradient-to-r from-white via-amber-50/30 to-orange-50/30 dark:from-gray-800 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl shadow-xl shadow-amber-100/20 dark:shadow-amber-900/10 p-6 border border-amber-100 dark:border-amber-800/30 theme-transition">
+                <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">⛩️ Sacred Temple Coverage</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-amber-600">{baliRelatedArticles.length}</div>
-                    <div className="text-sm text-gray-600">Related Articles</div>
+                  <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 theme-transition">{baliRelatedArticles.length}</div>
+                    <div className="text-sm text-amber-700 dark:text-amber-300 theme-transition font-medium">🌺 Divine Articles</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-orange-600">
+                  <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 theme-transition">
                       {articles.length}
                     </div>
-                    <div className="text-sm text-gray-600">Direct Sources</div>
+                    <div className="text-sm text-orange-700 dark:text-orange-300 theme-transition font-medium">🕏 Sacred Sources</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-amber-700">
+                  <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-red-600 dark:text-red-400 theme-transition">
                       {baliRelatedArticles.filter(a => new Date(a.pubDate) > new Date(Date.now() - 24*60*60*1000)).length}
                     </div>
-                    <div className="text-sm text-gray-600">Last 24h</div>
+                    <div className="text-sm text-red-700 dark:text-red-300 theme-transition font-medium">⛩️ Temple Day</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-orange-700">9</div>
-                    <div className="text-sm text-gray-600">Regencies</div>
+                  <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 theme-transition">9</div>
+                    <div className="text-sm text-amber-700 dark:text-amber-300 theme-transition font-medium">🏝️ Sacred Regencies</div>
                   </div>
                 </div>
               </section>
 
-              {/* Bali Context */}
-              <section className="mt-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">🏝️ About Bali</h3>
-                <p className="text-gray-700 mb-4">
-                  Bali, known as the "Island of the Gods," is Indonesia's premier tourist destination and cultural heartland. 
-                  Home to over 4 million people, the island balances traditional Hindu-Balinese culture with modern tourism 
-                  and development challenges.
+              {/* Sacred Bali Temple Context */}
+              <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-amber-50/50 to-orange-50/50 dark:from-emerald-900/10 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl p-6 border border-amber-200/50 dark:border-amber-800/30 theme-transition">
+                <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">⛩️ About Sacred Bali Temple Island</h3>
+                <p className="text-amber-800 dark:text-amber-200 mb-4 theme-transition">
+                  Bali, the divine "Island of the Gods," flows with sacred Hindu temple wisdom and tropical paradise energy. 
+                  Home to over 4 million blessed souls, this sacred island harmonizes ancient temple traditions 
+                  with modern paradise tourism, creating divine balance through spiritual waters.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-orange-700">🎭 Cultural</div>
-                    <div className="text-gray-600">Hindu temples, traditional arts, ceremonies</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-orange-700 dark:text-orange-300 theme-transition">🕏 Sacred Cultural</div>
+                    <div className="text-amber-700 dark:text-amber-300 theme-transition">Divine Hindu temples, blessed arts, holy ceremonies</div>
                   </div>
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-amber-700">🏖️ Tourism</div>
-                    <div className="text-gray-600">Beaches, resorts, international visitors</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 theme-transition">🌺 Paradise Tourism</div>
+                    <div className="text-amber-700 dark:text-amber-300 theme-transition">Sacred beaches, temple resorts, blessed visitors</div>
                   </div>
-                  <div className="bg-white rounded p-3">
-                    <div className="font-semibold text-red-700">🌱 Environment</div>
-                    <div className="text-gray-600">Sustainability, waste management, preservation</div>
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
+                    <div className="font-semibold text-teal-700 dark:text-teal-300 theme-transition">🌊 Sacred Environment</div>
+                    <div className="text-amber-700 dark:text-amber-300 theme-transition">Temple sustainability, divine preservation, holy waters</div>
                   </div>
                 </div>
               </section>

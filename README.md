@@ -86,7 +86,7 @@ bali-report/
 - **Social Media** sharing (Open Graph, Twitter Cards)
 
 ### 💰 **Monetization Ready**
-- **PropellerAds Integration** (banner, native, push)
+- **Google AdSense Integration** (banner, sidebar, native, responsive)
 - Development placeholders active
 - Production environment variables configured
 
@@ -159,13 +159,13 @@ See [Next.js deployment documentation](https://nextjs.org/docs/app/building-your
 - ✅ **SEO**: Sitemap, robots.txt, structured data, meta tags
 - ✅ **Performance**: Production build optimized (<7ms response)
 - ✅ **Testing**: Unit tests, production server tested
-- ✅ **Monetization**: PropellerAds integration ready
+- ✅ **Monetization**: Google AdSense integration ready
 - ✅ **Error Handling**: 404 pages, fallbacks, graceful failures
 
 ### 📅 **Next Steps**
 - Deploy to Vercel with custom domain (bali.report)
 - Configure production environment variables
-- Set up PropellerAds account and zones
+- Set up Google AdSense account and ad units
 - Submit to search engines
 
 ## 🚀 **Quick Deployment**
@@ -184,7 +184,10 @@ npx vercel --prod
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://bali.report
 NEXT_PUBLIC_GA_TRACKING_ID=your-ga-id
-NEXT_PUBLIC_PROPELLER_SITE_ID=your-propeller-site-id
+NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT=ca-pub-your-adsense-client-id
+NEXT_PUBLIC_GOOGLE_ADSENSE_LEADERBOARD_SLOT=your-leaderboard-slot-id
+NEXT_PUBLIC_GOOGLE_ADSENSE_SIDEBAR_SLOT=your-sidebar-slot-id
+NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT=your-native-slot-id
 ```
 
 ## 📞 Support

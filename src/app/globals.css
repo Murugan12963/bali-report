@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Custom utilities for Bali Report */
+/* Custom utilities for Tropical Bali Report */
 @layer utilities {
   .line-clamp-2 {
     overflow: hidden;
@@ -16,9 +16,19 @@
     -webkit-line-clamp: 3;
   }
 
-  /* Smooth theme transitions */
+  /* Smooth tropical theme transitions */
   .theme-transition {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Tropical hover effects */
+  .hover\:scale-102:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Text shadow for tropical headers */
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -39,14 +49,15 @@
   --ring: #dc2626;
   --radius: 0.5rem;
   
-  /* BRICS theme colors */
-  --brics-red: #dc2626;
-  --brics-gold: #f59e0b;
-  --brics-red-dark: #b91c1c;
-  --brics-gold-dark: #d97706;
-  --indonesia-yellow: #fbbf24;
-  --bali-amber: #f59e0b;
-  --bali-orange: #ea580c;
+  /* Tropical Bali theme colors */
+  --tropical-emerald: #10b981;
+  --tropical-teal: #14b8a6;
+  --tropical-cyan: #06b6d4;
+  --tropical-amber: #f59e0b;
+  --temple-gold: #fbbf24;
+  --ocean-blue: #0ea5e9;
+  --paradise-green: #22c55e;
+  --sunset-orange: #fb923c;
 }
 
 /* Dark mode variables */
@@ -65,14 +76,15 @@
   --input: #334155;
   --ring: #ef4444;
   
-  /* BRICS theme colors - adjusted for dark mode */
-  --brics-red: #ef4444;
-  --brics-gold: #fbbf24;
-  --brics-red-dark: #dc2626;
-  --brics-gold-dark: #f59e0b;
-  --indonesia-yellow: #fde047;
-  --bali-amber: #fbbf24;
-  --bali-orange: #fb923c;
+  /* Tropical Bali theme colors - dark mode */
+  --tropical-emerald: #34d399;
+  --tropical-teal: #5eead4;
+  --tropical-cyan: #67e8f9;
+  --tropical-amber: #fbbf24;
+  --temple-gold: #fde047;
+  --ocean-blue: #38bdf8;
+  --paradise-green: #4ade80;
+  --sunset-orange: #fdba74;
 }
 
 @theme inline {

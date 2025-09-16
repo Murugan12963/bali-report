@@ -23,55 +23,65 @@ export default async function BRICSPage() {
   const latestArticles = articles.slice(2);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-red-600">Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+            <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition">🌊 Home</Link>
             <span>›</span>
-            <span className="font-medium text-red-600">BRICS News</span>
+            <span className="font-medium text-emerald-600 dark:text-emerald-400 theme-transition">🌺 BRICS Paradise</span>
           </div>
         </nav>
 
         {/* Page Header */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-red-700 to-red-800 text-white rounded-xl p-8 shadow-lg">
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">🌍</span>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold">
-                  BRICS News
-                </h1>
-                <p className="text-red-200 mt-2">
-                  Multipolar perspectives from emerging economies
-                </p>
-              </div>
+          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 text-white rounded-2xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden theme-transition">
+            {/* Tropical decorative elements */}
+            <div className="absolute top-0 right-0 opacity-10">
+              <div className="text-6xl transform rotate-12">🌺</div>
             </div>
-            <p className="text-xl text-red-100 mb-6 max-w-4xl">
-              News and analysis from Russia, China, India, Brazil, South Africa, Iran, and other 
-              nations building an alternative to Western-dominated global order.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🇷🇺 Russia Today & TASS
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🇨🇳 Xinhua News
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
-                🌍 Al Jazeera
-              </span>
+            <div className="absolute bottom-0 left-0 opacity-10">
+              <div className="text-4xl transform -rotate-12">🦋</div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl mr-4">🌺</span>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
+                    BRICS Paradise
+                  </h1>
+                  <p className="text-emerald-200 dark:text-teal-200 mt-2 theme-transition">
+                    🦋 Multi-polar wisdom from tropical economies
+                  </p>
+                </div>
+              </div>
+              <p className="text-xl text-emerald-100 dark:text-teal-100 mb-6 max-w-4xl theme-transition">
+                Sacred journalism from Russia, China, India, Brazil, South Africa, and other 
+                nations flowing like tropical waters, building paradise alternatives to Western storms.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🌊 Russia Waters & TASS Streams
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  🌴 Xinhua Palm News
+                </span>
+                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                  ⛩️ Al Jazeera Temple
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
         <Suspense fallback={
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading BRICS news sources...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+            <p className="text-teal-700 dark:text-teal-300 theme-transition">🌊 Loading paradise BRICS sources...</p>
           </div>
         }>
           {articles.length === 0 ? (
@@ -87,8 +97,8 @@ export default async function BRICSPage() {
               {/* Featured BRICS Articles */}
               {featuredArticles.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-red-600 pb-2">
-                    🔥 Featured BRICS Stories
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-emerald-600 dark:border-emerald-400 pb-2 theme-transition">
+                    🌺 Featured Paradise Stories
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -101,8 +111,8 @@ export default async function BRICSPage() {
               {/* All BRICS Articles */}
               {latestArticles.length > 0 && (
                 <section>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-red-500 pb-2">
-                    📰 All BRICS News ({latestArticles.length} articles)
+                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-cyan-600 dark:border-cyan-400 pb-2 theme-transition">
+                    🌊 All Paradise News ({latestArticles.length} sacred articles)
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {latestArticles.map((article) => (
@@ -112,31 +122,31 @@ export default async function BRICSPage() {
                 </section>
               )}
 
-              {/* BRICS Stats */}
-              <section className="mt-12 bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">📊 BRICS Coverage</h3>
+              {/* Tropical BRICS Stats */}
+              <section className="mt-12 bg-gradient-to-r from-white via-emerald-50/30 to-teal-50/30 dark:from-gray-800 dark:via-teal-900/10 dark:to-emerald-900/10 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-emerald-900/10 p-6 border border-emerald-100 dark:border-emerald-800/30 theme-transition">
+                <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100 mb-4 theme-transition">🌺 Paradise BRICS Flow</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-red-600">{articles.length}</div>
-                    <div className="text-sm text-gray-600">Total Articles</div>
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 theme-transition">{articles.length}</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">🌊 Sacred Articles</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-red-700">
+                  <div className="p-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-teal-600 dark:text-teal-400 theme-transition">
                       {new Set(articles.map(a => a.source)).size}
                     </div>
-                    <div className="text-sm text-gray-600">Sources</div>
+                    <div className="text-sm text-teal-700 dark:text-teal-300 theme-transition font-medium">⛩️ Temple Sources</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-red-800">
+                  <div className="p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400 theme-transition">
                       {articles.filter(a => new Date(a.pubDate) > new Date(Date.now() - 24*60*60*1000)).length}
                     </div>
-                    <div className="text-sm text-gray-600">Last 24h</div>
+                    <div className="text-sm text-cyan-700 dark:text-cyan-300 theme-transition font-medium">🌴 Last Paradise Day</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-amber-600">
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 theme-transition">
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 theme-transition">
                       {Math.round(articles.length / new Set(articles.map(a => a.source)).size)}
                     </div>
-                    <div className="text-sm text-gray-600">Avg/Source</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">🦋 Avg/Source</div>
                   </div>
                 </div>
               </section>

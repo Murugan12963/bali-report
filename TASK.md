@@ -121,9 +121,27 @@
 - [ ] Analytics integration
 - [ ] Mobile app development
 
+## 🎯 **CURRENT PRIORITY: Tropical Bali Design Transformation** (2025-09-16)
+
+### Active Tasks - Tropical Bali Theme ✅ **COMPLETED**
+- [x] **Update color scheme** - Replace BRICS red/gold with tropical Balinese colors (emerald, ocean blue, sunset orange, temple gold)
+- [x] **Redesign hero section** - Create tropical paradise hero with Balinese-inspired gradients and imagery
+- [x] **Add tropical emojis** - Replace generic emojis with Balinese/tropical ones (🌺🏝️🌴🌊⛩️🦋)
+- [x] **Update ArticleCard design** - Create tropical card styling with palm shadows and island borders  
+- [x] **Transform header/navigation** - Apply tropical Balinese styling throughout
+- [x] **Test tropical theme** - Verified design works in production build
+
+### Completed Tasks - Google Ads Migration ✅
+- [x] **Replace PropellerAds with Google AdSense** - Switch to Google Ads for better monetization 
+- [x] **Create GoogleAds component** - Build new component using Google AdSense integration
+- [x] **Update all ad placements** - Replace PropellerAds usage throughout the site
+- [x] **Update documentation** - Reflect Google Ads in all project documentation
+- [x] **Remove PropellerAds files** - Clean up old components and references
+- [x] **Test Google Ads integration** - Verify development build and functionality
+
 ## 🐛 Issues & Notes
 
-### Discovered During Work  
+### Discovered During Work
 - ✅ Fixed broken RSS feed URLs - replaced Global Times with TASS and Xinhua News
 - ✅ Implemented retry logic with exponential backoff for failed RSS requests
 - ✅ Added comprehensive error handling with detailed error categorization  

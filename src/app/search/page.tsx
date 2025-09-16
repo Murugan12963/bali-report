@@ -57,16 +57,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const otherResults = filteredArticles.slice(2);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-red-600">Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+            <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition">🌊 Home</Link>
             <span>›</span>
-            <span className="font-medium text-red-600">Search</span>
+            <span className="font-medium text-emerald-600 dark:text-emerald-400 theme-transition">🌴 Search Paradise</span>
             {query && (
               <>
                 <span>›</span>
@@ -78,16 +78,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         {/* Search Header */}
         <section className="mb-8">
-          <div className="bg-gradient-to-r from-red-600 to-amber-600 text-white rounded-xl p-8 shadow-lg">
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">🔍</span>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold">
-                  Search News
-                </h1>
-                <p className="text-red-200 mt-2">
-                  Find articles from BRICS and Indonesian sources
-                </p>
+          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 text-white rounded-2xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden theme-transition">
+            {/* Tropical decorative elements */}
+            <div className="absolute top-0 right-0 opacity-10">
+              <div className="text-6xl transform rotate-12">🌴</div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl mr-4">🔍</span>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
+                    🌴 Search Paradise
+                  </h1>
+                  <p className="text-emerald-200 dark:text-teal-200 mt-2 theme-transition">
+                    🌊 Find wisdom from tropical BRICS and Indonesian sources
+                  </p>
+                </div>
               </div>
             </div>
             
@@ -103,8 +110,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         <Suspense fallback={
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Searching through articles...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+            <p className="text-teal-700 dark:text-teal-300 theme-transition">🌊 Searching through paradise articles...</p>
           </div>
         }>
           {!query.trim() ? (

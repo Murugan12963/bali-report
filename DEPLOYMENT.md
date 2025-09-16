@@ -10,7 +10,7 @@
 - [x] Enhanced search functionality with relevance scoring
 - [x] Dark/Light theme switcher with system detection
 - [x] Responsive design for mobile, tablet, desktop
-- [x] PropellerAds integration (development placeholders ready)
+- [x] Google AdSense integration (development placeholders ready)
 
 #### **SEO & Performance**
 - [x] Comprehensive SEO metadata with structured data (Schema.org)
@@ -37,7 +37,7 @@
 #### **2. Environment Configuration** 🔧
 - [ ] Set up Vercel environment variables:
   - `NEXT_PUBLIC_SITE_URL=https://bali.report`
-  - `NEXT_PUBLIC_PROPELLER_*_ZONE` (when PropellerAds account ready)
+  - `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` and slot IDs (when Google AdSense account ready)
   - `NEXT_PUBLIC_GA_MEASUREMENT_ID` (when Google Analytics ready)
 
 #### **3. Domain & DNS Setup** 🌐
@@ -48,9 +48,9 @@
 - [ ] www redirect setup (www.bali.report → bali.report)
 
 #### **4. Production Services** 📊
-- [ ] **PropellerAds Account**:
-  - Create PropellerAds publisher account
-  - Get zone IDs for different ad types
+- [ ] **Google AdSense Account**:
+  - Create Google AdSense publisher account
+  - Get ad unit slot IDs for different ad types
   - Configure environment variables
 - [ ] **Google Analytics** (Optional):
   - Create GA4 property
@@ -99,8 +99,8 @@ The main blocker is the ThemeProvider context issue. Need to:
 3. Update DNS records as instructed by Vercel
 
 ### **Step 4: Monetization Setup**
-1. Create PropellerAds account
-2. Get zone IDs for different ad formats
+1. Create Google AdSense account
+2. Get ad unit slot IDs for different ad formats
 3. Update environment variables in Vercel
 
 ## 🚦 **Deployment Readiness Status**
@@ -113,14 +113,14 @@ The main blocker is the ThemeProvider context issue. Need to:
 | **Responsive Design** | ✅ Ready | Mobile, tablet, desktop tested |
 | **Environment Config** | ✅ Ready | .env.example created |
 | **Domain Setup** | ❌ Pending | Need to configure bali.report |
-| **Monetization** | 🔄 Partial | Placeholder ready, need PropellerAds account |
+|| **Monetization** | 🔄 Partial | Placeholder ready, need Google AdSense account |
 
 ## 📝 **Post-Deployment Tasks**
 
 ### **Week 1 After Launch**
 - [ ] Monitor RSS feed reliability
 - [ ] Check Google Search Console for indexing
-- [ ] Verify PropellerAds revenue tracking
+- [ ] Verify Google AdSense revenue tracking
 - [ ] Monitor site performance and Core Web Vitals
 - [ ] Test all functionality on live domain
 
