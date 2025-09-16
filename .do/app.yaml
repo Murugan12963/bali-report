@@ -1,0 +1,25 @@
+name: bali-report
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: Murugan12963/bali-report
+    branch: master
+    deploy_on_push: true
+  run_command: npm start
+  build_command: npm run build
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: NEXT_PUBLIC_PROPELLERADS_ZONE_ID
+    value: "YOUR_ZONE_ID_HERE"
+    type: SECRET
+  http_port: 3000
+  routes:
+  - path: /
+domains:
+- domain: bali.report
+- domain: www.bali.report
