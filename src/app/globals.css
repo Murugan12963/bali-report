@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Custom utilities for Tropical Bali Report */
+/* Grok-inspired modern utilities */
 @layer utilities {
   .line-clamp-2 {
     overflow: hidden;
@@ -16,75 +16,95 @@
     -webkit-line-clamp: 3;
   }
 
-  /* Smooth tropical theme transitions */
+  /* Smooth modern theme transitions */
   .theme-transition {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  /* Tropical hover effects */
+  /* Modern hover effects */
   .hover\:scale-102:hover {
     transform: scale(1.02);
   }
   
-  /* Text shadow for tropical headers */
+  /* Modern text effects */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
   .text-shadow-lg {
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
   }
+  
+  /* Grok-style gradients */
+  .grok-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .grok-gradient-dark {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+  
+  /* Modern glass effect */
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
-/* Light mode variables */
+/* Grok-inspired light mode variables */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #fafafa;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #dc2626;
+  --card-foreground: #0a0a0a;
+  --primary: #0066ff;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #475569;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #dc2626;
-  --radius: 0.5rem;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #71717a;
+  --muted: #f9f9f9;
+  --muted-foreground: #6b7280;
+  --border: #e4e4e7;
+  --input: #f4f4f5;
+  --ring: #0066ff;
+  --radius: 0.75rem;
   
-  /* Tropical Bali theme colors */
-  --tropical-emerald: #10b981;
-  --tropical-teal: #14b8a6;
-  --tropical-cyan: #06b6d4;
-  --tropical-amber: #f59e0b;
-  --temple-gold: #fbbf24;
-  --ocean-blue: #0ea5e9;
-  --paradise-green: #22c55e;
-  --sunset-orange: #fb923c;
+  /* Grok theme colors */
+  --grok-blue: #0066ff;
+  --grok-purple: #8b5cf6;
+  --grok-cyan: #06b6d4;
+  --grok-emerald: #10b981;
+  --grok-amber: #f59e0b;
+  --grok-rose: #f43f5e;
+  --grok-gray: #6b7280;
+  --grok-dark: #1a1a1a;
 }
 
-/* Dark mode variables */
+/* Grok-inspired dark mode variables */
 :root.dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --card: #0f172a;
-  --card-foreground: #f8fafc;
-  --primary: #ef4444;
-  --primary-foreground: #0f172a;
-  --secondary: #1e293b;
-  --secondary-foreground: #cbd5e1;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --border: #334155;
-  --input: #334155;
-  --ring: #ef4444;
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #121212;
+  --card-foreground: #fafafa;
+  --primary: #0066ff;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #a1a1aa;
+  --muted: #161616;
+  --muted-foreground: #737373;
+  --border: #262626;
+  --input: #1a1a1a;
+  --ring: #0066ff;
   
-  /* Tropical Bali theme colors - dark mode */
-  --tropical-emerald: #34d399;
-  --tropical-teal: #5eead4;
-  --tropical-cyan: #67e8f9;
-  --tropical-amber: #fbbf24;
-  --temple-gold: #fde047;
-  --ocean-blue: #38bdf8;
-  --paradise-green: #4ade80;
-  --sunset-orange: #fdba74;
+  /* Grok theme colors - dark mode */
+  --grok-blue: #3b82f6;
+  --grok-purple: #a855f7;
+  --grok-cyan: #22d3ee;
+  --grok-emerald: #34d399;
+  --grok-amber: #fbbf24;
+  --grok-rose: #fb7185;
+  --grok-gray: #9ca3af;
+  --grok-dark: #0a0a0a;
 }
 
 @theme inline {
@@ -112,8 +132,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Scrollbar styling for dark mode */
@@ -149,4 +173,20 @@ body {
 
 .theme-switch-animation {
   animation: theme-switch 0.5s ease-in-out;
+}
+
+/* Animation for new content banner */
+@keyframes slide-down {
+  0% {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.5s ease-out forwards;
 }

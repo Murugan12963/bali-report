@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import Analytics from '@/components/Analytics';
+import PersonalizationProvider from '@/components/PersonalizationProvider';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,6 +28,19 @@ export const metadata: Metadata = {
   authors: [{ name: 'Bali Report' }],
   creator: 'Bali Report',
   publisher: 'Bali Report',
+  // PWA metadata
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Bali Report',
+    startupImage: [
+      {
+        url: '/icons/icon-512x512.png',
+        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)'
+      }
+    ]
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -50,7 +64,17 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg']
   },
   robots: 'index, follow',
-  category: 'news'
+  category: 'news',
+  // Additional PWA meta
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'Bali Report',
+    'application-name': 'Bali Report',
+    'msapplication-TileColor': '#0d9488',
+    'theme-color': '#0d9488'
+  }
 };
 
 export default function RootLayout({
@@ -60,12 +84,39 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* PWA icons */}
+        <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
+        <link rel="mask-icon" href="/icons/icon.svg" color="#0d9488" />
+        
+        {/* Service worker registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('🌺 SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                      console.log('❌ SW registration failed: ', registrationError);
+                    });
+                });
+              }
+            `
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased theme-transition`}
       >
         <ThemeProvider>
           <Analytics />
-          {children}
+          <PersonalizationProvider>
+            {children}
+          </PersonalizationProvider>
         </ThemeProvider>
       </body>
     </html>

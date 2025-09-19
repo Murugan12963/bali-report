@@ -1,5 +1,8 @@
 import React from 'react';
 import { Article } from '@/lib/rss-parser';
+import SaveButton from './SaveForLater/SaveButton';
+import { NewContentIndicator } from './NewContentIndicator';
+import { ShareBar } from './SocialShare';
 
 interface ArticleCardProps {
   article: Article;
@@ -31,52 +34,71 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, featured = false }) 
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'BRICS':
-        return 'bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500 text-white';
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-700/50';
       case 'Indonesia':
-        return 'bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-500 dark:to-blue-500 text-white';
+        return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-700/50';
       case 'Bali':
-        return 'bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-500 dark:to-orange-500 text-white';
+        return 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-200 border border-cyan-200 dark:border-cyan-700/50';
       default:
-        return 'bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-500 dark:to-emerald-500 text-white';
+        return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700';
     }
   };
 
   if (featured) {
     return (
-      <article className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 dark:from-gray-800 dark:via-teal-900/10 dark:to-emerald-900/10 shadow-lg hover:shadow-2xl shadow-emerald-100/50 dark:shadow-emerald-900/20 hover:shadow-emerald-200/50 dark:hover:shadow-emerald-800/30 transition-all duration-300 theme-transition border border-emerald-100/50 dark:border-emerald-800/30 hover:scale-105">
+      <article className="relative overflow-hidden rounded-xl bg-white dark:bg-zinc-800 shadow-sm hover:shadow-md border border-zinc-200 dark:border-zinc-700 transition-all duration-200 theme-transition hover:border-zinc-300 dark:hover:border-zinc-600">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getCategoryColor(article.category)} theme-transition`}>
-              {article.category}
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400 theme-transition">{article.source}</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className={`inline-block px-3 py-1 text-sm font-medium rounded-lg ${getCategoryColor(article.category)} theme-transition`}>
+                  {article.category}
+                </span>
+                <NewContentIndicator 
+                  article={article} 
+                  variant="badge" 
+                  threshold={6}
+                />
+              </div>
+              <SaveButton 
+                article={article} 
+                size="sm" 
+                showQuickActions={true}
+                className="hover:bg-zinc-100 dark:hover:bg-zinc-700"
+              />
+            </div>
+            <span className="text-sm text-zinc-500 dark:text-zinc-400 font-medium theme-transition">{article.source}</span>
           </div>
           
-          <h2 className="text-2xl font-bold text-teal-900 dark:text-teal-100 mb-3 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors theme-transition">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 hover:text-blue-600 dark:hover:text-blue-400 transition-colors theme-transition leading-tight">
             <a href={article.link} target="_blank" rel="noopener noreferrer" className="block">
               {article.title}
             </a>
           </h2>
           
-          <p className="text-teal-800 dark:text-teal-200 mb-4 leading-relaxed theme-transition">
+          <p className="text-zinc-600 dark:text-zinc-300 mb-4 leading-relaxed theme-transition">
             {article.description}
           </p>
           
-          <div className="flex items-center justify-between">
-            <time className="text-sm text-teal-600 dark:text-teal-400 theme-transition font-medium">
-              {formatDate(article.pubDate)}
-            </time>
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500 hover:from-emerald-700 hover:to-teal-700 dark:hover:from-emerald-400 dark:hover:to-teal-400 text-white px-3 py-1 rounded-full font-medium text-sm transition-all hover:scale-105 shadow-lg"
-            >
-              🌊 Read More
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <time className="text-sm text-zinc-500 dark:text-zinc-400 theme-transition font-medium">
+                {formatDate(article.pubDate)}
+              </time>
+              <a
+                href={article.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                Read More
+                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+            
+            <ShareBar article={article} className="pt-3 border-t border-zinc-200 dark:border-zinc-700" />
           </div>
         </div>
       </article>
@@ -84,40 +106,60 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, featured = false }) 
   }
 
   return (
-    <article className="bg-gradient-to-br from-white via-emerald-50/20 to-teal-50/20 dark:from-gray-800 dark:via-teal-900/5 dark:to-emerald-900/5 rounded-xl shadow-md hover:shadow-xl shadow-emerald-100/30 dark:shadow-emerald-900/10 hover:shadow-emerald-200/40 dark:hover:shadow-emerald-800/20 transition-all duration-300 overflow-hidden theme-transition border border-emerald-100/30 dark:border-emerald-800/20 hover:scale-102">
+    <article className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm hover:shadow-md border border-zinc-200 dark:border-zinc-700 transition-all duration-200 overflow-hidden theme-transition hover:border-zinc-300 dark:hover:border-zinc-600">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)} theme-transition`}>
-            {article.category}
-          </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400 theme-transition">{article.source}</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <span className={`inline-block px-2 py-1 text-xs font-medium rounded-md ${getCategoryColor(article.category)} theme-transition`}>
+                {article.category}
+              </span>
+              <NewContentIndicator 
+                article={article} 
+                variant="pulse" 
+                threshold={6}
+                className="ml-1"
+              />
+            </div>
+            <SaveButton 
+              article={article} 
+              size="sm"
+              showQuickActions={false}
+              className="hover:bg-zinc-100 dark:hover:bg-zinc-700"
+            />
+          </div>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium theme-transition">{article.source}</span>
         </div>
         
-        <h3 className="text-lg font-semibold text-teal-900 dark:text-teal-100 mb-2 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors line-clamp-2 theme-transition">
+        <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 theme-transition leading-tight">
           <a href={article.link} target="_blank" rel="noopener noreferrer" className="block">
             {article.title}
           </a>
         </h3>
         
-        <p className="text-teal-700 dark:text-teal-300 mb-3 text-sm leading-relaxed line-clamp-3 theme-transition">
+        <p className="text-zinc-600 dark:text-zinc-300 mb-3 text-sm leading-relaxed line-clamp-3 theme-transition">
           {article.description}
         </p>
         
-        <div className="flex items-center justify-between">
-          <time className="text-xs text-teal-600 dark:text-teal-400 theme-transition font-medium">
-            {formatDate(article.pubDate)}
-          </time>
-          <a
-            href={article.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500 hover:from-emerald-700 hover:to-teal-700 dark:hover:from-emerald-400 dark:hover:to-teal-400 text-white px-2 py-1 rounded-lg font-medium text-xs transition-all hover:scale-105 shadow-md"
-          >
-            🌺 Read
-            <svg className="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <time className="text-xs text-zinc-500 dark:text-zinc-400 theme-transition font-medium">
+              {formatDate(article.pubDate)}
+            </time>
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white px-3 py-1.5 rounded-md font-medium text-xs transition-all duration-200 shadow-sm"
+            >
+              Read
+              <svg className="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+          
+          <ShareBar article={article} className="pt-2 border-t border-zinc-200 dark:border-zinc-700" />
         </div>
       </div>
     </article>

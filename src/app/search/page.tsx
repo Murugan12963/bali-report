@@ -19,7 +19,8 @@ interface SearchPageProps {
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || '';
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams.q || '';
   const allArticles = await rssAggregator.fetchAllSources();
   
   // Enhanced search functionality with better scoring and filtering
@@ -57,20 +58,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const otherResults = filteredArticles.slice(2);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 theme-transition">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
-            <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition">🌊 Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400 theme-transition">
+            <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 theme-transition">Home</Link>
             <span>›</span>
-            <span className="font-medium text-emerald-600 dark:text-emerald-400 theme-transition">🌴 Search Paradise</span>
+            <span className="font-medium text-blue-600 dark:text-blue-400 theme-transition">Search</span>
             {query && (
               <>
                 <span>›</span>
-                <span className="font-medium text-gray-800">"{query}"</span>
+                <span className="font-medium text-zinc-800 dark:text-zinc-200">"{query}"</span>
               </>
             )}
           </div>
@@ -78,28 +79,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         {/* Search Header */}
         <section className="mb-8">
-          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 text-white rounded-2xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden theme-transition">
-            {/* Tropical decorative elements */}
-            <div className="absolute top-0 right-0 opacity-10">
-              <div className="text-6xl transform rotate-12">🌴</div>
-            </div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center mb-4">
-                <span className="text-4xl mr-4">🔍</span>
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    🌴 Search Paradise
-                  </h1>
-                  <p className="text-emerald-200 dark:text-teal-200 mt-2 theme-transition">
-                    🌊 Find wisdom from tropical BRICS and Indonesian sources
-                  </p>
-                </div>
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-sm border border-zinc-200 dark:border-zinc-700 theme-transition">
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm mr-4">
+                <span className="text-2xl text-white">🔍</span>
+              </div>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100">
+                  Search Articles
+                </h1>
+                <p className="text-zinc-600 dark:text-zinc-400 mt-1">
+                  Find news from BRICS, Indonesia, and Bali sources
+                </p>
               </div>
             </div>
             
             {/* Search Form */}
-            <div className="mt-6 max-w-2xl">
+            <div className="max-w-2xl">
               <SearchBar 
                 placeholder="Search articles, sources, or topics..." 
                 className="w-full"
@@ -110,29 +106,31 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         <Suspense fallback={
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-            <p className="text-teal-700 dark:text-teal-300 theme-transition">🌊 Searching through paradise articles...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-zinc-600 dark:text-zinc-400 theme-transition">Searching through articles...</p>
           </div>
         }>
           {!query.trim() ? (
             /* No Query State */
             <div className="text-center py-16">
-              <span className="text-8xl mb-6 block">📰</span>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-6">
+                <span className="text-4xl text-white">📰</span>
+              </div>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
                 Search Through Our News Archive
               </h2>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
                 Use the search bar above to find articles from our collection of BRICS-aligned and 
                 Indonesian news sources. Search by title, content, or source name.
               </p>
               
               {/* Search Suggestions */}
-              <div className="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Try searching for:</h3>
+              <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 max-w-3xl mx-auto">
+                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center"><span className="mr-2">💡</span> Try searching for:</h3>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div>
-                    <h4 className="font-medium text-red-700 mb-2">Topics</h4>
-                    <div className="space-y-1 text-gray-600">
+                    <h4 className="font-medium text-blue-600 dark:text-blue-400 mb-2">Topics</h4>
+                    <div className="space-y-1 text-zinc-600 dark:text-zinc-400">
                       <div>• Ukraine</div>
                       <div>• China economy</div>
                       <div>• Indonesia politics</div>
@@ -140,8 +138,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium text-amber-700 mb-2">Sources</h4>
-                    <div className="space-y-1 text-gray-600">
+                    <h4 className="font-medium text-purple-600 dark:text-purple-400 mb-2">Sources</h4>
+                    <div className="space-y-1 text-zinc-600 dark:text-zinc-400">
                       <div>• RT News</div>
                       <div>• TASS</div>
                       <div>• Xinhua</div>
@@ -149,8 +147,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium text-yellow-700 mb-2">Regions</h4>
-                    <div className="space-y-1 text-gray-600">
+                    <h4 className="font-medium text-indigo-600 dark:text-indigo-400 mb-2">Regions</h4>
+                    <div className="space-y-1 text-zinc-600 dark:text-zinc-400">
                       <div>• Russia</div>
                       <div>• Southeast Asia</div>
                       <div>• Middle East</div>
@@ -163,25 +161,27 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           ) : filteredArticles.length === 0 ? (
             /* No Results State */
             <div className="text-center py-16">
-              <span className="text-8xl mb-6 block">🔍</span>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-zinc-400 to-zinc-600 rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-6">
+                <span className="text-4xl text-white">🔍</span>
+              </div>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
                 No Results Found
               </h2>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
                 We couldn't find any articles matching "{query}". Try different keywords 
                 or browse our category pages.
               </p>
               
               {/* Search Tips */}
-              <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
-                <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Search Tips</h3>
-                <div className="text-blue-800 text-sm space-y-2">
+              <div className="bg-blue-50 dark:bg-zinc-800 rounded-lg p-6 max-w-2xl mx-auto border border-blue-200 dark:border-zinc-700">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-3 flex items-center"><span className="mr-2">💡</span> Search Tips</h3>
+                <div className="text-blue-800 dark:text-blue-300 text-sm space-y-2">
                   <p>• Try broader terms (e.g., "economy" instead of "economic policy")</p>
                   <p>• Check spelling and try alternative words</p>
                   <p>• Use single keywords rather than full phrases</p>
-                  <p>• Browse our <Link href="/brics" className="underline font-medium">BRICS</Link>, {" "}
-                     <Link href="/indonesia" className="underline font-medium">Indonesia</Link>, or {" "}
-                     <Link href="/bali" className="underline font-medium">Bali</Link> categories</p>
+                  <p>• Browse our <Link href="/brics" className="underline font-medium hover:text-blue-600 dark:hover:text-blue-300">BRICS</Link>, {" "}
+                     <Link href="/indonesia" className="underline font-medium hover:text-blue-600 dark:hover:text-blue-300">Indonesia</Link>, or {" "}
+                     <Link href="/bali" className="underline font-medium hover:text-blue-600 dark:hover:text-blue-300">Bali</Link> categories</p>
                 </div>
               </div>
             </div>
@@ -191,29 +191,29 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               {/* Search Results Header */}
               <section className="mb-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                     Search Results for "{query}"
                   </h2>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-zinc-500 dark:text-zinc-400">
                     {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''} found
                   </span>
                 </div>
                 
                 {/* Results Statistics */}
-                <div className="bg-white rounded-lg shadow-md p-4">
-                  <div className="flex flex-wrap gap-6 text-sm text-gray-600">
+                <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 p-4">
+                  <div className="flex flex-wrap gap-6 text-sm text-zinc-600 dark:text-zinc-400">
                     <div>
-                      <span className="font-medium text-red-600">
+                      <span className="font-medium text-blue-600 dark:text-blue-400">
                         {filteredArticles.filter(a => a.category === 'BRICS').length}
                       </span> BRICS articles
                     </div>
                     <div>
-                      <span className="font-medium text-yellow-600">
+                      <span className="font-medium text-purple-600 dark:text-purple-400">
                         {filteredArticles.filter(a => a.category === 'Indonesia').length}
                       </span> Indonesia articles
                     </div>
                     <div>
-                      <span className="font-medium text-amber-600">
+                      <span className="font-medium text-indigo-600 dark:text-indigo-400">
                         {new Set(filteredArticles.map(a => a.source)).size}
                       </span> different sources
                     </div>
@@ -224,8 +224,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               {/* Featured Results */}
               {featuredResults.length > 0 && (
                 <section className="mb-12">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-red-600 pb-2">
-                    🔥 Top Results
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 border-b-2 border-blue-600 pb-2 flex items-center">
+                    <span className="mr-2">🔥</span> Top Results
                   </h3>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredResults.map((article) => (
@@ -238,8 +238,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               {/* All Results */}
               {otherResults.length > 0 && (
                 <section>
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-amber-600 pb-2">
-                    📰 All Results ({otherResults.length} more)
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 border-b-2 border-purple-600 pb-2 flex items-center">
+                    <span className="mr-2">📰</span> All Results ({otherResults.length} more)
                   </h3>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {otherResults.map((article) => (

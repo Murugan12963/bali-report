@@ -1,5 +1,4 @@
 import Parser from 'rss-parser';
-import axios from 'axios';
 
 /**
  * RSS Parser configuration and types for Bali Report news aggregation.
@@ -80,10 +79,22 @@ export const NEWS_SOURCES: NewsSource[] = [
     active: false, // Disabled due to 404 errors
   },
   {
-    name: 'Sputnik Globe',
-    url: 'https://sputnikglobe.com/rss/',
+    name: 'CGTN News',
+    url: 'https://www.cgtn.com/subscribe/rss/section/world.xml',
     category: 'BRICS',
-    active: false, // Disabled due to parsing issues
+    active: true,
+  },
+  {
+    name: 'China Daily',
+    url: 'https://www.chinadaily.com.cn/rss/world_rss.xml',
+    category: 'BRICS',
+    active: true,
+  },
+  {
+    name: 'Sputnik Globe',
+    url: 'https://sputnikglobe.com/export/rss2/archive/index.xml',
+    category: 'BRICS',
+    active: true, // Fixed with correct RSS URL
   },
   {
     name: 'Jakarta Globe',

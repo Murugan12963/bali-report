@@ -39,8 +39,8 @@ export function GoogleAnalytics({ measurementId }: AnalyticsProps) {
 
     // Initialize gtag
     window.dataLayer = window.dataLayer || [];
-    function gtag(command: string, targetId: string, config?: object) {
-      window.dataLayer?.push(arguments);
+    function gtag(...args: any[]) {
+      window.dataLayer?.push(args);
     }
     window.gtag = gtag;
 
