@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
+import StockMarketTracker from '@/components/StockMarketTracker';
 
 import { generateSEOMetadata } from '@/components/SEOHead';
 
@@ -17,8 +18,8 @@ export const metadata = generateSEOMetadata({
 });
 
 export default async function BaliPage() {
-  // Fetch Bali-specific articles
-  const articles = await rssAggregator.fetchByCategory('Bali');
+  // Fetch Bali-specific articles including scraped sources
+  const articles = await rssAggregator.fetchByCategory('Bali', true);  // Enable scrapers
   const allArticles = await rssAggregator.fetchAllSources();
   
   // If no dedicated Bali articles, show Indonesia articles that might mention Bali
@@ -45,6 +46,11 @@ export default async function BaliPage() {
           </div>
         </nav>
 
+        {/* Stock Market Tracker - Indonesian Markets for Bali */}
+        <section className="mb-8">
+          <StockMarketTracker markets="Indonesia" />
+        </section>
+
         {/* Page Header */}
         <section className="mb-12">
           <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 dark:from-amber-700 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl p-8 shadow-2xl shadow-amber-500/20 relative overflow-hidden theme-transition">
@@ -64,16 +70,16 @@ export default async function BaliPage() {
                 <span className="text-4xl mr-4">⛩️</span>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    Sacred Bali Temple
+                    Real Bali Revealed
                   </h1>
                   <p className="text-amber-200 dark:text-orange-200 mt-2 theme-transition">
-                    🌺 Island of the Gods • 🕏 Divine local wisdom
+                    🌴 Beyond Tourist Traps: What's Really Happening in Paradise
                   </p>
                 </div>
               </div>
               <p className="text-xl text-amber-100 dark:text-orange-100 mb-6 max-w-4xl theme-transition">
-                Sacred journalism from the divine Island of the Gods. Temple ceremonies, spiritual festivals, 
-                holy tourism, and blessed community wisdom flowing from Bali's nine sacred regencies.
+                4 million locals. 6 million tourists yearly. The world's most famous island that Instagram doesn't show you. 
+                Real news about overtourism, water crisis, cultural preservation, and local struggles for balance.
               </p>
               <div className="flex flex-wrap gap-4">
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
@@ -188,9 +194,9 @@ export default async function BaliPage() {
               <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-amber-50/50 to-orange-50/50 dark:from-emerald-900/10 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl p-6 border border-amber-200/50 dark:border-amber-800/30 theme-transition">
                 <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">⛩️ About Sacred Bali Temple Island</h3>
                 <p className="text-amber-800 dark:text-amber-200 mb-4 theme-transition">
-                  Bali, the divine "Island of the Gods," flows with sacred Hindu temple wisdom and tropical paradise energy. 
-                  Home to over 4 million blessed souls, this sacred island harmonizes ancient temple traditions 
-                  with modern paradise tourism, creating divine balance through spiritual waters.
+                  Bali generates $20 billion in tourism but locals can't afford rice. Sacred sites become Instagram backdrops. 
+                  Water tables drop while resorts fill pools. This is the Bali story travel bloggers won't tell you — 
+                  straight from local sources.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">

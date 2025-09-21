@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import GoogleAds from '@/components/GoogleAds';
+import MarketTicker from '@/components/MarketTicker';
 import { HeroNewsletterSignup, CompactNewsletterSignup, FloatingNewsletterSignup } from '@/components/NewsletterSignup';
 import { rssAggregator } from '@/lib/rss-parser';
 import { contentPersonalizationEngine } from '@/lib/content-personalization';
@@ -26,6 +27,9 @@ export default async function Home() {
       <StructuredData type="Organization" data={organizationStructuredData} />
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 theme-transition">
         <Header />
+        
+        {/* Market Ticker */}
+        <MarketTicker />
       
       <main className="container mx-auto px-4 py-8">
         {/* Modern Hero Section */}
@@ -44,27 +48,27 @@ export default async function Home() {
                 </div>
                 
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 tracking-tight">
-                  Authentic
+                  Break Free From
                   <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                    Global Perspectives
+                    Media Monopoly
                   </span>
                 </h1>
                 
                 <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  Discover balanced coverage from BRICS nations, Indonesia, and Bali. 
-                  Get the stories mainstream media overlooks.
+                  Uncover the truth they don't want you to see. Real stories from BRICS nations, 
+                  Indonesia, and Bali — where 85% of humanity actually lives.
                 </p>
                 
                 <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
                   <div className="flex items-center px-4 py-2 bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700">
                     <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Live Updates</span>
+                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">530+ Daily Articles</span>
                   </div>
                   <div className="flex items-center px-4 py-2 bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700">
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">BRICS • Indonesia • Bali</span>
+                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">9 Trusted Sources</span>
                   </div>
                   <div className="flex items-center px-4 py-2 bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700">
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Independent Journalism</span>
+                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Zero Western Bias</span>
                   </div>
                 </div>
               </div>
@@ -107,7 +111,7 @@ export default async function Home() {
                 <section className="mb-12">
                   <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 flex items-center gap-3">
                     <span className="w-1 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></span>
-                    Featured Stories
+                    🔥 Breaking Now: Must-Read Stories
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -122,7 +126,7 @@ export default async function Home() {
                 <section>
                   <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 flex items-center gap-3">
                     <span className="w-1 h-8 bg-gradient-to-b from-purple-600 to-blue-600 rounded-full"></span>
-                    Latest News
+                    ⏱️ Just In: Fresh Perspectives
                   </h2>
                   <div className="grid lg:grid-cols-4 gap-6">
                     {/* Articles */}
@@ -137,10 +141,10 @@ export default async function Home() {
                       <GoogleAds type="sidebar" />
                       <CompactNewsletterSignup />
                       <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 border border-emerald-200 dark:border-emerald-800 theme-transition shadow-lg shadow-emerald-100/50 dark:shadow-emerald-900/20">
-                        <h3 className="font-bold text-emerald-800 dark:text-emerald-200 mb-2 theme-transition">🌺 Support Paradise Media</h3>
+                        <h3 className="font-bold text-emerald-800 dark:text-emerald-200 mb-2 theme-transition">🔔 Why Trust Us?</h3>
                         <p className="text-emerald-700 dark:text-emerald-300 text-sm theme-transition">
-                          Bali Report brings you tropical perspectives from the Island of Gods. 
-                          Your support helps us share authentic Balinese and multi-polar insights.
+                          Unlike mainstream media owned by 6 corporations, we aggregate directly from 
+                          source countries. No middlemen. No agenda. Just truth from where it happens.
                         </p>
                       </div>
                       <GoogleAds type="native" />
@@ -153,26 +157,26 @@ export default async function Home() {
               <section className="mt-12 bg-gradient-to-r from-white via-emerald-50/30 to-teal-50/30 dark:from-gray-800 dark:via-teal-900/10 dark:to-emerald-900/10 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-emerald-900/10 p-6 border border-emerald-100 dark:border-emerald-800/30 theme-transition">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 theme-transition">
-                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 theme-transition">{rawArticles.length}</div>
-                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">🌊 Articles Today</div>
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 theme-transition">{rawArticles.length}+</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">📡 Fresh Today</div>
                   </div>
                   <div className="p-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 theme-transition">
                     <div className="text-2xl font-bold text-teal-600 dark:text-teal-400 theme-transition">
-                      {rawArticles.filter(a => a.category === 'BRICS').length}
+                      {rawArticles.filter(a => a.category === 'BRICS').length}+
                     </div>
-                    <div className="text-sm text-teal-700 dark:text-teal-300 theme-transition font-medium">🌺 BRICS Paradise</div>
+                    <div className="text-sm text-teal-700 dark:text-teal-300 theme-transition font-medium">🌍 BRICS Stories</div>
                   </div>
                   <div className="p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 theme-transition">
                     <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400 theme-transition">
-                      {rawArticles.filter(a => a.category === 'Indonesia').length}
+                      {rawArticles.filter(a => a.category === 'Indonesia').length}+
                     </div>
-                    <div className="text-sm text-cyan-700 dark:text-cyan-300 theme-transition font-medium">🏝️ Indonesia Islands</div>
+                    <div className="text-sm text-cyan-700 dark:text-cyan-300 theme-transition font-medium">🇮🇩 Indonesia</div>
                   </div>
                   <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 theme-transition">
                     <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 theme-transition">
                       {new Set(rawArticles.map(a => a.source)).size}
                     </div>
-                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">⛩️ Sacred Sources</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300 theme-transition font-medium">✅ Verified Sources</div>
                   </div>
                 </div>
               </section>
@@ -194,10 +198,10 @@ export default async function Home() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4 text-emerald-100">🏝️ Bali Report</h3>
+              <h3 className="font-bold text-lg mb-4 text-emerald-100">🌍 Your Daily Truth</h3>
               <p className="text-emerald-200 dark:text-teal-200 text-sm theme-transition">
-                Independent tropical journalism from the Island of Gods. Bringing you authentic BRICS perspectives 
-                and Indonesian wisdom that flows like sacred temple waters.
+                While CNN and BBC feed you propaganda, we deliver raw, unfiltered news from the 
+                majority world. Join millions discovering what's really happening globally.
               </p>
             </div>
             <div>

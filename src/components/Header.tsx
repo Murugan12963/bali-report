@@ -21,7 +21,7 @@ const Header: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">Bali Report</h1>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Multi-polar News</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">News Without Borders</p>
               </div>
             </Link>
           </div>
@@ -48,7 +48,7 @@ const Header: React.FC = () => {
             
             {/* Search Bar */}
             <div className="w-80">
-              <SearchBar placeholder="Search..." />
+              <SearchBar placeholder="Search uncensored news..." />
             </div>
             
             {/* Theme Switcher */}

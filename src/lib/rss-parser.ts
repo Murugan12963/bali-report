@@ -1,4 +1,6 @@
 import Parser from 'rss-parser';
+import { rssCache } from './rss-cache';
+import { webScraper } from './web-scraper';
 
 /**
  * RSS Parser configuration and types for Bali Report news aggregation.
@@ -134,15 +136,35 @@ class RSSAggregator {
   }
 
   /**
-   * Fetch and parse RSS feed from a single source.
+   * Fetch and parse RSS feed from a single source with caching.
    * 
    * Args:
    *   source (NewsSource): The news source configuration.
+   *   skipCache (boolean): Skip cache and force fresh fetch.
    * 
    * Returns:
    *   Promise<Article[]>: Array of parsed articles.
    */
-  async fetchFromSource(source: NewsSource): Promise<Article[]> {
+  async fetchFromSource(source: NewsSource, skipCache: boolean = false): Promise<Article[]> {
+    // Check cache first unless explicitly skipped
+    if (!skipCache) {
+      const cached = rssCache.get(source.url);
+      
+      if (cached && !rssCache.isStale(source.url)) {
+        console.log(`📦 Using cached data for ${source.name} (${cached.articles.length} articles)`);
+        return cached.articles;
+      }
+      
+      // If stale but available, use it while fetching new data
+      if (cached && rssCache.isStale(source.url)) {
+        console.log(`♻️ Using stale cache for ${source.name} while fetching new data`);
+        // Fetch new data in background
+        this.fetchFromSource(source, true).catch(err => 
+          console.warn(`⚠️ Background refresh failed for ${source.name}:`, err)
+        );
+        return cached.articles;
+      }
+    }
     const maxRetries = 2;
     let lastError: Error | null = null;
     
@@ -170,6 +192,12 @@ class RSSAggregator {
         }));
 
         console.log(`✅ Successfully fetched ${articles.length} articles from ${source.name}`);
+        
+        // Cache the successful fetch
+        if (!skipCache) {
+          rssCache.set(source.url, source, articles);
+        }
+        
         return articles;
       } catch (error) {
         lastError = error as Error;
@@ -199,15 +227,16 @@ class RSSAggregator {
 
 
   /**
-   * Fetch articles from sources by category.
+   * Fetch articles from sources by category (RSS + scraped).
    * 
    * Args:
    *   category (string): The category to filter by.
+   *   includeScrapers (boolean): Include scraped sources.
    * 
    * Returns:
    *   Promise<Article[]>: Articles from the specified category.
    */
-  async fetchByCategory(category: 'BRICS' | 'Indonesia' | 'Bali'): Promise<Article[]> {
+  async fetchByCategory(category: 'BRICS' | 'Indonesia' | 'Bali', includeScrapers: boolean = false): Promise<Article[]> {
     const categorySource = this.sources.filter(
       source => source.category === category && source.active
     );
@@ -226,6 +255,19 @@ class RSSAggregator {
         }
       });
       
+      // Add scraped articles for this category if requested
+      if (includeScrapers) {
+        try {
+          const scrapedArticles = await webScraper.scrapeByCategory(category);
+          if (scrapedArticles.length > 0) {
+            articles.push(...scrapedArticles);
+            console.log(`🕷️ Added ${scrapedArticles.length} scraped ${category} articles`);
+          }
+        } catch (error) {
+          console.error(`Failed to scrape ${category} sources:`, error);
+        }
+      }
+      
       return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
     } catch (error) {
       console.error(`Error fetching ${category} sources:`, error);
@@ -234,12 +276,12 @@ class RSSAggregator {
   }
 
   /**
-   * Fetch articles from all active sources.
+   * Fetch articles from all active sources (RSS + scraped).
    * 
    * Returns:
    *   Promise<Article[]>: Combined array of articles from all sources.
    */
-  async fetchAllSources(): Promise<Article[]> {
+  async fetchAllSources(includeScrapers: boolean = false): Promise<Article[]> {
     const activeSources = this.sources.filter(source => source.active);
     console.log(`🌍 Fetching articles from ${activeSources.length} active sources...`);
     
@@ -263,14 +305,77 @@ class RSSAggregator {
         }
       });
       
-      console.log(`📊 Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
-      
-      // Sort articles by publication date (newest first)
-      return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+    console.log(`📊 RSS Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
+    
+    // Add scraped articles if requested
+    if (includeScrapers) {
+      try {
+        const scrapedArticles = await webScraper.scrapeAllSources();
+        if (scrapedArticles.length > 0) {
+          articles.push(...scrapedArticles);
+          console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
+        }
+      } catch (error) {
+        console.error('Failed to scrape additional sources:', error);
+      }
+    }
+    
+    // Sort articles by publication date (newest first)
+    return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
     } catch (error) {
       console.error('❌ Critical error fetching from multiple sources:', error);
       return [];
     }
+  }
+
+  /**
+   * Get cache statistics for monitoring.
+   * 
+   * Returns:
+   *   object: Cache statistics and information.
+   */
+  getCacheStats() {
+    const stats = rssCache.getStats();
+    const cachedSources = rssCache.getCachedSources();
+    const hitRate = rssCache.getHitRate();
+    
+    return {
+      ...stats,
+      hitRate,
+      cachedSources,
+    };
+  }
+
+  /**
+   * Clear RSS cache.
+   * 
+   * Args:
+   *   expiredOnly (boolean): Only clear expired entries.
+   */
+  clearCache(expiredOnly: boolean = false): void {
+    if (expiredOnly) {
+      const removed = rssCache.clearExpired();
+      console.log(`🧹 Cleared ${removed} expired cache entries`);
+    } else {
+      rssCache.clear();
+    }
+  }
+
+  /**
+   * Warm up cache by pre-fetching all active sources.
+   */
+  async warmCache(): Promise<void> {
+    await rssCache.warmUp((source) => this.fetchFromSource(source, true));
+  }
+
+  /**
+   * Get list of active news sources.
+   * 
+   * Returns:
+   *   NewsSource[]: Array of active news sources.
+   */
+  getActiveSources(): NewsSource[] {
+    return this.sources.filter(source => source.active);
   }
 
   /**

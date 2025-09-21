@@ -64,6 +64,7 @@ describe('SaveForLaterService', () => {
       link: 'https://example.com/test-article',
       pubDate: '2024-01-01T00:00:00Z',
       source: 'Test Source',
+      sourceUrl: 'https://example.com/rss',
       category: 'BRICS' as const,
     };
   });

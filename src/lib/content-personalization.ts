@@ -40,6 +40,10 @@ class ContentPersonalizationEngine {
     maxResults?: number, 
     useAI: boolean = false
   ): Promise<PersonalizedArticle[]> {
+    // Check if we should disable AI (during build phase or if explicitly disabled)
+    const disableAI = process.env.DISABLE_AI_AT_BUILD === 'true';
+    const shouldUseAI = useAI && !disableAI;
+    
     // Calculate relevance scores for each article
     const scoredArticles: PersonalizedArticle[] = await Promise.all(
       articles.map(async (article, index) => {
@@ -47,8 +51,8 @@ class ContentPersonalizationEngine {
         let grokAnalysis: GrokAnalysis | undefined;
         let aiSummary: string | undefined;
         
-        // Enhance with Grok AI if available and requested
-        if (useAI && xAIService.isAvailable()) {
+        // Enhance with Grok AI if available and requested (but not during build)
+        if (shouldUseAI && xAIService.isAvailable()) {
           try {
             // Only analyze high-scoring articles to save API calls
             if (score.relevanceScore > 0.4) {
@@ -169,8 +173,12 @@ class ContentPersonalizationEngine {
    *   Promise<PersonalizedArticle[]>: Top featured articles.
    */
   async getFeaturedArticles(articles: Article[], count: number = 3): Promise<PersonalizedArticle[]> {
-    // Use AI enhancement for featured articles (they're most visible)
-    const personalizedArticles = await this.personalizeContent(articles, undefined, true);
+    // Disable AI if flag is set (during build phase to prevent excessive API calls)
+    const disableAI = process.env.DISABLE_AI_AT_BUILD === 'true';
+    const useAI = !disableAI && process.env.XAI_API_KEY ? true : false;
+    
+    // Use AI enhancement for featured articles only in runtime, not build time
+    const personalizedArticles = await this.personalizeContent(articles, undefined, useAI);
     
     // Boost articles from last 6 hours for featured section
     const featuredArticles = personalizedArticles.map(article => {

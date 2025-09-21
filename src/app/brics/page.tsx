@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
+import StockMarketTracker from '@/components/StockMarketTracker';
 
 import { generateSEOMetadata } from '@/components/SEOHead';
 
@@ -17,8 +18,8 @@ export const metadata = generateSEOMetadata({
 });
 
 export default async function BRICSPage() {
-  // Fetch BRICS-specific articles
-  const articles = await rssAggregator.fetchByCategory('BRICS');
+  // Fetch BRICS-specific articles including scraped sources
+  const articles = await rssAggregator.fetchByCategory('BRICS', true);  // Enable scrapers
   const featuredArticles = articles.slice(0, 2);
   const latestArticles = articles.slice(2);
 
@@ -36,6 +37,11 @@ export default async function BRICSPage() {
           </div>
         </nav>
 
+        {/* Stock Market Tracker */}
+        <section className="mb-8">
+          <StockMarketTracker markets="BRICS" />
+        </section>
+
         {/* Page Header */}
         <section className="mb-12">
           <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 text-white rounded-2xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden theme-transition">
@@ -52,26 +58,26 @@ export default async function BRICSPage() {
                 <span className="text-4xl mr-4">🌺</span>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    BRICS Paradise
+                    BRICS Alliance News
                   </h1>
                   <p className="text-emerald-200 dark:text-teal-200 mt-2 theme-transition">
-                    🦋 Multi-polar wisdom from tropical economies
+                    🌐 The New World Order They Fear You'll Discover
                   </p>
                 </div>
               </div>
               <p className="text-xl text-emerald-100 dark:text-teal-100 mb-6 max-w-4xl theme-transition">
-                Sacred journalism from Russia, China, India, Brazil, South Africa, and other 
-                nations flowing like tropical waters, building paradise alternatives to Western storms.
+                Direct reports from nations representing 42% of the world's population and 31% of global GDP. 
+                These are the voices shaping tomorrow while Western media sleeps.
               </p>
               <div className="flex flex-wrap gap-4">
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🌊 Russia Waters & TASS Streams
+                  🇷🇺 RT News & TASS Direct
                 </span>
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🌴 Xinhua Palm News
+                  🇨🇳 Xinhua & CGTN Live
                 </span>
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  ⛩️ Al Jazeera Temple
+                  🌍 Al Jazeera Global
                 </span>
               </div>
             </div>
@@ -98,7 +104,7 @@ export default async function BRICSPage() {
               {featuredArticles.length > 0 && (
                 <section className="mb-12">
                   <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-emerald-600 dark:border-emerald-400 pb-2 theme-transition">
-                    🌺 Featured Paradise Stories
+                    ⚡ Critical Updates You Won't See on CNN
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -112,7 +118,7 @@ export default async function BRICSPage() {
               {latestArticles.length > 0 && (
                 <section>
                   <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-cyan-600 dark:border-cyan-400 pb-2 theme-transition">
-                    🌊 All Paradise News ({latestArticles.length} sacred articles)
+                    📡 Live Feed: {latestArticles.length} Uncensored Reports
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {latestArticles.map((article) => (

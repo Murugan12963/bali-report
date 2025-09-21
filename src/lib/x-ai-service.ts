@@ -90,7 +90,7 @@ class XAIService {
       const prompt = this.buildAnalysisPrompt(article);
       
       const response = await this.client.chat.completions.create({
-        model: 'grok-beta',
+        model: 'grok-4-fast-non-reasoning',
         messages: [
           {
             role: 'system',
@@ -142,7 +142,7 @@ class XAIService {
       const prompt = this.buildRecommendationPrompt(articles, userTopics, userType);
       
       const response = await this.client.chat.completions.create({
-        model: 'grok-beta',
+        model: 'grok-4-fast-non-reasoning',
         messages: [
           {
             role: 'system',
@@ -191,7 +191,7 @@ class XAIService {
       const prompt = this.buildSearchEnhancementPrompt(query, context);
       
       const response = await this.client.chat.completions.create({
-        model: 'grok-beta',
+        model: 'grok-4-fast-non-reasoning',
         messages: [
           {
             role: 'system',
@@ -246,7 +246,7 @@ Source: ${article.source}
 Provide a concise, informative summary that captures the essence and significance:`;
       
       const response = await this.client.chat.completions.create({
-        model: 'grok-beta',
+        model: 'grok-4-fast-non-reasoning',
         messages: [
           {
             role: 'system',

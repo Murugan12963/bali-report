@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import { rssAggregator } from '@/lib/rss-parser';
 import Link from 'next/link';
+import StockMarketTracker from '@/components/StockMarketTracker';
 
 import { generateSEOMetadata } from '@/components/SEOHead';
 
@@ -17,8 +18,8 @@ export const metadata = generateSEOMetadata({
 });
 
 export default async function IndonesiaPage() {
-  // Fetch Indonesia-specific articles
-  const articles = await rssAggregator.fetchByCategory('Indonesia');
+  // Fetch Indonesia-specific articles including scraped sources
+  const articles = await rssAggregator.fetchByCategory('Indonesia', true);  // Enable scrapers
   const featuredArticles = articles.slice(0, 2);
   const latestArticles = articles.slice(2);
 
@@ -36,6 +37,11 @@ export default async function IndonesiaPage() {
           </div>
         </nav>
 
+        {/* Stock Market Tracker */}
+        <section className="mb-8">
+          <StockMarketTracker markets="Indonesia" />
+        </section>
+
         {/* Page Header */}
         <section className="mb-12">
           <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 dark:from-cyan-700 dark:via-blue-700 dark:to-indigo-700 text-white rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden theme-transition">
@@ -52,16 +58,16 @@ export default async function IndonesiaPage() {
                 <span className="text-4xl mr-4">🏝️</span>
                 <div>
                   <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    Indonesia Islands
+                    Indonesia Uncovered
                   </h1>
                   <p className="text-cyan-200 dark:text-blue-200 mt-2 theme-transition">
-                    🌊 Archipelago wisdom from tropical waters
+                    🇮🇩 Southeast Asia's Hidden Superpower Speaks
                   </p>
                 </div>
               </div>
               <p className="text-xl text-cyan-100 dark:text-blue-100 mb-6 max-w-4xl theme-transition">
-                Sacred journalism flowing from the world's largest island paradise. Politics, economy, 
-                culture, and regional waves from 17,508 tropical islands spreading their wisdom.
+                270 million people. 17,508 islands. The world's 4th most populous nation that Western media ignores. 
+                Discover why Indonesia is ASEAN's powerhouse and democracy's biggest success story.
               </p>
               <div className="flex flex-wrap gap-4">
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
@@ -155,9 +161,9 @@ export default async function IndonesiaPage() {
               <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-teal-50/50 to-cyan-50/50 dark:from-emerald-900/10 dark:via-teal-900/10 dark:to-cyan-900/10 rounded-2xl p-6 border border-teal-200/50 dark:border-teal-800/30 theme-transition">
                 <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-4 theme-transition">🌏 Paradise Regional Wisdom</h3>
                 <p className="text-teal-800 dark:text-teal-200 mb-4 theme-transition">
-                  Indonesia, the sacred archipelago of 17,508 islands, flows like ancient temple waters through 
-                  Southeast Asian paradise. As guardian of ASEAN temple wisdom and G20 sacred councils, 
-                  these island voices shape regional harmony and tropical prosperity.
+                  Indonesia controls the world's most strategic shipping lanes. It's the G20's fastest-growing democracy. 
+                  Yet Western media pretends it doesn't exist. Here's what they're hiding from you about 
+                  Southeast Asia's emerging giant.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">

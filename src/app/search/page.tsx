@@ -15,7 +15,7 @@ export const metadata = {
 };
 
 interface SearchPageProps {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -86,10 +86,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100">
-                  Search Articles
+                  Dig Deeper
                 </h1>
                 <p className="text-zinc-600 dark:text-zinc-400 mt-1">
-                  Find news from BRICS, Indonesia, and Bali sources
+                  Search 530+ daily articles the mainstream media ignores
                 </p>
               </div>
             </div>
@@ -117,16 +117,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <span className="text-4xl text-white">📰</span>
               </div>
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-                Search Through Our News Archive
+                What Story Are You Looking For?
               </h2>
               <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
-                Use the search bar above to find articles from our collection of BRICS-aligned and 
-                Indonesian news sources. Search by title, content, or source name.
+                Search through thousands of unfiltered reports from Russia, China, Indonesia, and beyond. 
+                Find the truth they don't want you to see.
               </p>
               
               {/* Search Suggestions */}
               <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 max-w-3xl mx-auto">
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center"><span className="mr-2">💡</span> Try searching for:</h3>
+                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center"><span className="mr-2">🔥</span> Hot Topics Right Now:</h3>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div>
                     <h4 className="font-medium text-blue-600 dark:text-blue-400 mb-2">Topics</h4>
@@ -168,8 +168,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 No Results Found
               </h2>
               <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
-                We couldn't find any articles matching "{query}". Try different keywords 
-                or browse our category pages.
+                No matches for "{query}" yet. The story might be developing, or try searching 
+                with different terms to uncover what you're looking for.
               </p>
               
               {/* Search Tips */}
