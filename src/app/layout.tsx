@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import Analytics from '@/components/Analytics';
 import PersonalizationProvider from '@/components/PersonalizationProvider';
+import { AdSenseScript } from '@/components/GoogleAdSense';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -85,6 +86,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Google AdSense Verification */}
+        <meta 
+          name="google-adsense-account" 
+          content="ca-pub-3235214437727397"
+        />
+        
         {/* PWA icons */}
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
@@ -114,6 +121,10 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Analytics />
+          {/* Google AdSense Script */}
+          {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT && (
+            <AdSenseScript client={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT} />
+          )}
           <PersonalizationProvider>
             {children}
           </PersonalizationProvider>

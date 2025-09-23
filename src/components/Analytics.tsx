@@ -215,7 +215,7 @@ export function ErrorTracking() {
  * Combines all monitoring features.
  */
 export default function Analytics() {
-  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const measurementId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
   return (
     <>

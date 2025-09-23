@@ -1,0 +1,7 @@
+# Authorized Digital Sellers for Bali Report
+# This file authorizes Google AdSense to sell ads on this domain
+
+# Google AdSense
+google.com, pub-3235214437727397, DIRECT, f08c47fec0942fa0
+
+# Additional ad networks can be added below if needed
