@@ -55,7 +55,7 @@ export default async function Home() {
                 </h1>
                 
                 <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  Uncover the truth they don't want you to see. Real stories from BRICS nations, 
+            Uncover the truth they don&apos;t want you to see. Real stories from BRICS nations, Indonesia, and Bali — where 85% of humanity actually lives.
                   Indonesia, and Bali — where 85% of humanity actually lives.
                 </p>
                 
@@ -200,7 +200,7 @@ export default async function Home() {
             <div>
               <h3 className="font-bold text-lg mb-4 text-emerald-100">🌍 Your Daily Truth</h3>
               <p className="text-emerald-200 dark:text-teal-200 text-sm theme-transition">
-                While CNN and BBC feed you propaganda, we deliver raw, unfiltered news from the 
+            While CNN and BBC feed you propaganda, we deliver raw, unfiltered news from the majority world. Join millions discovering what&apos;s really happening globally.
                 majority world. Join millions discovering what's really happening globally.
               </p>
             </div>

@@ -8,9 +8,7 @@ import {
   Heart, 
   CheckCircle, 
   XCircle, 
-  Loader2,
-  Sparkles,
-  Globe
+  Loader2
 } from 'lucide-react';
 
 export interface NewsletterSignupProps {

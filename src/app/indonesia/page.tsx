@@ -66,8 +66,8 @@ export default async function IndonesiaPage() {
                 </div>
               </div>
               <p className="text-xl text-cyan-100 dark:text-blue-100 mb-6 max-w-4xl theme-transition">
-                270 million people. 17,508 islands. The world's 4th most populous nation that Western media ignores. 
-                Discover why Indonesia is ASEAN's powerhouse and democracy's biggest success story.
+                270 million people. 17,508 islands. The world&apos;s 4th most populous nation that Western media ignores. 
+                Discover why Indonesia is ASEAN&apos;s powerhouse and democracy&apos;s biggest success story.
               </p>
               <div className="flex flex-wrap gap-4">
                 <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
@@ -161,9 +161,9 @@ export default async function IndonesiaPage() {
               <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-teal-50/50 to-cyan-50/50 dark:from-emerald-900/10 dark:via-teal-900/10 dark:to-cyan-900/10 rounded-2xl p-6 border border-teal-200/50 dark:border-teal-800/30 theme-transition">
                 <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-4 theme-transition">🌏 Paradise Regional Wisdom</h3>
                 <p className="text-teal-800 dark:text-teal-200 mb-4 theme-transition">
-                  Indonesia controls the world's most strategic shipping lanes. It's the G20's fastest-growing democracy. 
-                  Yet Western media pretends it doesn't exist. Here's what they're hiding from you about 
-                  Southeast Asia's emerging giant.
+                  Indonesia controls the world&apos;s most strategic shipping lanes. It&apos;s the G20&apos;s fastest-growing democracy. 
+                  Yet Western media pretends it doesn&apos;t exist. Here&apos;s what they&apos;re hiding from you about 
+                  Southeast Asia&apos;s emerging giant.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">

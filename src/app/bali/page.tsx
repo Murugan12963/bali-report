@@ -78,7 +78,7 @@ export default async function BaliPage() {
                 </div>
               </div>
               <p className="text-xl text-amber-100 dark:text-orange-100 mb-6 max-w-4xl theme-transition">
-                4 million locals. 6 million tourists yearly. The world's most famous island that Instagram doesn't show you. 
+                4 million locals. 6 million tourists yearly. The world&apos;s most famous island that Instagram doesn&apos;t show you. 
                 Real news about overtourism, water crisis, cultural preservation, and local struggles for balance.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -107,7 +107,7 @@ export default async function BaliPage() {
               <span className="text-6xl mb-4 block">🌺</span>
               <p className="text-gray-600 mb-4">No Bali-specific articles available at the moment.</p>
               <p className="text-sm text-gray-500 mb-6">
-                We're working to add more local Bali news sources. Check back soon!
+                We&apos;re working to add more local Bali news sources. Check back soon!
               </p>
               
               {/* Placeholder for future sources */}
@@ -194,8 +194,8 @@ export default async function BaliPage() {
               <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-amber-50/50 to-orange-50/50 dark:from-emerald-900/10 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl p-6 border border-amber-200/50 dark:border-amber-800/30 theme-transition">
                 <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">⛩️ About Sacred Bali Temple Island</h3>
                 <p className="text-amber-800 dark:text-amber-200 mb-4 theme-transition">
-                  Bali generates $20 billion in tourism but locals can't afford rice. Sacred sites become Instagram backdrops. 
-                  Water tables drop while resorts fill pools. This is the Bali story travel bloggers won't tell you — 
+                  Bali generates $20 billion in tourism but locals can&apos;t afford rice. Sacred sites become Instagram backdrops. 
+                  Water tables drop while resorts fill pools. This is the Bali story travel bloggers won&apos;t tell you — 
                   straight from local sources.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
