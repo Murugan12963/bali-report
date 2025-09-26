@@ -1,0 +1,77 @@
+name: Site Status Notifications
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check site health
+      id: healthcheck
+      run: |
+        HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://bali.report/api/health)
+        if [ "$HEALTH_STATUS" = "200" ]; then
+          echo "status=healthy" >> $GITHUB_OUTPUT
+        else
+          echo "status=unhealthy" >> $GITHUB_OUTPUT
+          echo "Site returned status code: $HEALTH_STATUS"
+          exit 1
+        fi
+
+    - name: Create issue on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const issue = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '🚨 Site Health Check Failed',
+            body: `Site health check failed at ${new Date().toISOString()}
+            
+            Please check:
+            1. Server status
+            2. Application logs
+            3. Database connectivity
+            4. RSS feed status
+            
+            [View server status](https://bali.report/api/health)`,
+            labels: ['alert', 'site-health']
+          });
+          
+          console.log(`Created issue #${issue.data.number}`);
+
+  backup-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check backup status
+      id: backup
+      run: |
+        BACKUP_STATUS=$(ssh -i ~/.ssh/deploy_key root@${{ secrets.DEPLOY_HOST }} "ls -t /home/deploy/backups | head -1")
+        if [[ $BACKUP_STATUS =~ $(date +%Y%m%d) ]]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+        else
+          echo "status=failed" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+    - name: Send backup status email
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.GMAIL_USERNAME }}
+        password: ${{ secrets.GMAIL_PASSWORD }}
+        subject: Bali Report - Daily Backup ${{ steps.backup.outputs.status == 'success' && '✅' || '❌' }}
+        body: |
+          Backup status: ${{ steps.backup.outputs.status }}
+          Time: ${{ github.event.head_commit.timestamp }}
+          
+          ${{ steps.backup.outputs.status == 'success' && 'Backup completed successfully.' || 'Backup failed. Please check server logs.' }}
+        to: ${{ secrets.NOTIFICATION_EMAIL }}
+        from: Bali Report Monitor
