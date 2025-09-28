@@ -1,0 +1,245 @@
+
+> bali-report@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.3
+   - Environments: .env.local, .env.production
+   - Experiments (use with caution):
+     ✓ webpackBuildWorker
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 1670ms
+   Linting and checking validity of types ...
+
+./src/app/api/newsletter/subscribe/route.ts
+72:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+115:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/bali/page.tsx
+88:50  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/brics/page.tsx
+64:57  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+69:74  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+107:47  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/indonesia/page.tsx
+64:40  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/offline/page.tsx
+22:50  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+129:15  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+129:45  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+130:69  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./src/app/saved/page.tsx
+134:22  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+134:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+136:22  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+136:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/search/page.tsx
+74:80  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+74:88  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+124:40  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+171:32  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+171:40  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+172:57  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+179:49  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+179:57  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+179:70  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+179:86  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+195:40  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+195:48  Warning: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./src/components/Analytics.tsx
+42:28  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+47:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+90:18  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+120:16  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/SEOHead.tsx
+123:9  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/SocialShare.tsx
+13:3  Warning: 'ExternalLink' is defined but never used.  @typescript-eslint/no-unused-vars
+248:37  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+248:42  Warning: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
+383:71  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/TopicSelector.tsx
+131:77  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+183:18  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+183:66  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+254:56  Warning: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/lib/content-personalization.ts
+136:11  Warning: 'preferences' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+269:11  Warning: 'searchContext' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/mailchimp.ts
+27:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+217:55  Warning: 'firstName' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/real-time-sync.ts
+11:10  Warning: 'Article' is defined but never used.  @typescript-eslint/no-unused-vars
+31:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:77  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+179:66  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+225:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+237:59  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/rss-parser.ts
+415:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/save-for-later.ts
+520:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/services/idx-api.ts
+17:43  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+67:43  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:43  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/services/polygon-api.ts
+16:43  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/test-new-scrapers.ts
+6:22  Warning: 'SCRAPER_SOURCES' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/test-theme-switcher.ts
+25:13  Warning: 'ThemeProvider' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+25:28  Warning: 'useTheme' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+37:11  Warning: 'ThemeSwitcher' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/use-websocket.ts
+41:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+210:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/user-preferences.ts
+170:17  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+171:21  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+211:34  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+319:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/lib/websocket-server.ts
+8:10  Warning: 'NextApiRequest' is defined but never used.  @typescript-eslint/no-unused-vars
+8:26  Warning: 'NextApiResponse' is defined but never used.  @typescript-eslint/no-unused-vars
+39:37  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+✅ x.ai (Grok) service initialized successfully
+   Generating static pages (0/14) ...
+   Generating static pages (3/14) 
+   Generating static pages (6/14) 
+🕷️ Scraping The Bali Sun...
+🕷️ Scraping NOW! Bali...
+🕷️ Scraping Bali Post (Main)...
+Fetching RSS from RT News... (attempt 1/2)
+Fetching RSS from TASS... (attempt 1/2)
+Fetching RSS from Xinhua News... (attempt 1/2)
+Fetching RSS from Al Jazeera... (attempt 1/2)
+Fetching RSS from CGTN News... (attempt 1/2)
+Fetching RSS from China Daily... (attempt 1/2)
+Fetching RSS from Sputnik Globe... (attempt 1/2)
+Fetching RSS from Antara News... (attempt 1/2)
+Fetching RSS from BBC Asia News... (attempt 1/2)
+✅ x.ai (Grok) service initialized successfully
+🌍 Fetching articles from 9 active sources...
+Fetching RSS from RT News... (attempt 1/2)
+Fetching RSS from TASS... (attempt 1/2)
+Fetching RSS from Xinhua News... (attempt 1/2)
+Fetching RSS from Antara News... (attempt 1/2)
+Fetching RSS from BBC Asia News... (attempt 1/2)
+Fetching RSS from Al Jazeera... (attempt 1/2)
+Fetching RSS from CGTN News... (attempt 1/2)
+Fetching RSS from China Daily... (attempt 1/2)
+Fetching RSS from Sputnik Globe... (attempt 1/2)
+   Generating static pages (10/14) 
+✅ Scraped 12 articles from The Bali Sun
+✅ Successfully fetched 25 articles from Al Jazeera
+📦 Cached 25 articles from Al Jazeera (expires in 300s)
+✅ Successfully fetched 50 articles from CGTN News
+📦 Cached 50 articles from CGTN News (expires in 300s)
+✅ Successfully fetched 100 articles from TASS
+📦 Cached 100 articles from TASS (expires in 300s)
+✅ Successfully fetched 25 articles from Al Jazeera
+📦 Cached 25 articles from Al Jazeera (expires in 300s)
+✅ Successfully fetched 18 articles from BBC Asia News
+📦 Cached 18 articles from BBC Asia News (expires in 300s)
+✅ Successfully fetched 18 articles from BBC Asia News
+📦 Cached 18 articles from BBC Asia News (expires in 300s)
+✅ Successfully fetched 50 articles from CGTN News
+📦 Cached 50 articles from CGTN News (expires in 300s)
+✅ Successfully fetched 20 articles from Xinhua News
+📦 Cached 20 articles from Xinhua News (expires in 300s)
+✅ Successfully fetched 100 articles from RT News
+📦 Cached 100 articles from RT News (expires in 300s)
+✅ Successfully fetched 20 articles from Xinhua News
+📦 Cached 20 articles from Xinhua News (expires in 300s)
+✅ Successfully fetched 54 articles from TASS
+📦 Cached 54 articles from TASS (expires in 300s)
+✅ Successfully fetched 100 articles from RT News
+📦 Cached 100 articles from RT News (expires in 300s)
+✅ Successfully fetched 50 articles from Antara News
+📦 Cached 50 articles from Antara News (expires in 300s)
+🕷️ Scraping Indonesia Business Post...
+✅ Successfully fetched 50 articles from Antara News
+📦 Cached 50 articles from Antara News (expires in 300s)
+✅ Successfully fetched 100 articles from China Daily
+📦 Cached 100 articles from China Daily (expires in 300s)
+✅ Successfully fetched 100 articles from China Daily
+📦 Cached 100 articles from China Daily (expires in 300s)
+✅ Scraped 1 articles from NOW! Bali
+✅ Scraped 1 articles from Bali Post (Main)
+🕷️ Added 14 scraped Bali articles
+🌍 Fetching articles from 9 active sources...
+📦 Using cached data for RT News (100 articles)
+📦 Using cached data for TASS (54 articles)
+📦 Using cached data for Xinhua News (20 articles)
+📦 Using cached data for Antara News (50 articles)
+📦 Using cached data for BBC Asia News (18 articles)
+📦 Using cached data for Al Jazeera (25 articles)
+📦 Using cached data for CGTN News (50 articles)
+📦 Using cached data for China Daily (100 articles)
+Fetching RSS from Sputnik Globe... (attempt 1/2)
+✅ Successfully fetched 100 articles from Sputnik Globe
+📦 Cached 100 articles from Sputnik Globe (expires in 300s)
+📊 RSS Summary: 9 sources succeeded, 0 failed, 517 total articles
+✅ Successfully fetched 100 articles from Sputnik Globe
+📦 Cached 100 articles from Sputnik Globe (expires in 300s)
+🕷️ Scraping Modern Diplomacy...
+🕷️ Scraping John Helmer...
+✅ Scraped 8 articles from John Helmer
+✅ Scraped 18 articles from Indonesia Business Post
+🕷️ Added 18 scraped Indonesia articles
+✅ Scraped 25 articles from Modern Diplomacy
+🕷️ Added 33 scraped BRICS articles
+✅ Successfully fetched 100 articles from Sputnik Globe
+📦 Cached 100 articles from Sputnik Globe (expires in 300s)
+📊 RSS Summary: 9 sources succeeded, 0 failed, 517 total articles
+ ✓ Generating static pages (14/14)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    9.09 kB         129 kB
+├ ○ /_not-found                            132 B         102 kB
+├ ƒ /api/health                            132 B         102 kB
+├ ƒ /api/newsletter/subscribe              132 B         102 kB
+├ ○ /bali                                  136 B         146 kB
+├ ○ /brics                                 136 B         146 kB
+├ ○ /indonesia                             136 B         146 kB
+├ ○ /offline                               245 B         109 kB
+├ ○ /saved                               6.47 kB         117 kB
+├ ƒ /search                              1.46 kB         121 kB
+└ ○ /sitemap.xml                           132 B         102 kB
++ First Load JS shared by all             102 kB
+  ├ chunks/255-40634877ae3e8e9d.js       45.9 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js  54.4 kB
+  └ other shared chunks (total)          1.92 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

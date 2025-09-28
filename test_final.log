@@ -1,0 +1,188 @@
+
+> bali-report@0.1.0 test
+> jest
+
+PASS src/tests/personalization.test.ts
+  ● Console
+
+    console.warn
+      ⚠️ XAI_API_KEY not found. x.ai features will be disabled.
+
+      47 |     
+      48 |     if (!apiKey) {
+    > 49 |       console.warn('⚠️ XAI_API_KEY not found. x.ai features will be disabled.');
+         |               ^
+      50 |       return;
+      51 |     }
+      52 |
+
+      at XAIService.warn [as initializeClient] (src/lib/x-ai-service.ts:49:15)
+      at new initializeClient (src/lib/x-ai-service.ts:39:10)
+      at Object.<anonymous> (src/lib/x-ai-service.ts:452:27)
+      at Object.<anonymous> (src/lib/content-personalization.ts:23:21)
+      at Object.<anonymous> (src/tests/personalization.test.ts:9:33)
+
+    console.log
+      ✅ User preferences saved successfully
+
+      at UserPreferencesManager.log [as savePreferences] (src/lib/user-preferences.ts:121:15)
+
+PASS src/tests/x-ai-integration.test.ts
+  ● Console
+
+    console.warn
+      ⚠️ XAI_API_KEY not found. x.ai features will be disabled.
+
+      47 |     
+      48 |     if (!apiKey) {
+    > 49 |       console.warn('⚠️ XAI_API_KEY not found. x.ai features will be disabled.');
+         |               ^
+      50 |       return;
+      51 |     }
+      52 |
+
+      at XAIService.warn [as initializeClient] (src/lib/x-ai-service.ts:49:15)
+      at new initializeClient (src/lib/x-ai-service.ts:39:10)
+      at Object.<anonymous> (src/lib/x-ai-service.ts:452:27)
+      at Object.<anonymous> (src/tests/x-ai-integration.test.ts:8:21)
+
+    console.log
+      🔍 x.ai Service Status: {
+        isAvailable: false,
+        isConfigured: false,
+        hasApiKey: false,
+        service: 'x.ai (Grok)',
+        version: '1.0'
+      }
+
+      at Object.log (src/tests/x-ai-integration.test.ts:29:13)
+
+    console.log
+      ⚠️ x.ai service not available (missing API key) - this is expected in testing
+
+      at Object.log (src/tests/x-ai-integration.test.ts:36:15)
+
+    console.log
+      ⚠️ AI analysis returned null (expected without API key)
+
+      at Object.log (src/tests/x-ai-integration.test.ts:62:17)
+
+    console.log
+      ⚠️ Search enhancement returned null (expected without API key)
+
+      at Object.log (src/tests/x-ai-integration.test.ts:86:17)
+
+    console.log
+      ⚠️ AI summary returned null (expected without API key)
+
+      at Object.log (src/tests/x-ai-integration.test.ts:107:17)
+
+    console.log
+      ⚠️ AI recommendations returned null (expected without API key)
+
+      at Object.log (src/tests/x-ai-integration.test.ts:136:17)
+
+    console.log
+      Validation test skipped (service not available)
+
+      at Object.log (src/tests/x-ai-integration.test.ts:179:15)
+
+PASS src/tests/save-for-later.test.ts
+  ● Console
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      🗑️ Removed saved article: test-article-1
+
+      at SaveForLaterService.log [as removeArticle] (src/lib/save-for-later.ts:117:17)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      📖 Updated reading progress: test-article-1 - reading (50%)
+
+      at SaveForLaterService.log [as updateReadingProgress] (src/lib/save-for-later.ts:152:17)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      📖 Updated reading progress: test-article-1 - reading (150%)
+
+      at SaveForLaterService.log [as updateReadingProgress] (src/lib/save-for-later.ts:152:17)
+
+    console.log
+      📖 Updated reading progress: test-article-1 - reading (-10%)
+
+      at SaveForLaterService.log [as updateReadingProgress] (src/lib/save-for-later.ts:152:17)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      📖 Updated reading progress: article-2 - read (100%)
+
+      at SaveForLaterService.log [as updateReadingProgress] (src/lib/save-for-later.ts:152:17)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      💾 Saved article: "Test Article Title"
+
+      at SaveForLaterService.log [as saveArticle] (src/lib/save-for-later.ts:89:15)
+
+    console.log
+      🧹 Cleared all saved articles
+
+      at SaveForLaterService.log [as clearAllSavedArticles] (src/lib/save-for-later.ts:411:15)
+
+
+Test Suites: 3 passed, 3 total
+Tests:       33 passed, 33 total
+Snapshots:   0 total
+Time:        0.462 s, estimated 1 s
+Ran all test suites.

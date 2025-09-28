@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Search, 
-  Filter, 
-  BookOpen, 
-  Clock, 
-  Tag, 
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Search,
+  Filter,
+  BookOpen,
+  Clock,
+  Tag,
   Download,
   Upload,
   Trash2,
@@ -15,28 +15,38 @@ import {
   SortAsc,
   SortDesc,
   Eye,
-  EyeOff
-} from 'lucide-react';
-import { saveForLaterService, SavedArticle, ReadingStats } from '@/lib/save-for-later';
-import { toast } from 'sonner';
-import Link from 'next/link';
+  EyeOff,
+} from "lucide-react";
+import {
+  saveForLaterService,
+  SavedArticle,
+  ReadingStats,
+} from "@/lib/save-for-later";
+import { toast } from "sonner";
+import Link from "next/link";
 
-type ViewMode = 'grid' | 'list';
-type SortField = 'savedAt' | 'title' | 'category' | 'readStatus' | 'priority' | 'estimatedReadTime';
-type SortOrder = 'asc' | 'desc';
+type ViewMode = "grid" | "list";
+type SortField =
+  | "savedAt"
+  | "title"
+  | "category"
+  | "readStatus"
+  | "priority"
+  | "estimatedReadTime";
+type SortOrder = "asc" | "desc";
 
 export default function SavedArticlesPage() {
   const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<SavedArticle[]>([]);
   const [readingStats, setReadingStats] = useState<ReadingStats | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedPriority, setSelectedPriority] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedPriority, setSelectedPriority] = useState<string>("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [sortField, setSortField] = useState<SortField>('savedAt');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [sortField, setSortField] = useState<SortField>("savedAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,9 +54,105 @@ export default function SavedArticlesPage() {
     loadSavedArticles();
   }, []);
 
+  const filterAndSortArticles = useCallback(() => {
+    const filtered = savedArticles.filter((article) => {
+      // Search query
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch =
+          article.title.toLowerCase().includes(searchLower) ||
+          article.description.toLowerCase().includes(searchLower) ||
+          article.notes.toLowerCase().includes(searchLower) ||
+          article.tags.some((tag) => tag.toLowerCase().includes(searchLower));
+
+        if (!matchesSearch) return false;
+      }
+
+      // Status filter
+      if (selectedStatus !== "all" && article.readStatus !== selectedStatus) {
+        return false;
+      }
+
+      // Category filter
+      if (selectedCategory !== "all" && article.category !== selectedCategory) {
+        return false;
+      }
+
+      // Priority filter
+      if (selectedPriority !== "all" && article.priority !== selectedPriority) {
+        return false;
+      }
+
+      // Tags filter
+      if (selectedTags.length > 0) {
+        const hasMatchingTag = selectedTags.some((tag) =>
+          article.tags.includes(tag),
+        );
+        if (!hasMatchingTag) return false;
+      }
+
+      return true;
+    });
+
+    // Sorting
+    const sorted = [...filtered].sort((a, b) => {
+      let aValue: unknown;
+      let bValue: unknown;
+
+      switch (sortField) {
+        case "savedAt":
+          aValue = new Date(a.savedAt).getTime();
+          bValue = new Date(b.savedAt).getTime();
+          break;
+        case "title":
+          aValue = a.title.toLowerCase();
+          bValue = b.title.toLowerCase();
+          break;
+        case "category":
+          aValue = a.category;
+          bValue = b.category;
+          break;
+        case "readStatus":
+          const statusOrder = { unread: 0, reading: 1, read: 2 };
+          aValue = statusOrder[a.readStatus];
+          bValue = statusOrder[b.readStatus];
+          break;
+        case "priority":
+          const priorityOrder = { high: 0, normal: 1, low: 2 };
+          aValue = priorityOrder[a.priority];
+          bValue = priorityOrder[b.priority];
+          break;
+        case "estimatedReadTime":
+          aValue = a.estimatedReadTime;
+          bValue = b.estimatedReadTime;
+          break;
+        default:
+          aValue = a.savedAt;
+          bValue = b.savedAt;
+      }
+
+      if ((aValue as any) < (bValue as any))
+        return sortOrder === "asc" ? -1 : 1;
+      if ((aValue as any) > (bValue as any))
+        return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredArticles(sorted);
+  }, [
+    savedArticles,
+    searchQuery,
+    selectedStatus,
+    selectedCategory,
+    selectedPriority,
+    selectedTags,
+    sortField,
+    sortOrder,
+  ]);
+
   useEffect(() => {
     filterAndSortArticles();
-  }, [savedArticles, searchQuery, selectedStatus, selectedCategory, selectedPriority, selectedTags, sortField, sortOrder]);
+  }, [filterAndSortArticles]);
 
   const loadSavedArticles = () => {
     setIsLoading(true);
@@ -56,105 +162,26 @@ export default function SavedArticlesPage() {
       setSavedArticles(articles);
       setReadingStats(stats);
     } catch (error) {
-      console.error('Failed to load saved articles:', error);
-      toast.error('Failed to load reading list');
+      console.error("Failed to load saved articles:", error);
+      toast.error("Failed to load reading list");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const filterAndSortArticles = () => {
-    const filtered = savedArticles.filter(article => {
-      // Search query
-      if (searchQuery) {
-        const searchLower = searchQuery.toLowerCase();
-        const matchesSearch = 
-          article.title.toLowerCase().includes(searchLower) ||
-          article.description.toLowerCase().includes(searchLower) ||
-          article.notes.toLowerCase().includes(searchLower) ||
-          article.tags.some(tag => tag.toLowerCase().includes(searchLower));
-        
-        if (!matchesSearch) return false;
-      }
-
-      // Status filter
-      if (selectedStatus !== 'all' && article.readStatus !== selectedStatus) {
-        return false;
-      }
-
-      // Category filter
-      if (selectedCategory !== 'all' && article.category !== selectedCategory) {
-        return false;
-      }
-
-      // Priority filter
-      if (selectedPriority !== 'all' && article.priority !== selectedPriority) {
-        return false;
-      }
-
-      // Tags filter
-      if (selectedTags.length > 0) {
-        const hasMatchingTag = selectedTags.some(tag => article.tags.includes(tag));
-        if (!hasMatchingTag) return false;
-      }
-
-      return true;
-    });
-
-    // Sort articles
-    const sortedFiltered = [...filtered].sort((a, b) => {
-      let aValue: unknown;
-      let bValue: unknown;
-
-      switch (sortField) {
-        case 'savedAt':
-          aValue = new Date(a.savedAt).getTime();
-          bValue = new Date(b.savedAt).getTime();
-          break;
-        case 'title':
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-          break;
-        case 'category':
-          aValue = a.category;
-          bValue = b.category;
-          break;
-        case 'readStatus':
-          const statusOrder = { 'unread': 0, 'reading': 1, 'read': 2 };
-          aValue = statusOrder[a.readStatus];
-          bValue = statusOrder[b.readStatus];
-          break;
-        case 'priority':
-          const priorityOrder = { 'high': 0, 'normal': 1, 'low': 2 };
-          aValue = priorityOrder[a.priority];
-          bValue = priorityOrder[b.priority];
-          break;
-        case 'estimatedReadTime':
-          aValue = a.estimatedReadTime;
-          bValue = b.estimatedReadTime;
-          break;
-        default:
-          aValue = a.savedAt;
-          bValue = b.savedAt;
-      }
-
-      if ((aValue as any) < (bValue as any)) return sortOrder === 'asc' ? -1 : 1;
-      if ((aValue as any) > (bValue as any)) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    setFilteredArticles(sortedFiltered);
   };
 
   const handleRemoveArticle = (articleId: string) => {
     const removed = saveForLaterService.removeArticle(articleId);
     if (removed) {
       loadSavedArticles();
-      toast.success('Article removed from reading list');
+      toast.success("Article removed from reading list");
     }
   };
 
-  const handleUpdateReadingStatus = (articleId: string, status: 'unread' | 'reading' | 'read', progress: number = 0) => {
+  const handleUpdateReadingStatus = (
+    articleId: string,
+    status: "unread" | "reading" | "read",
+    progress: number = 0,
+  ) => {
     saveForLaterService.updateReadingProgress(articleId, status, progress);
     loadSavedArticles();
     toast.success(`Article marked as ${status}`);
@@ -163,19 +190,19 @@ export default function SavedArticlesPage() {
   const handleExportArticles = () => {
     try {
       const exportData = saveForLaterService.exportSavedArticles();
-      const blob = new Blob([exportData], { type: 'application/json' });
+      const blob = new Blob([exportData], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `bali-report-saved-articles-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `bali-report-saved-articles-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('Reading list exported successfully');
+      toast.success("Reading list exported successfully");
     } catch (error) {
-      console.error('Failed to export articles:', error);
-      toast.error('Failed to export reading list');
+      console.error("Failed to export articles:", error);
+      toast.error("Failed to export reading list");
     }
   };
 
@@ -190,57 +217,67 @@ export default function SavedArticlesPage() {
         const success = saveForLaterService.importSavedArticles(importData);
         if (success) {
           loadSavedArticles();
-          toast.success('Reading list imported successfully');
+          toast.success("Reading list imported successfully");
         } else {
-          toast.error('Failed to import reading list');
+          toast.error("Failed to import reading list");
         }
       } catch (error) {
-        console.error('Failed to import articles:', error);
-        toast.error('Invalid file format');
+        console.error("Failed to import articles:", error);
+        toast.error("Invalid file format");
       }
     };
     reader.readAsText(file);
   };
 
   const handleClearAll = () => {
-    if (window.confirm('Are you sure you want to clear all saved articles? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to clear all saved articles? This action cannot be undone.",
+      )
+    ) {
       saveForLaterService.clearAllSavedArticles();
       loadSavedArticles();
-      toast.success('All saved articles cleared');
+      toast.success("All saved articles cleared");
     }
   };
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
   const getAllTags = () => {
     const allTags = new Set<string>();
-    savedArticles.forEach(article => {
-      article.tags.forEach(tag => allTags.add(tag));
+    savedArticles.forEach((article) => {
+      article.tags.forEach((tag) => allTags.add(tag));
     });
     return Array.from(allTags).sort();
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'read': return 'text-green-600 bg-green-100';
-      case 'reading': return 'text-yellow-600 bg-yellow-100';
-      case 'unread': return 'text-blue-600 bg-blue-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "read":
+        return "text-green-600 bg-green-100";
+      case "reading":
+        return "text-yellow-600 bg-yellow-100";
+      case "unread":
+        return "text-blue-600 bg-blue-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'normal': return 'text-blue-600 bg-blue-100';
-      case 'low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "high":
+        return "text-red-600 bg-red-100";
+      case "normal":
+        return "text-blue-600 bg-blue-100";
+      case "low":
+        return "text-gray-600 bg-gray-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
@@ -261,7 +298,9 @@ export default function SavedArticlesPage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Your Intelligence Archive</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Your Intelligence Archive
+            </h1>
             <p className="text-gray-600 mt-2">
               Build your personal library of uncensored global insights
             </p>
@@ -271,19 +310,27 @@ export default function SavedArticlesPage() {
           {readingStats && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 lg:mt-0">
               <div className="bg-white rounded-lg p-4 shadow-sm border">
-                <div className="text-2xl font-bold text-blue-600">{readingStats.totalSaved}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {readingStats.totalSaved}
+                </div>
                 <div className="text-sm text-gray-600">Total Saved</div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm border">
-                <div className="text-2xl font-bold text-green-600">{readingStats.totalRead}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {readingStats.totalRead}
+                </div>
                 <div className="text-sm text-gray-600">Read</div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm border">
-                <div className="text-2xl font-bold text-yellow-600">{readingStats.totalUnread}</div>
+                <div className="text-2xl font-bold text-yellow-600">
+                  {readingStats.totalUnread}
+                </div>
                 <div className="text-sm text-gray-600">Unread</div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm border">
-                <div className="text-2xl font-bold text-purple-600">{readingStats.averageReadTime}</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {readingStats.averageReadTime}
+                </div>
                 <div className="text-sm text-gray-600">Avg. Read Time</div>
               </div>
             </div>
@@ -296,10 +343,13 @@ export default function SavedArticlesPage() {
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
                 <input
                   type="text"
-                placeholder="Search your saved intelligence..."
+                  placeholder="Search your saved intelligence..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -310,14 +360,14 @@ export default function SavedArticlesPage() {
             {/* View Mode Toggle */}
             <div className="flex border border-gray-300 rounded-lg overflow-hidden">
               <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                onClick={() => setViewMode("grid")}
+                className={`p-2 ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-50"}`}
               >
                 <Grid size={20} />
               </button>
               <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                onClick={() => setViewMode("list")}
+                className={`p-2 ${viewMode === "list" ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-50"}`}
               >
                 <List size={20} />
               </button>
@@ -332,7 +382,7 @@ export default function SavedArticlesPage() {
                 <Filter size={16} />
                 {showFilters ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
-              
+
               <button
                 onClick={handleExportArticles}
                 className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
@@ -340,7 +390,7 @@ export default function SavedArticlesPage() {
               >
                 <Download size={16} />
               </button>
-              
+
               <label className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 cursor-pointer">
                 <Upload size={16} />
                 <input
@@ -367,7 +417,9 @@ export default function SavedArticlesPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Status Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
@@ -382,7 +434,9 @@ export default function SavedArticlesPage() {
 
                 {/* Category Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Category
+                  </label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -397,7 +451,9 @@ export default function SavedArticlesPage() {
 
                 {/* Priority Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Priority
+                  </label>
                   <select
                     value={selectedPriority}
                     onChange={(e) => setSelectedPriority(e.target.value)}
@@ -412,11 +468,15 @@ export default function SavedArticlesPage() {
 
                 {/* Sort */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Sort By
+                  </label>
                   <div className="flex gap-2">
                     <select
                       value={sortField}
-                      onChange={(e) => setSortField(e.target.value as SortField)}
+                      onChange={(e) =>
+                        setSortField(e.target.value as SortField)
+                      }
                       className="flex-1 p-2 border border-gray-300 rounded-lg"
                     >
                       <option value="savedAt">Date Saved</option>
@@ -427,10 +487,16 @@ export default function SavedArticlesPage() {
                       <option value="estimatedReadTime">Read Time</option>
                     </select>
                     <button
-                      onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                      onClick={() =>
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                      }
                       className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
-                      {sortOrder === 'asc' ? <SortAsc size={16} /> : <SortDesc size={16} />}
+                      {sortOrder === "asc" ? (
+                        <SortAsc size={16} />
+                      ) : (
+                        <SortDesc size={16} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -439,7 +505,9 @@ export default function SavedArticlesPage() {
               {/* Tags Filter */}
               {getAllTags().length > 0 && (
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Tags</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by Tags
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {getAllTags().map((tag) => (
                       <button
@@ -447,9 +515,10 @@ export default function SavedArticlesPage() {
                         onClick={() => toggleTag(tag)}
                         className={`
                           px-3 py-1 text-sm rounded-full border transition-colors
-                          ${selectedTags.includes(tag)
-                            ? 'bg-blue-100 border-blue-300 text-blue-700'
-                            : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                          ${
+                            selectedTags.includes(tag)
+                              ? "bg-blue-100 border-blue-300 text-blue-700"
+                              : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
                           }
                         `}
                       >
@@ -469,13 +538,14 @@ export default function SavedArticlesPage() {
           <div className="text-center py-12">
             <BookOpen size={48} className="mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {savedArticles.length === 0 ? 'No saved articles yet' : 'No articles match your filters'}
+              {savedArticles.length === 0
+                ? "No saved articles yet"
+                : "No articles match your filters"}
             </h3>
             <p className="text-gray-600">
-              {savedArticles.length === 0 
-                ? 'Start building your reading list by saving articles from the main page.'
-                : 'Try adjusting your search or filter criteria.'
-              }
+              {savedArticles.length === 0
+                ? "Start building your reading list by saving articles from the main page."
+                : "Try adjusting your search or filter criteria."}
             </p>
             {savedArticles.length === 0 && (
               <Link
@@ -487,29 +557,36 @@ export default function SavedArticlesPage() {
             )}
           </div>
         ) : (
-          <div className={`
-            ${viewMode === 'grid' 
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
+          <div
+            className={`
+            ${
+              viewMode === "grid"
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                : "space-y-4"
             }
-          `}>
+          `}
+          >
             {filteredArticles.map((article) => (
               <article
                 key={article.id}
                 className={`
                   bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow
-                  ${viewMode === 'grid' ? 'p-6' : 'p-4 flex gap-4'}
+                  ${viewMode === "grid" ? "p-6" : "p-4 flex gap-4"}
                 `}
               >
-                {viewMode === 'grid' ? (
+                {viewMode === "grid" ? (
                   <div>
                     {/* Grid View */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(article.readStatus)}`}>
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${getStatusColor(article.readStatus)}`}
+                        >
                           {article.readStatus}
                         </span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(article.priority)}`}>
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(article.priority)}`}
+                        >
                           {article.priority}
                         </span>
                       </div>
@@ -523,7 +600,11 @@ export default function SavedArticlesPage() {
                     </div>
 
                     <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                      <Link href={article.link} target="_blank" className="hover:text-blue-600 transition-colors">
+                      <Link
+                        href={article.link}
+                        target="_blank"
+                        className="hover:text-blue-600 transition-colors"
+                      >
                         {article.title}
                       </Link>
                     </h3>
@@ -562,20 +643,26 @@ export default function SavedArticlesPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex gap-1">
                         <button
-                          onClick={() => handleUpdateReadingStatus(article.id, 'unread')}
-                          className={`px-2 py-1 text-xs rounded ${article.readStatus === 'unread' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                          onClick={() =>
+                            handleUpdateReadingStatus(article.id, "unread")
+                          }
+                          className={`px-2 py-1 text-xs rounded ${article.readStatus === "unread" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"}`}
                         >
                           Unread
                         </button>
                         <button
-                          onClick={() => handleUpdateReadingStatus(article.id, 'reading')}
-                          className={`px-2 py-1 text-xs rounded ${article.readStatus === 'reading' ? 'bg-yellow-100 text-yellow-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                          onClick={() =>
+                            handleUpdateReadingStatus(article.id, "reading")
+                          }
+                          className={`px-2 py-1 text-xs rounded ${article.readStatus === "reading" ? "bg-yellow-100 text-yellow-700" : "text-gray-600 hover:bg-gray-100"}`}
                         >
                           Reading
                         </button>
                         <button
-                          onClick={() => handleUpdateReadingStatus(article.id, 'read', 100)}
-                          className={`px-2 py-1 text-xs rounded ${article.readStatus === 'read' ? 'bg-green-100 text-green-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                          onClick={() =>
+                            handleUpdateReadingStatus(article.id, "read", 100)
+                          }
+                          className={`px-2 py-1 text-xs rounded ${article.readStatus === "read" ? "bg-green-100 text-green-700" : "text-gray-600 hover:bg-gray-100"}`}
                         >
                           Read
                         </button>
@@ -590,7 +677,11 @@ export default function SavedArticlesPage() {
                     {/* List View */}
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-gray-900">
-                        <Link href={article.link} target="_blank" className="hover:text-blue-600 transition-colors">
+                        <Link
+                          href={article.link}
+                          target="_blank"
+                          className="hover:text-blue-600 transition-colors"
+                        >
                           {article.title}
                         </Link>
                       </h3>
@@ -604,10 +695,14 @@ export default function SavedArticlesPage() {
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(article.readStatus)}`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getStatusColor(article.readStatus)}`}
+                      >
                         {article.readStatus}
                       </span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(article.priority)}`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(article.priority)}`}
+                      >
                         {article.priority}
                       </span>
                       <span className="flex items-center gap-1">
@@ -615,7 +710,9 @@ export default function SavedArticlesPage() {
                         {article.estimatedReadTime} min
                       </span>
                       <span className="text-blue-600">{article.category}</span>
-                      <span>Saved {new Date(article.savedAt).toLocaleDateString()}</span>
+                      <span>
+                        Saved {new Date(article.savedAt).toLocaleDateString()}
+                      </span>
                     </div>
 
                     <p className="text-gray-600 text-sm mb-2 line-clamp-2">

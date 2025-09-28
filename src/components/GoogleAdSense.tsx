@@ -1,18 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import Script from 'next/script';
+import { useEffect } from "react";
 
 declare global {
   interface Window {
-    adsbygoogle: any[];
+    adsbygoogle: unknown[];
   }
 }
 
 interface AdSenseConfig {
   client: string;
   slot: string;
-  format?: 'auto' | 'fluid' | 'rectangle' | 'vertical' | 'horizontal';
+  format?: "auto" | "fluid" | "rectangle" | "vertical" | "horizontal";
   responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -20,33 +19,33 @@ interface AdSenseConfig {
 
 /**
  * Google AdSense Ad Unit Component
- * 
+ *
  * Args:
  *   client: Your AdSense client ID (ca-pub-XXXXXXXXXXXXXXXX)
  *   slot: The ad unit ID
  *   format: Ad format type
  *   responsive: Whether the ad should be responsive
  */
-export function GoogleAdSense({ 
-  client, 
-  slot, 
-  format = 'auto',
+export function GoogleAdSense({
+  client,
+  slot,
+  format = "auto",
   responsive = true,
-  className = '',
-  style = {}
+  className = "",
+  style = {},
 }: AdSenseConfig) {
   useEffect(() => {
     try {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       }
     } catch (err) {
-      console.error('AdSense error:', err);
+      console.error("AdSense error:", err);
     }
   }, []);
 
   if (!client || !slot) {
-    console.warn('AdSense: Missing client or slot ID');
+    console.warn("AdSense: Missing client or slot ID");
     return null;
   }
 
@@ -54,13 +53,13 @@ export function GoogleAdSense({
     <ins
       className={`adsbygoogle ${className}`}
       style={{
-        display: 'block',
-        ...style
+        display: "block",
+        ...style,
       }}
       data-ad-client={client}
       data-ad-slot={slot}
       data-ad-format={format}
-      data-full-width-responsive={responsive ? 'true' : 'false'}
+      data-full-width-responsive={responsive ? "true" : "false"}
     />
   );
 }
@@ -70,17 +69,23 @@ export function GoogleAdSense({
  * Add this once in your layout or _app file
  */
 export function AdSenseScript({ client }: { client: string }) {
+  useEffect(() => {
+    if (!client) return;
+
+    const script = document.createElement("script");
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
+    script.async = true;
+    script.crossOrigin = "anonymous";
+
+    // Check if script is already loaded
+    if (!document.querySelector(`script[src*="${client}"]`)) {
+      document.head.appendChild(script);
+    }
+  }, [client]);
+
   if (!client) return null;
 
-  return (
-    <Script
-      id="google-adsense"
-      async
-      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`}
-      crossOrigin="anonymous"
-      strategy="afterInteractive"
-    />
-  );
+  return null; // Script is loaded via useEffect
 }
 
 /**
@@ -100,7 +105,7 @@ export function LeaderboardAd() {
         client={client}
         slot={slot}
         format="horizontal"
-        style={{ minHeight: '90px' }}
+        style={{ minHeight: "90px" }}
       />
     </div>
   );
@@ -119,7 +124,7 @@ export function SidebarAd() {
         client={client}
         slot={slot}
         format="rectangle"
-        style={{ minHeight: '250px' }}
+        style={{ minHeight: "250px" }}
       />
     </div>
   );
@@ -138,7 +143,7 @@ export function InFeedAd() {
         client={client}
         slot={slot}
         format="fluid"
-        style={{ minHeight: '100px' }}
+        style={{ minHeight: "100px" }}
       />
     </div>
   );
