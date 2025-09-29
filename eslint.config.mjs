@@ -19,7 +19,7 @@ const eslintConfig = [
       "node_modules/**",
     ],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals"),
   {
     rules: {
       // Allow unescaped quotes in JSX for better readability

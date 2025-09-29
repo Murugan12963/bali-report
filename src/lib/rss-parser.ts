@@ -1,6 +1,6 @@
 import Parser from 'rss-parser';
 import { rssCache } from './rss-cache';
-import { webScraper } from './web-scraper';
+// import { webScraper } from './web-scraper'; // Temporarily disabled due to build issues
 
 /**
  * RSS Parser configuration and types for Bali Report news aggregation.
@@ -257,15 +257,16 @@ class RSSAggregator {
       
       // Add scraped articles for this category if requested
       if (includeScrapers) {
-        try {
-          const scrapedArticles = await webScraper.scrapeByCategory(category);
-          if (scrapedArticles.length > 0) {
-            articles.push(...scrapedArticles);
-            console.log(`🕷️ Added ${scrapedArticles.length} scraped ${category} articles`);
-          }
-        } catch (error) {
-          console.error(`Failed to scrape ${category} sources:`, error);
-        }
+        console.warn('Web scraping temporarily disabled - build fix in progress');
+        // try {
+        //   const scrapedArticles = await webScraper.scrapeByCategory(category);
+        //   if (scrapedArticles.length > 0) {
+        //     articles.push(...scrapedArticles);
+        //     console.log(`🕷️ Added ${scrapedArticles.length} scraped ${category} articles`);
+        //   }
+        // } catch (error) {
+        //   console.error(`Failed to scrape ${category} sources:`, error);
+        // }
       }
       
       return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
@@ -309,15 +310,16 @@ class RSSAggregator {
     
     // Add scraped articles if requested
     if (includeScrapers) {
-      try {
-        const scrapedArticles = await webScraper.scrapeAllSources();
-        if (scrapedArticles.length > 0) {
-          articles.push(...scrapedArticles);
-          console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
-        }
-      } catch (error) {
-        console.error('Failed to scrape additional sources:', error);
-      }
+      console.warn('Web scraping temporarily disabled - build fix in progress');
+      // try {
+      //   const scrapedArticles = await webScraper.scrapeAllSources();
+      //   if (scrapedArticles.length > 0) {
+      //     articles.push(...scrapedArticles);
+      //     console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
+      //   }
+      // } catch (error) {
+      //   console.error('Failed to scrape additional sources:', error);
+      // }
     }
     
     // Sort articles by publication date (newest first)

@@ -26,61 +26,70 @@ export default function StockMarketTracker({
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
-  // BRICS market indices
+  // BRICS market country mapping
+  const bricsFlags: { [key: string]: { flag: string; currency: string } } = {
+    Brazil: { flag: "🇧🇷", currency: "BRL" },
+    Russia: { flag: "🇷🇺", currency: "RUB" },
+    India: { flag: "🇮🇳", currency: "INR" },
+    China: { flag: "🇨🇳", currency: "CNY" },
+    "South Africa": { flag: "🇿🇦", currency: "ZAR" },
+  };
+
+  // BRICS market indices (fallback data)
   const bricsMarkets: MarketData[] = useMemo(
     () => [
       {
-        name: "Bovespa",
-        symbol: "IBOV",
-        country: "Brazil",
-        flag: "🇧🇷",
-        value: 128453.2,
-        change: 1247.85,
-        changePercent: 0.98,
-        currency: "BRL",
-        lastUpdate: "Live",
-      },
-      {
-        name: "MOEX",
-        symbol: "IMOEX",
+        name: "MOEX Russia Index",
+        symbol: "IMOEX.ME",
         country: "Russia",
         flag: "🇷🇺",
-        value: 2789.45,
-        change: -23.67,
-        changePercent: -0.84,
+        value: 3245.67,
+        change: 23.45,
+        changePercent: 0.73,
         currency: "RUB",
         lastUpdate: "Live",
       },
       {
-        name: "Sensex",
-        symbol: "BSE",
-        country: "India",
-        flag: "🇮🇳",
-        value: 84127.85,
-        change: 458.23,
-        changePercent: 0.55,
-        currency: "INR",
-        lastUpdate: "Live",
-      },
-      {
-        name: "Shanghai",
-        symbol: "SSE",
+        name: "Shanghai Composite",
+        symbol: "000001.SS",
         country: "China",
         flag: "🇨🇳",
-        value: 3087.92,
-        change: 15.43,
-        changePercent: 0.5,
+        value: 3156.78,
+        change: -12.34,
+        changePercent: -0.39,
         currency: "CNY",
         lastUpdate: "Live",
       },
       {
+        name: "BSE Sensex",
+        symbol: "SENSEX.BO",
+        country: "India",
+        flag: "🇮🇳",
+        value: 73248.65,
+        change: 234.56,
+        changePercent: 0.32,
+        currency: "INR",
+        lastUpdate: "Live",
+      },
+      {
+        name: "Bovespa",
+        symbol: "BVSP.SA",
+        country: "Brazil",
+        flag: "🇧🇷",
+        value: 126789.45,
+        change: 456.78,
+        changePercent: 0.36,
+        currency: "BRL",
+        lastUpdate: "Live",
+      },
+      {
         name: "JSE All Share",
-        symbol: "JSE",
+        symbol: "J203.JO",
         country: "South Africa",
         flag: "🇿🇦",
-        value: 85234.67,
-        change: -234.12,
-        changePercent: -0.27,
+        value: 78945.32,
+        change: -123.45,
+        changePercent: -0.16,
         currency: "ZAR",
         lastUpdate: "Live",
       },
@@ -169,8 +178,32 @@ export default function StockMarketTracker({
           }));
           setMarketData(mappedData);
         } else {
-          // BRICS markets - keep static data for now
-          setMarketData(bricsMarkets);
+          // BRICS markets - real-time data
+          const polygonData = await polygonApiService.getBRICSMarkets();
+          const mappedData = polygonData.map((item) => ({
+            name: item.name,
+            symbol: item.symbol,
+            country: item.symbol.includes(".SA") ? "Brazil" :
+                    item.symbol.includes(".ME") ? "Russia" :
+                    item.symbol.includes(".BO") ? "India" :
+                    item.symbol.includes(".SS") ? "China" :
+                    item.symbol.includes(".JO") ? "South Africa" : "Unknown",
+            flag: bricsFlags[item.symbol.includes(".SA") ? "Brazil" :
+                           item.symbol.includes(".ME") ? "Russia" :
+                           item.symbol.includes(".BO") ? "India" :
+                           item.symbol.includes(".SS") ? "China" :
+                           item.symbol.includes(".JO") ? "South Africa" : "Unknown"].flag,
+            value: item.last,
+            change: item.change,
+            changePercent: item.changePercent,
+            currency: bricsFlags[item.symbol.includes(".SA") ? "Brazil" :
+                              item.symbol.includes(".ME") ? "Russia" :
+                              item.symbol.includes(".BO") ? "India" :
+                              item.symbol.includes(".SS") ? "China" :
+                              item.symbol.includes(".JO") ? "South Africa" : "Unknown"].currency,
+            lastUpdate: new Date(item.timestamp).toLocaleTimeString(),
+          }));
+          setMarketData(mappedData);
         }
       } catch (error) {
         console.error("Error fetching market data:", error);
@@ -210,8 +243,32 @@ export default function StockMarketTracker({
         }));
         setMarketData(mappedData);
       } else {
-        // BRICS - simple refresh doesn't change static data
-        setLoading(false);
+        // BRICS markets - real-time data
+        const polygonData = await polygonApiService.getBRICSMarkets();
+        const mappedData = polygonData.map((item) => ({
+          name: item.name,
+          symbol: item.symbol,
+          country: item.symbol.includes(".SA") ? "Brazil" :
+                  item.symbol.includes(".ME") ? "Russia" :
+                  item.symbol.includes(".BO") ? "India" :
+                  item.symbol.includes(".SS") ? "China" :
+                  item.symbol.includes(".JO") ? "South Africa" : "Unknown",
+          flag: bricsFlags[item.symbol.includes(".SA") ? "Brazil" :
+                         item.symbol.includes(".ME") ? "Russia" :
+                         item.symbol.includes(".BO") ? "India" :
+                         item.symbol.includes(".SS") ? "China" :
+                         item.symbol.includes(".JO") ? "South Africa" : "Unknown"].flag,
+          value: item.last,
+          change: item.change,
+          changePercent: item.changePercent,
+          currency: bricsFlags[item.symbol.includes(".SA") ? "Brazil" :
+                            item.symbol.includes(".ME") ? "Russia" :
+                            item.symbol.includes(".BO") ? "India" :
+                            item.symbol.includes(".SS") ? "China" :
+                            item.symbol.includes(".JO") ? "South Africa" : "Unknown"].currency,
+          lastUpdate: new Date(item.timestamp).toLocaleTimeString(),
+        }));
+        setMarketData(mappedData);
       }
     } catch (error) {
       console.error("Error refreshing market data:", error);
@@ -377,10 +434,10 @@ export default function StockMarketTracker({
         </div>
       )}
       {markets === "BRICS" && (
-        <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-          <p className="text-xs text-yellow-800 dark:text-yellow-200 flex items-center">
-            <span className="mr-2">⚠️</span>
-            BRICS market data is for demonstration purposes.
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <p className="text-xs text-blue-800 dark:text-blue-200 flex items-center">
+            <span className="mr-2">ℹ️</span>
+            Data provided by Polygon.io. Updates every 30 seconds.
           </p>
         </div>
       )}

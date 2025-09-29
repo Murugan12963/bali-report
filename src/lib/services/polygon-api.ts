@@ -24,6 +24,15 @@ class PolygonApiService {
     { symbol: "TLKM.JK", name: "Telkom Indonesia" },
   ];
 
+  // BRICS market symbols
+  private readonly bricsSymbols = [
+    { symbol: "IBOV.SA", name: "Bovespa", country: "Brazil" },      // Brazil
+    { symbol: "IMOEX.ME", name: "MOEX", country: "Russia" },       // Russia
+    { symbol: "SENSEX.BO", name: "Sensex", country: "India" },     // India
+    { symbol: "000001.SS", name: "SSE", country: "China" },        // China (Shanghai)
+    { symbol: "J203.JO", name: "JSE All Share", country: "South Africa" }, // South Africa
+  ];
+
   constructor() {
     this.baseUrl = "https://api.polygon.io";
     this.apiKey = process.env.POLYGON_API_KEY || "";
@@ -82,6 +91,61 @@ class PolygonApiService {
           error instanceof Error ? error.message : String(error)
         }`,
       );
+    }
+  }
+
+  async getBRICSMarkets(): Promise<PolygonMarketData[]> {
+    try {
+      if (!this.apiKey) {
+        throw new Error("Polygon.io API key not configured");
+      }
+
+      const results: PolygonMarketData[] = [];
+
+      // Try to get real-time global market snapshots
+      for (const symbolInfo of this.bricsSymbols) {
+        try {
+          const quoteData = await this.request<{
+            symbol: string;
+            last: {
+              price: number;
+              size: number;
+              timestamp: number;
+            };
+            prevDay: {
+              c: number; // previous close
+              v: number; // volume
+            };
+          }>(`/v2/last/trade/${symbolInfo.symbol}`);
+
+          const lastPrice = quoteData.last?.price || quoteData.prevDay?.c || 0;
+          const previousClose = quoteData.prevDay?.c || 0;
+          const change = previousClose ? lastPrice - previousClose : 0;
+          const changePercent = previousClose ? (change / previousClose) * 100 : 0;
+
+          results.push({
+            symbol: symbolInfo.symbol,
+            name: symbolInfo.name,
+            last: lastPrice,
+            change: change,
+            changePercent: changePercent,
+            volume: quoteData.last?.size || quoteData.prevDay?.v || 0,
+            timestamp: new Date((quoteData.last?.timestamp || Date.now()) / 1000000).toISOString(),
+          });
+        } catch (error) {
+          console.error(`Error fetching data for ${symbolInfo.symbol}:`, error);
+        }
+      }
+
+      if (results.length === 0) {
+        throw new Error("No data received from Polygon.io for any BRICS markets");
+      }
+
+      console.log(`Successfully fetched ${results.length} real-time BRICS market quotes from Polygon.io`);
+      return results;
+    } catch (error) {
+      console.error("Error fetching BRICS markets from Polygon.io:", error);
+      throw error;
     }
   }
 
