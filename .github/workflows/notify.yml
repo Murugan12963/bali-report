@@ -93,10 +93,11 @@ jobs:
     - name: Send status email
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: smtp.gmail.com
-        server_port: 465
-        username: ${{ secrets.GMAIL_USERNAME }}
-        password: ${{ secrets.GMAIL_PASSWORD }}
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        secure: true
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
         subject: Bali Report - Site Health Check ${{ needs.health-check.result == 'success' && '✅' || '❌' }}
         body: |
           Health Check Status: ${{ needs.health-check.result }}
@@ -106,4 +107,5 @@ jobs:
           
           View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         to: ${{ secrets.NOTIFICATION_EMAIL }}
-        from: Bali Report Monitor
+        from: ${{ secrets.SMTP_FROM }}
+        reply_to: ${{ secrets.SMTP_FROM }}
