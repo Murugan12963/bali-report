@@ -155,7 +155,14 @@ services:
 |----------|----------|-------------|
 | `XAI_API_KEY` | No | Grok AI integration |
 | `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | No | Google Analytics |
-| `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` | No | Google AdSense |
+| `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` | No | Google AdSense client id |
+| `NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT` | No | In-feed/native ad unit slot id |
+| `NEXT_PUBLIC_GOOGLE_ADSENSE_LEADERBOARD_SLOT` | No | Leaderboard ad unit slot id |
+| `NEXT_PUBLIC_GOOGLE_ADSENSE_SIDEBAR_SLOT` | No | Sidebar ad unit slot id |
+| `NEXT_PUBLIC_STRIPE_PUBLIC_KEY` | No | Stripe publishable key for client-side checkout |
+| `STRIPE_SECRET_KEY` | No | Stripe secret key for server-side APIs |
+| `NEXT_PUBLIC_DONATION_PRICE_ID` | No | Stripe Price ID for donations (or Payment Link URL) |
+| `NEXT_PUBLIC_SUBSCRIPTION_PRICE_ID` | No | Stripe Price ID for subscriptions |
 
 ### Production Optimizations
 
@@ -194,7 +201,14 @@ Response:
 - **RSS Sources**: 9 active, monitored for uptime
 - **Cache Performance**: 90%+ hit rate
 
-## 🔒 Security
+## 🔒 Security & Compliance
+
+### Content Policy and Compliance
+- Maintain neutral editorial tone to reduce AdSense moderation risk
+- Provide Sources & Fact-Check page detailing aggregation policy
+- Footer disclaimer: “Content aggregated from external sources; views are those of original authors.”
+- Indonesia compliance (UU ITE): avoid content labeled as fake news or inciting unrest
+- GDPR: show cookie consent banner; block non-essential scripts until consent
 
 ### Security Headers
 

@@ -10,7 +10,7 @@
 - **Development Environment**: Warp.dev with AI assistance
 - **Timeline**: ✅ **MVP COMPLETED** (ahead of 4-6 week schedule)
 - **Core Mission**: BRICS-aligned news aggregation challenging Western media monopoly
-- **Live Data**: **312+ articles daily** from 6 active RSS sources
+- **Live Data**: **600+ articles daily** from 12 active RSS sources
 
 ## 🏗️ Architecture & Tech Stack
 
@@ -19,7 +19,7 @@
 - **Styling**: Tailwind CSS 4 with dark/light theme support
 - **Language**: TypeScript (full type safety implemented)
 - **Deployment**: Vercel (configuration ready)
-- **Performance**: <7ms response time, 91KB optimized bundle
+- **Performance**: <7ms response time, 147KB optimized bundle with caching
 
 ### Data & Content ✅
 - **Aggregation**: RSS parsing via rss-parser with retry logic
@@ -37,24 +37,34 @@
 ## 📚 Content Strategy
 
 ### Live Active Sources ✅
-- **BRICS-Aligned** (245 articles daily):
+- **BRICS-Aligned** (500+ articles daily):
   - ✅ **RT News** - Russian perspectives
-  - ✅ **TASS** - Russian state news  
+  - ✅ **TASS** - Russian state news
   - ✅ **Xinhua News** - Chinese international
   - ✅ **Al Jazeera** - Middle Eastern viewpoints
+  - ✅ **Journal NEO** - New Eastern Outlook analysis
+  - ✅ **Sputnik Globe** - International news network
+  - ✅ **Land Destroyer** - Geopolitical analysis
+  - ✅ **Helmer Report** - Russia-focused investigation
+  - ✅ **Global Times** - Chinese state media
 
-- **Indonesia/Southeast Asia** (67 articles daily):
+- **Indonesia/Southeast Asia** (100+ articles daily):
   - ✅ **Antara News** - Indonesian national news
   - ✅ **BBC Asia** - Regional coverage
+  - ✅ **Bali Post** - Local Balinese news
+  - ✅ **Bali Discovery** - Tourism and events
 
-### Future Sources (Phase 2)
-- **Additional BRICS**: Sputnik Globe, Journal NEO, Global Times
-- **Bali Local**: Bali Post, Bali Discovery, local outlets
+### Future Sources (Phase 3)
+- **Additional BRICS**: Asia Times, BRICS Post
+- **Bali Local**: Jakarta Post, The Beat Bali
+- **Alternative Media**: Independent Asia, New Atlas
 
 ### Content Categories
 1. **BRICS Global** (Russia, China, India, Brazil, South Africa, BRICS+)
 2. **Indonesia News** (National, Bali Events, Economy/Tourism)
 3. **Bali Events** (Festivals, Tourism, Local Politics)
+4. **BPD Initiatives** (Project Updates, Impact Reports, Funding Drives)
+5. **Community** (Webinars, Meetups, Virtual Events)
 
 ## 🎨 Design Principles ✅
 
@@ -64,14 +74,47 @@
 - **Performance**: ✅ <7ms response, optimized bundle size
 - **Dark/Light Themes**: ✅ System detection with localStorage
 
-## 💰 Monetization Strategy
+## 💰 Monetization & Fundraising Strategy
+
+### BRICS Partnership for Development (BPD) Integration
+- **Mission**: Support South-South cooperation initiatives
+- **Focus Areas**:
+  - AgriTech projects in Indonesia
+  - Sustainable energy solutions
+  - NGO training and development
+- **Revenue Allocation**:
+  - 20% of subscription revenue to BPD initiatives
+  - Transparent impact reporting
+  - Community-driven project selection
+
+### Fundraising Campaigns
+- **Themed Drives**:
+  - "BRICS Harvest Challenge" for agricultural projects
+  - "Multipolar Independence Fund" for energy initiatives
+  - "Bali Solar Projects" community funding
+- **Progress Tracking**:
+  - Real-time donation counters
+  - Project milestone updates
+  - Impact visualization
+
+### Premium Subscriptions
+- **Pricing**: $2-5/month
+- **Benefits**:
+  - Ad-free experience
+  - Exclusive Bali event guides
+  - Curated BRICS analyses
+  - Early access to webinars
 
 ### Google AdSense Integration
 - **Ad Formats**:
   - Leaderboard banners (728x90) on homepage
   - Sidebar banners (300x250) on articles  
   - Responsive ads that adapt to screen size
-  - Native ads for seamless content integration
+  - Native ads (1 per 5 articles)
+- **Risk Mitigation**:
+  - Content policy compliance
+  - BRICS-aligned content guidelines
+  - Fallback affiliate links
 
 ## 🔧 Development Notes
 

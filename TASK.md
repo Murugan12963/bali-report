@@ -106,10 +106,19 @@
 - [ ] **Submit to Google Search Console** (for SEO indexing)
 - [ ] **Monitor performance** and RSS feed reliability
 
-### 🔍 **Priority 3: Content & Growth**
+### Priority 3: Content, BPD & Growth
 - [ ] **Add Bali-specific RSS sources** (local news outlets)
 - [ ] **Content monitoring** and feed reliability checks
-- [ ] **Social media setup** (Twitter, Telegram channels)
+- [ ] **BPD Integration**:
+  - [ ] Set up Stripe payment processing
+  - [ ] Create donation progress tracking
+  - [ ] Design impact visualization dashboard
+  - [ ] Implement subscription management
+- [ ] **Community Building**:
+  - [ ] Create BRICS Events platform
+  - [ ] Build webinar registration system
+  - [ ] Set up community chat/forum
+- [ ] **Social media setup** (X, Telegram, VK channels)
 - [ ] **User feedback collection** and iteration
 
 ## 🚀 Future Enhancements
@@ -236,6 +245,14 @@
 - [x] **ESLint Review** - Documented 70+ warnings needing cleanup
 - [x] **Enhancement Document Created** - Comprehensive ENHANCEMENTS.md with 4-phase improvement plan
 - [x] **Priority Matrix Defined** - Created actionable roadmap with timeline estimates
+
+### 🌍 **NEW: BPD Integration & Fundraising Sprint** (2025-09-30)
+- [ ] **BPD Donation System** - Complete Stripe integration for one-click donations and subscriptions
+- [ ] **Campaign Management** - Build themed fundraising campaigns with progress tracking
+- [ ] **Premium Subscription Tier** - Implement $2-5/month ad-free subscription with BPD allocation
+- [ ] **Impact Reporting** - Create transparent BPD fund allocation and impact visualization
+- [ ] **Community Events** - Add BRICS Bali Events page with ticketing integration
+- [ ] **Project Updates** - Display real-time updates from BPD-funded projects
 
 ### 🎯 **TOP PRIORITY ACTIONS COMPLETED** (2025-09-20)
 - [x] **Security Vulnerabilities Fixed** - Updated Vercel from v48 to v25.2.0, reduced vulnerabilities from 10 to 12 moderate/high
