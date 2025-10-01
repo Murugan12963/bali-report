@@ -55,6 +55,32 @@
 }
 
 /* Grok-inspired light mode variables */
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0,255,204,0.5), 0 0 20px rgba(0,255,204,0.2); }
+  50% { text-shadow: 0 0 20px rgba(0,255,204,0.8), 0 0 30px rgba(0,255,204,0.4); }
+}
+
+@keyframes scan {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
+@keyframes gridFlow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes dataStream {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes dash {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
 :root {
   --background: #fafafa;
   --foreground: #0a0a0a;
@@ -82,31 +108,56 @@
   --grok-dark: #1a1a1a;
 }
 
-/* Grok-inspired dark mode variables */
+/* Futuristic dark mode variables */
 :root.dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #121212;
-  --card-foreground: #fafafa;
-  --primary: #0066ff;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #a1a1aa;
-  --muted: #161616;
-  --muted-foreground: #737373;
-  --border: #262626;
-  --input: #1a1a1a;
-  --ring: #0066ff;
+  --background: #1A1F2E;
+  --foreground: #E6E8ED;
+  --card: #232838;
+  --card-foreground: #E6E8ED;
+  --primary: #00FFCC;
+  --primary-foreground: #1A1F2E;
+  --secondary: #FF4040;
+  --secondary-foreground: #E6E8ED;
+  --accent: #0073E6;
+  --accent-foreground: #E6E8ED;
+  --muted: #39405F;
+  --muted-foreground: #9BA1B0;
+  --border: #2E354A;
+  --input: #232838;
+  --ring: #00FFCC;
   
-  /* Grok theme colors - dark mode */
-  --grok-blue: #3b82f6;
-  --grok-purple: #a855f7;
-  --grok-cyan: #22d3ee;
-  --grok-emerald: #34d399;
-  --grok-amber: #fbbf24;
-  --grok-rose: #fb7185;
-  --grok-gray: #9ca3af;
-  --grok-dark: #0a0a0a;
+  /* Futuristic theme colors */
+  --color-grid: #2E354A;
+  --color-glow: #00FFCC;
+  --color-glow-secondary: #FF4040;
+  --color-glow-accent: #0073E6;
+  --color-data: #4DA6FF;
+  --color-surface: #232838;
+  --color-surface-highlight: #39405F;
+  --color-text-dimmed: #9BA1B0;
+}
+
+/* Futuristic components */
+@layer components {
+  .futuristic-border {
+    @apply relative before:absolute before:inset-0 before:rounded-lg before:border before:border-dark-border before:bg-gradient-to-b before:from-transparent before:to-primary-500/10 before:opacity-50;
+  }
+
+  .futuristic-text-glow {
+    @apply animate-glow;
+  }
+
+  .futuristic-bg-grid {
+    @apply relative before:absolute before:inset-0 before:bg-[linear-gradient(to_right,var(--color-grid)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid)_1px,transparent_1px)] before:bg-[size:24px_24px] before:opacity-10;
+  }
+
+  .futuristic-hover-glow {
+    @apply transition-all hover:shadow-glow hover:brightness-110;
+  }
+
+  .futuristic-data-stream {
+    @apply relative overflow-hidden before:absolute before:inset-0 before:animate-data-stream before:bg-gradient-to-b before:from-transparent before:via-primary-500/20 before:to-transparent;
+  }
 }
 
 /* Additional CSS variables for components */

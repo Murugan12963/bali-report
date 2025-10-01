@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Orbitron } from "next/font/google";
 import Header from "@/components/Header";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Analytics from "@/components/Analytics";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
 import "./globals.css";
+
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -127,7 +132,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased theme-transition`}
+        className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition bg-dark-bg dark`}
       >
         <ThemeProvider>
           <Analytics />
