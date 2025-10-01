@@ -1,58 +1,67 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Analytics and monitoring component for production deployment.
- * Handles Google Analytics, performance monitoring, and error tracking.
+ * Handles Matomo Analytics, performance monitoring, and error tracking.
  */
 
 declare global {
   interface Window {
-    gtag?: (command: string, targetId: string, config?: object) => void;
-    dataLayer?: object[];
+    _paq: any[];
   }
 }
 
 interface AnalyticsProps {
-  measurementId?: string;
+  siteId?: string;
+  matomoUrl?: string;
 }
 
 /**
- * Google Analytics 4 integration component.
- * 
+ * Matomo Analytics integration component.
+ *
  * Args:
- *   measurementId (string): GA4 measurement ID (G-XXXXXXXXXX).
+ *   siteId (string): Matomo site ID for tracking.
+ *   matomoUrl (string): URL of your Matomo instance.
  */
-export function GoogleAnalytics({ measurementId }: AnalyticsProps) {
+export function MatomoAnalytics({ siteId, matomoUrl }: AnalyticsProps) {
   useEffect(() => {
-    if (!measurementId || process.env.NODE_ENV !== 'production') {
-      console.log('Google Analytics: Disabled in development or missing ID');
+    if (!siteId || !matomoUrl || process.env.NODE_ENV !== "production") {
+      console.log(
+        "Matomo Analytics: Disabled in development or missing configuration",
+      );
       return;
     }
 
-    // Load Google Analytics script
-    const script = document.createElement('script');
+    // Load Matomo script
+    const script = document.createElement("script");
     script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    script.defer = true;
+    script.src = `${matomoUrl}/matomo.js`;
     document.head.appendChild(script);
 
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    function gtag(...args: any[]) {
-      window.dataLayer?.push(args);
-    }
-    window.gtag = gtag;
+    // Initialize Matomo
+    const _paq = (window._paq = window._paq || []);
 
-    gtag('js', new Date() as any);
-    gtag('config', measurementId, {
-      // Enhanced privacy settings
-      anonymize_ip: true,
-      cookie_flags: 'SameSite=None;Secure',
-    });
+    // Privacy-focused configuration
+    _paq.push(["requireConsent"]);
+    _paq.push(["trackPageView"]);
+    _paq.push(["enableLinkTracking"]);
+    _paq.push(["setTrackerUrl", `${matomoUrl}/matomo.php`]);
+    _paq.push(["setSiteId", siteId]);
 
-    console.log('Google Analytics initialized:', measurementId);
-  }, [measurementId]);
+    // Enhanced privacy settings
+    _paq.push(["disableCookies"]);
+    _paq.push(["setDoNotTrack", true]);
+    _paq.push(["setSecureCookie", true]);
+    _paq.push(["setCookieSameSite", "Strict"]);
+
+    // Performance tracking
+    _paq.push(["enableHeartBeatTimer", 15]); // Track active time
+
+    console.log("Matomo Analytics initialized:", { siteId, matomoUrl });
+  }, [siteId, matomoUrl]);
 
   return null;
 }
@@ -63,7 +72,7 @@ export function GoogleAnalytics({ measurementId }: AnalyticsProps) {
  */
 export function PerformanceMonitoring() {
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') return;
+    if (process.env.NODE_ENV !== "production") return;
 
     // Monitor Core Web Vitals
     const observeWebVitals = () => {
@@ -71,30 +80,34 @@ export function PerformanceMonitoring() {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        console.log('LCP:', lastEntry.startTime);
-        
-        // Send to analytics if available
-        if (window.gtag) {
-          window.gtag('event', 'web_vitals', {
-            event_category: 'Web Vitals',
-            event_label: 'LCP',
-            value: Math.round(lastEntry.startTime),
-            custom_map: { metric_value: 'value' }
-          });
+        console.log("LCP:", lastEntry.startTime);
+
+        // Send to Matomo if available
+        if (window._paq) {
+          window._paq.push([
+            "trackEvent",
+            "Web Vitals",
+            "LCP",
+            "Largest Contentful Paint",
+            Math.round(lastEntry.startTime),
+          ]);
         }
       });
-      
-      if ('PerformanceObserver' in window) {
+
+      if ("PerformanceObserver" in window) {
         try {
-          lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+          lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
         } catch (e) {
-          console.warn('LCP observer not supported');
+          console.warn("LCP observer not supported");
         }
       }
 
       // First Input Delay (FID) - via event listener
-      ['mousedown', 'keydown', 'touchstart', 'pointerdown'].forEach((type) => {
-        addEventListener(type, () => measureFID(), { once: true, passive: true });
+      ["mousedown", "keydown", "touchstart", "pointerdown"].forEach((type) => {
+        addEventListener(type, () => measureFID(), {
+          once: true,
+          passive: true,
+        });
       });
     };
 
@@ -103,22 +116,24 @@ export function PerformanceMonitoring() {
         const entries = list.getEntries();
         const firstInput = entries[0] as PerformanceEventTiming;
         const fid = firstInput.processingStart - firstInput.startTime;
-        
-        console.log('FID:', fid);
-        
-        if (window.gtag) {
-          window.gtag('event', 'web_vitals', {
-            event_category: 'Web Vitals',
-            event_label: 'FID',
-            value: Math.round(fid),
-          });
+
+        console.log("FID:", fid);
+
+        if (window._paq) {
+          window._paq.push([
+            "trackEvent",
+            "Web Vitals",
+            "FID",
+            "First Input Delay",
+            Math.round(fid),
+          ]);
         }
       });
 
       try {
-        observer.observe({ entryTypes: ['first-input'] });
+        observer.observe({ entryTypes: ["first-input"] });
       } catch (e) {
-        console.warn('FID observer not supported');
+        console.warn("FID observer not supported");
       }
     };
 
@@ -131,20 +146,26 @@ export function PerformanceMonitoring() {
         try {
           const response = await originalFetch(...args);
           const duration = performance.now() - start;
-          
+
           // Log RSS performance
-          if (args[0] && typeof args[0] === 'string' && args[0].includes('rss')) {
+          if (
+            args[0] &&
+            typeof args[0] === "string" &&
+            args[0].includes("rss")
+          ) {
             console.log(`RSS fetch duration: ${duration}ms for ${args[0]}`);
-            
-            if (window.gtag) {
-              window.gtag('event', 'rss_performance', {
-                event_category: 'Performance',
-                event_label: 'RSS Fetch',
-                value: Math.round(duration),
-              });
+
+            if (window._paq) {
+              window._paq.push([
+                "trackEvent",
+                "Performance",
+                "RSS Fetch",
+                args[0].toString(),
+                Math.round(duration),
+              ]);
             }
           }
-          
+
           return response;
         } catch (error) {
           const duration = performance.now() - start;
@@ -167,43 +188,50 @@ export function PerformanceMonitoring() {
  */
 export function ErrorTracking() {
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') return;
+    if (process.env.NODE_ENV !== "production") return;
 
     const handleError = (event: ErrorEvent) => {
-      console.error('JavaScript Error:', {
+      console.error("JavaScript Error:", {
         message: event.message,
         filename: event.filename,
         lineno: event.lineno,
         colno: event.colno,
-        error: event.error
+        error: event.error,
       });
 
-      // Send to analytics
-      if (window.gtag) {
-        window.gtag('event', 'exception', {
-          description: event.message,
-          fatal: false,
-        });
+      // Send to Matomo
+      if (window._paq) {
+        window._paq.push([
+          "trackEvent",
+          "Errors",
+          "JavaScript Error",
+          event.message,
+        ]);
       }
     };
 
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.error('Unhandled Promise Rejection:', event.reason);
-      
-      if (window.gtag) {
-        window.gtag('event', 'exception', {
-          description: `Unhandled Promise: ${event.reason}`,
-          fatal: false,
-        });
+      console.error("Unhandled Promise Rejection:", event.reason);
+
+      if (window._paq) {
+        window._paq.push([
+          "trackEvent",
+          "Errors",
+          "Unhandled Promise Rejection",
+          event.reason.toString(),
+        ]);
       }
     };
 
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
     return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener("error", handleError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
     };
   }, []);
 
@@ -211,15 +239,101 @@ export function ErrorTracking() {
 }
 
 /**
+ * Matomo event tracking hook.
+ * Provides functions to track custom events, page views, and user interactions.
+ */
+export function useMatomoAnalytics() {
+  const trackEvent = (
+    category: string,
+    action: string,
+    name?: string,
+    value?: number,
+  ) => {
+    if (typeof window !== "undefined" && window._paq) {
+      const _paq = window._paq;
+      if (name && value !== undefined) {
+        _paq.push(["trackEvent", category, action, name, value]);
+      } else if (name) {
+        _paq.push(["trackEvent", category, action, name]);
+      } else {
+        _paq.push(["trackEvent", category, action]);
+      }
+    }
+  };
+
+  const trackPageView = (customTitle?: string) => {
+    if (typeof window !== "undefined" && window._paq) {
+      const _paq = window._paq;
+      if (customTitle) {
+        _paq.push(["setCustomUrl", window.location.href]);
+        _paq.push(["setDocumentTitle", customTitle]);
+      }
+      _paq.push(["trackPageView"]);
+    }
+  };
+
+  const trackSiteSearch = (
+    keyword: string,
+    category?: string,
+    resultsCount?: number,
+  ) => {
+    if (typeof window !== "undefined" && window._paq) {
+      const _paq = window._paq;
+      if (category && resultsCount !== undefined) {
+        _paq.push(["trackSiteSearch", keyword, category, resultsCount]);
+      } else if (category) {
+        _paq.push(["trackSiteSearch", keyword, category]);
+      } else {
+        _paq.push(["trackSiteSearch", keyword]);
+      }
+    }
+  };
+
+  const trackGoal = (goalId: string | number, revenue?: number) => {
+    if (typeof window !== "undefined" && window._paq) {
+      const _paq = window._paq;
+      if (revenue !== undefined) {
+        _paq.push(["trackGoal", goalId, revenue]);
+      } else {
+        _paq.push(["trackGoal", goalId]);
+      }
+    }
+  };
+
+  const setCustomVariable = (
+    index: number,
+    name: string,
+    value: string,
+    scope: "visit" | "page",
+  ) => {
+    if (typeof window !== "undefined" && window._paq) {
+      const _paq = window._paq;
+      _paq.push(["setCustomVariable", index, name, value, scope]);
+    }
+  };
+
+  return {
+    trackEvent,
+    trackPageView,
+    trackSiteSearch,
+    trackGoal,
+    setCustomVariable,
+  };
+}
+
+/**
  * Complete analytics setup component.
  * Combines all monitoring features.
  */
 export default function Analytics() {
-  const measurementId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
+  const siteId = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
+  const matomoUrl = process.env.NEXT_PUBLIC_MATOMO_URL;
 
   return (
     <>
-      {measurementId && <GoogleAnalytics measurementId={measurementId} />}
+      {siteId && matomoUrl && (
+        <MatomoAnalytics siteId={siteId} matomoUrl={matomoUrl} />
+      )}
       <PerformanceMonitoring />
       <ErrorTracking />
     </>

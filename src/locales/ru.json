@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "home": "Главная",
+    "news": "Новости",
+    "events": "События",
+    "about": "О нас",
+    "contact": "Контакты",
+    "search": "Поиск"
+  },
+  "categories": {
+    "brics": "БРИКС",
+    "indonesia": "Индонезия",
+    "bali": "Бали",
+    "economy": "Экономика",
+    "politics": "Политика",
+    "culture": "Культура"
+  },
+  "search": {
+    "placeholder": "Поиск статей...",
+    "filters": "Фильтры",
+    "categories": "Категории",
+    "sources": "Источники",
+    "dateRange": "Диапазон дат",
+    "languages": "Языки",
+    "sortBy": "Сортировать по",
+    "relevance": "Релевантности",
+    "date": "Дате",
+    "noResults": "Результаты не найдены",
+    "trending": "Популярное",
+    "recent": "Недавнее",
+    "saveSearch": "Сохранить поиск",
+    "clearAll": "Очистить все"
+  },
+  "newsletter": {
+    "title": "Подписаться на рассылку",
+    "description": "Получайте последние новости и обновления прямо в вашу почту",
+    "emailPlaceholder": "Введите ваш email",
+    "subscribe": "Подписаться",
+    "success": "Успешно подписано!",
+    "error": "Ошибка подписки. Пожалуйста, попробуйте снова."
+  },
+  "bpd": {
+    "donate": "Пожертвовать в BPD",
+    "impact": "Ваше влияние",
+    "projects": "Текущие проекты",
+    "transparency": "Отчет о прозрачности"
+  },
+  "user": {
+    "login": "Вход",
+    "signup": "Регистрация",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "logout": "Выход",
+    "savedArticles": "Сохраненные статьи",
+    "readingHistory": "История чтения"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Произошла ошибка",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "apply": "Применить",
+    "readMore": "Читать далее",
+    "share": "Поделиться"
+  }
+}

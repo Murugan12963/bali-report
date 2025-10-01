@@ -2,49 +2,48 @@
 
 ## Overview
 
-Bali Report implements a dual monetization strategy combining advertising revenue with mission-driven fundraising for the BRICS Partnership for Development (BPD).
+Bali Report implements a privacy-focused monetization strategy combining Adsterra advertising with mission-driven fundraising for the BRICS Partnership for Development (BPD), supported by Matomo analytics for privacy-compliant tracking.
 
 ## 🎯 Revenue Streams
 
-### 1. Google AdSense Integration
+### 1. Adsterra Advertising Integration
 
 #### Ad Unit Types
-- **Native In-Feed Ads**
-  - Appears every 5 articles in content feeds
+- **Banner Ads (728x90, 300x250)**
+  - Homepage leaderboard placement (728x90)
+  - Sidebar placement (300x250)
+  - Mobile-responsive design
+- **Native Ads**
+  - In-feed content integration
   - Styled to match article cards
-  - Mobile-responsive layout
-- **Leaderboard Banners (728x90)**
-  - Homepage header placement
-  - Category page headers
-  - Below article content
-- **Sidebar Units (300x250)**
-  - Right sidebar on desktop
-  - Between content blocks on mobile
-  - Sticky positioning (optional)
-- **Responsive Ad Units**
-  - Auto-adapting to available space
-  - Mobile-first design
-  - Optimized viewability
+  - Appears in sidebar and content feeds
+- **Social Bar Ads**
+  - Responsive social media format
+  - Flexible placement options
+- **Popunder Ads**
+  - Background popup ads
+  - Non-intrusive user experience
 
-#### Moderation Risk Mitigation
-- Maintain neutral editorial tone
-- Avoid prohibited content categories
-- Regular content policy reviews
-- Clear source attribution
-- Transparent aggregation policy
+#### Implementation Features
+- Development placeholders for testing
+- Production script loading with zone IDs
+- Error handling and graceful fallbacks
+- Privacy-focused configuration
+- Environment variable support
 
-#### Fallback Strategy
-- Affiliate links (e.g., Booking.com for Bali tourism)
-- Newsletter sponsorships
-- Direct advertising partnerships
+#### Ad Placement Strategy
+- **Homepage**: Leaderboard banner + sidebar banner
+- **Article Pages**: Sidebar banner + native ads
+- **Category Pages**: Responsive banners
+- **Mobile**: Optimized for small screens
 
-### 2. BPD Fundraising
+### 2. BPD Fundraising Integration
 
 #### Direct Donations
 - One-click donation buttons via Stripe
 - Suggested amounts: $10, $25, $50, $100
 - Custom amount option
-- Monthly recurring option
+- Monthly recurring donations
 
 #### Premium Subscription ($2-5/month)
 - Ad-free experience
@@ -53,7 +52,7 @@ Bali Report implements a dual monetization strategy combining advertising revenu
   - Bali event guides
   - Expert webinars
 - Early access to virtual events
-- 20% revenue to BPD initiatives
+- 20% revenue allocation to BPD initiatives
 
 #### Event Ticketing
 - Virtual webinars ($5-20)
@@ -61,7 +60,7 @@ Bali Report implements a dual monetization strategy combining advertising revenu
 - Conference registrations
 - Workshop tickets
 
-### 3. Themed Campaigns
+### 3. Themed Fundraising Campaigns
 
 #### Campaign Types
 - "BRICS Harvest Challenge"
@@ -84,77 +83,139 @@ Bali Report implements a dual monetization strategy combining advertising revenu
 - Impact visualization
 - Success stories and updates
 
-## 📊 Revenue Allocation
+## 🔧 Technical Implementation
 
-### Distribution
-- 20% to BPD initiatives
-- 30% for platform development
-- 25% for content expansion
-- 15% for marketing/growth
-- 10% for operations
+### Adsterra Integration
+```typescript
+// components/AdsterraAds.tsx
+interface AdsterraAdsProps {
+  type: "banner" | "social-bar" | "native" | "popunder";
+  className?: string;
+  zoneId?: string;
+}
+
+const AdsterraAds: React.FC<AdsterraAdsProps> = ({
+  type,
+  className = "",
+  zoneId,
+}) => {
+  // Implementation with development placeholders
+  // and production script loading
+};
+```
+
+### Environment Configuration
+```bash
+# Adsterra Integration
+NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
+NEXT_PUBLIC_ADSTERRA_NATIVE_ZONE_ID=your-native-zone-id
+NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_ZONE_ID=your-social-bar-zone-id
+NEXT_PUBLIC_ADSTERRA_POPUNDER_ZONE_ID=your-popunder-zone-id
+
+# Analytics (Privacy-Focused)
+NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
+NEXT_PUBLIC_MATOMO_SITE_ID=your-matomo-site-id
+```
+
+### Matomo Analytics Integration
+```typescript
+// components/Analytics.tsx
+export function MatomoAnalytics({ siteId, matomoUrl }: AnalyticsProps) {
+  // Privacy-focused configuration
+  // Disabled cookies by default
+  // Respects Do Not Track headers
+  // Secure cookie settings
+}
+```
+
+## 📊 Analytics & Performance Tracking
+
+### Matomo Analytics Features
+- **Privacy-First Configuration**
+  - Disabled cookies by default
+  - Respects Do Not Track headers
+  - Secure cookie settings
+  - Consent requirement
+- **Performance Monitoring**
+  - Core Web Vitals tracking (LCP, FID)
+  - RSS fetch performance monitoring
+  - Heartbeat timer for active time tracking
+- **Event Tracking**
+  - Custom event tracking with categories
+  - Page view tracking with custom titles
+  - Site search tracking
+  - Goal conversion tracking
+
+### Key Metrics Tracked
+- **Advertising Performance**
+  - Ad impressions and click-through rates
+  - Revenue per mille (RPM)
+  - Ad viewability scores
+- **User Engagement**
+  - Daily active users
+  - Articles read per session
+  - Save for Later usage
+  - Personalization adoption
+- **Technical Performance**
+  - Page load times
+  - Core Web Vitals
+  - RSS feed reliability
+  - Cache hit rates
+
+## 📈 Revenue Allocation
+
+### Distribution Model
+- **20% to BPD Initiatives**
+  - Agricultural technology projects
+  - Sustainable energy solutions
+  - NGO training and development
+- **30% Platform Development**
+  - Feature enhancements
+  - Performance optimization
+  - Security updates
+- **25% Content Expansion**
+  - New RSS sources
+  - Content personalization
+  - AI integration
+- **15% Marketing & Growth**
+  - User acquisition
+  - Community building
+  - Partnership development
+- **10% Operations**
+  - Infrastructure costs
+  - Support and maintenance
+  - Legal compliance
 
 ### BPD Fund Transparency
 - Quarterly allocation reports
 - Project tracking dashboard
-- Impact metrics
+- Impact metrics and visualization
 - Beneficiary testimonials
 - Annual audited statements
 
-## 🔧 Technical Implementation
+## 🔒 Privacy & Compliance
 
-### Google AdSense
-```javascript
-// components/GoogleAds.tsx
-import { useEffect } from 'react';
+### Data Protection
+- **Matomo Analytics**
+  - No data sharing with third parties
+  - User data ownership
+  - GDPR compliance features
+  - Cookie consent management
+- **Adsterra Compliance**
+  - Clear ad labeling
+  - Content policy adherence
+  - User privacy protection
+  - Transparent data practices
 
-export const InFeedAd = () => {
-  useEffect(() => {
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
-  }, []);
+### Ethical Advertising
+- Non-intrusive ad placements
+- Clear distinction between content and ads
+- No deceptive advertising practices
+- Regular content policy reviews
 
-  return (
-    <ins className="adsbygoogle"
-         data-ad-client={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT}
-         data-ad-slot={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT}
-         data-ad-format="fluid"
-         data-ad-layout-key="-fb+5w+4e-db+86" />
-  );
-};
-```
+## 📊 KPIs and Success Metrics
 
-### Stripe Integration
-```javascript
-// components/DonationButton.tsx
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-
-export const DonationButton = ({ amount, projectId }) => {
-  const handleDonate = async () => {
-    const stripe = await stripePromise;
-    const { error } = await stripe.redirectToCheckout({
-      lineItems: [{
-        price: process.env.NEXT_PUBLIC_DONATION_PRICE_ID,
-        quantity: 1
-      }],
-      mode: 'payment',
-      successUrl: `${window.location.origin}/success`,
-      cancelUrl: `${window.location.origin}/cancel`,
-      metadata: { projectId }
-    });
-  };
-  
-  return (
-    <button onClick={handleDonate}>
-      Donate ${amount}
-    </button>
-  );
-};
-```
-
-## 📈 KPIs and Metrics
-
-### Advertising
+### Advertising Performance
 - Ad impressions per session
 - Click-through rate (CTR)
 - Revenue per mille (RPM)
@@ -177,53 +238,62 @@ export const DonationButton = ({ amount, projectId }) => {
 
 ## 🔄 Review & Optimization
 
-### Monthly Reviews
+### Monthly Performance Reviews
 - Ad performance analysis
 - Placement optimization
 - Campaign effectiveness
 - Revenue distribution
 - Impact assessment
 
-### Quarterly Updates
-- Strategy refinement
+### Quarterly Strategy Updates
+- Monetization strategy refinement
 - New campaign planning
 - Technology updates
 - Partner relationships
-- Community feedback
+- Community feedback integration
 
 ## 🎯 Success Criteria
 
-1. **Revenue Goals**
-   - $10K seed funding for BPD (Q4 2025)
-   - Scale to $100M over 5 years
+### Revenue Goals
+- **Year 1**: $10K seed funding for BPD initiatives
+- **Year 2**: Scale to sustainable revenue model
+- **Year 3-5**: Target $100M cumulative impact
 
-2. **Advertising Performance**
-   - >1% CTR on native ads
-   - >70% viewability score
-   - <5% ad-related bounce rate
+### Advertising Performance
+- >1% CTR on native ads
+- >70% ad viewability score
+- <5% ad-related bounce rate
+- Positive user feedback on ad experience
 
-3. **Fundraising Impact**
-   - 1000+ donors in year 1
-   - 500+ premium subscribers
-   - 5+ successful campaigns
-   - 10+ funded projects
+### Fundraising Impact
+- 1000+ donors in year 1
+- 500+ premium subscribers
+- 5+ successful campaigns
+- 10+ funded projects with measurable impact
 
-## 🔒 Compliance & Ethics
+## 🚀 Implementation Status
 
-### Advertising Standards
-- Clear ad labeling
-- No deceptive practices
-- Content policy compliance
-- User privacy protection
+### ✅ Completed
+- Adsterra component with development placeholders
+- Production script loading and error handling
+- Environment variable configuration
+- Matomo analytics integration
+- Privacy-focused tracking setup
 
-### Fundraising Compliance
-- Transparent reporting
-- Donor privacy protection
-- Clear impact metrics
-- Regular auditing
+### 🔄 In Progress
+- Production Adsterra account setup
+- Campaign management system
+- Impact visualization dashboard
+- Premium subscription integration
 
-### Content Guidelines
-- Editorial independence
-- Source verification
-- Clear attribution
-- Fact-checking process
+### 📋 Next Steps
+- Deploy to production with configured ad zones
+- Monitor advertising performance
+- Optimize ad placements based on data
+- Expand fundraising campaigns
+- Enhance impact tracking and reporting
+
+---
+
+**Last Updated**: 2025-09-30  
+**Status**: 🚀 Production Ready - Adsterra and Matomo integration complete

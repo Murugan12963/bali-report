@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import Header from '@/components/Header';
+import Link from "next/link";
 
 /**
  * Offline page for PWA when network is unavailable.
@@ -8,8 +7,6 @@ import Header from '@/components/Header';
 export default function OfflinePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
-      <Header />
-      
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto text-center">
           {/* Tropical Offline Hero */}
@@ -19,8 +16,9 @@ export default function OfflinePage() {
               Sacred Island Mode
             </h1>
             <p className="text-xl text-teal-700 dark:text-teal-300 mb-8 theme-transition">
-              Like a peaceful temple retreat, you're temporarily disconnected from the digital world. 
-              But the wisdom of paradise remains with you.
+              Like a peaceful temple retreat, you're temporarily disconnected
+              from the digital world. But the wisdom of paradise remains with
+              you.
             </p>
           </div>
 
@@ -29,7 +27,7 @@ export default function OfflinePage() {
             <h2 className="text-2xl font-bold text-emerald-800 dark:text-emerald-200 mb-6 theme-transition">
               🌺 Available in Paradise Mode
             </h2>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
               <div className="text-center">
                 <div className="text-3xl mb-3">📚</div>
@@ -82,7 +80,7 @@ export default function OfflinePage() {
               >
                 🌊 Try Homepage Again
               </Link>
-              
+
               <Link
                 href="/saved"
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg inline-flex items-center justify-center"
@@ -126,10 +124,13 @@ export default function OfflinePage() {
           {/* Tropical Quote */}
           <div className="mt-8 italic text-teal-600 dark:text-teal-400 theme-transition">
             <p>
-              "Like the eternal flow of Bali's sacred rivers, news will return when the time is right. 
-              Until then, find peace in the wisdom already gathered."
+              "Like the eternal flow of Bali's sacred rivers, news will return
+              when the time is right. Until then, find peace in the wisdom
+              already gathered."
             </p>
-            <p className="text-sm mt-2">— Ancient Balinese Proverb (probably) 🌸</p>
+            <p className="text-sm mt-2">
+              — Ancient Balinese Proverb (probably) 🌸
+            </p>
           </div>
         </div>
       </main>

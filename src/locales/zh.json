@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "home": "首页",
+    "news": "新闻",
+    "events": "活动",
+    "about": "关于",
+    "contact": "联系",
+    "search": "搜索"
+  },
+  "categories": {
+    "brics": "金砖国家",
+    "indonesia": "印度尼西亚",
+    "bali": "巴厘岛",
+    "economy": "经济",
+    "politics": "政治",
+    "culture": "文化"
+  },
+  "search": {
+    "placeholder": "搜索文章...",
+    "filters": "筛选",
+    "categories": "类别",
+    "sources": "来源",
+    "dateRange": "日期范围",
+    "languages": "语言",
+    "sortBy": "排序方式",
+    "relevance": "相关性",
+    "date": "日期",
+    "noResults": "未找到结果",
+    "trending": "热门",
+    "recent": "最新",
+    "saveSearch": "保存搜索",
+    "clearAll": "清除全部"
+  },
+  "newsletter": {
+    "title": "订阅我们的通讯",
+    "description": "直接在您的收件箱获取最新新闻和更新",
+    "emailPlaceholder": "输入您的邮箱",
+    "subscribe": "订阅",
+    "success": "订阅成功！",
+    "error": "订阅失败。请重试。"
+  },
+  "bpd": {
+    "donate": "向BPD捐款",
+    "impact": "您的影响",
+    "projects": "当前项目",
+    "transparency": "透明度报告"
+  },
+  "user": {
+    "login": "登录",
+    "signup": "注册",
+    "profile": "个人资料",
+    "settings": "设置",
+    "logout": "退出",
+    "savedArticles": "已保存的文章",
+    "readingHistory": "阅读历史"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "发生错误",
+    "retry": "重试",
+    "save": "保存",
+    "cancel": "取消",
+    "apply": "应用",
+    "readMore": "阅读更多",
+    "share": "分享"
+  }
+}

@@ -53,4 +53,6 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+const withNextIntl = require('next-intl/plugin')();
+
+module.exports = withNextIntl(nextConfig)

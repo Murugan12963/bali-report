@@ -1,7 +1,6 @@
 import { Suspense } from "react";
-import Header from "@/components/Header";
 import ArticleCard from "@/components/ArticleCard";
-import GoogleAds from "@/components/GoogleAds";
+import AdsterraAds from "@/components/AdsterraAds";
 import MarketTicker from "@/components/MarketTicker";
 import {
   HeroNewsletterSignup,
@@ -20,24 +19,45 @@ import {
  * Homepage for Bali Report - BRICS-aligned news aggregation.
  */
 export default async function Home() {
-  // Fetch latest articles from RSS sources
-  const rawArticles = await rssAggregator.fetchAllSources();
+  let rawArticles: any[] = [];
+  let personalizedArticles: any[] = [];
+  let featuredArticles: any[] = [];
+  let latestArticles: any[] = [];
 
-  // Apply personalization (will fall back to default sorting if no preferences)
-  // Use AI enhancement for better personalization (only for featured articles to manage API costs)
-  const personalizedArticles =
-    await contentPersonalizationEngine.personalizeContent(rawArticles);
-  const featuredArticles =
-    await contentPersonalizationEngine.getFeaturedArticles(rawArticles, 2);
-  const latestArticles = personalizedArticles.slice(0, 12); // Get top 12 personalized articles
+  try {
+    console.log("🌺 Starting RSS fetch...");
+    // Fetch latest articles from RSS sources
+    rawArticles = await rssAggregator.fetchAllSources();
+    console.log(`📊 RSS fetch completed: ${rawArticles.length} articles`);
+
+    // Apply personalization (will fall back to default sorting if no preferences)
+    // Use AI enhancement for better personalization (only for featured articles to manage API costs)
+    console.log("🎯 Starting content personalization...");
+    personalizedArticles =
+      await contentPersonalizationEngine.personalizeContent(rawArticles);
+    featuredArticles = await contentPersonalizationEngine.getFeaturedArticles(
+      rawArticles,
+      2,
+    );
+    latestArticles = personalizedArticles.slice(0, 12); // Get top 12 personalized articles
+    console.log(
+      `✅ Personalization completed: ${personalizedArticles.length} articles`,
+    );
+  } catch (error) {
+    console.error("❌ Error fetching articles:", error);
+    // Fallback to empty arrays to prevent blank page
+    rawArticles = [];
+    personalizedArticles = [];
+    featuredArticles = [];
+    latestArticles = [];
+    console.log("🔄 Using fallback empty arrays");
+  }
 
   return (
     <>
       <StructuredData type="WebSite" data={websiteStructuredData} />
       <StructuredData type="Organization" data={organizationStructuredData} />
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 theme-transition">
-        <Header />
-
         {/* Market Ticker */}
         <MarketTicker />
 
@@ -104,7 +124,7 @@ export default async function Home() {
 
           {/* Leaderboard Ad */}
           <section className="mb-8">
-            <GoogleAds type="leaderboard" className="mx-auto" />
+            <AdsterraAds type="banner" className="mx-auto" />
           </section>
 
           {/* Loading State */}
@@ -120,13 +140,20 @@ export default async function Home() {
           >
             {rawArticles.length === 0 ? (
               <div className="text-center py-12">
+                <div className="text-6xl mb-4">📡</div>
                 <p className="text-zinc-600 dark:text-zinc-400 mb-4">
                   Unable to fetch news at the moment.
                 </p>
-                <p className="text-sm text-zinc-500 dark:text-zinc-500">
+                <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-6">
                   This could be due to RSS feed issues or network connectivity.
                   Please try again later.
                 </p>
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 max-w-md mx-auto">
+                  <p className="text-blue-800 dark:text-blue-200 text-sm">
+                    <strong>Debug Info:</strong> No articles loaded from RSS
+                    feeds. Check browser console for detailed error messages.
+                  </p>
+                </div>
               </div>
             ) : (
               <>
@@ -166,7 +193,7 @@ export default async function Home() {
 
                       {/* Sidebar with ads and newsletter */}
                       <div className="lg:col-span-1 space-y-6">
-                        <GoogleAds type="sidebar" />
+                        <AdsterraAds type="banner" />
                         <CompactNewsletterSignup />
                         <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 border border-emerald-200 dark:border-emerald-800 theme-transition shadow-lg shadow-emerald-100/50 dark:shadow-emerald-900/20">
                           <h3 className="font-bold text-emerald-800 dark:text-emerald-200 mb-2 theme-transition">
@@ -179,7 +206,7 @@ export default async function Home() {
                             happens.
                           </p>
                         </div>
-                        <GoogleAds type="native" />
+                        <AdsterraAds type="native" />
                       </div>
                     </div>
                   </section>

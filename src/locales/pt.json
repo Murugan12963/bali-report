@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "home": "Início",
+    "news": "Notícias",
+    "events": "Eventos",
+    "about": "Sobre",
+    "contact": "Contato",
+    "search": "Buscar"
+  },
+  "categories": {
+    "brics": "BRICS",
+    "indonesia": "Indonésia",
+    "bali": "Bali",
+    "economy": "Economia",
+    "politics": "Política",
+    "culture": "Cultura"
+  },
+  "search": {
+    "placeholder": "Buscar artigos...",
+    "filters": "Filtros",
+    "categories": "Categorias",
+    "sources": "Fontes",
+    "dateRange": "Período",
+    "languages": "Idiomas",
+    "sortBy": "Ordenar por",
+    "relevance": "Relevância",
+    "date": "Data",
+    "noResults": "Nenhum resultado encontrado",
+    "trending": "Em alta",
+    "recent": "Recentes",
+    "saveSearch": "Salvar busca",
+    "clearAll": "Limpar tudo"
+  },
+  "newsletter": {
+    "title": "Assine nossa newsletter",
+    "description": "Receba as últimas notícias e atualizações diretamente em sua caixa de entrada",
+    "emailPlaceholder": "Digite seu e-mail",
+    "subscribe": "Assinar",
+    "success": "Assinatura realizada com sucesso!",
+    "error": "Erro na assinatura. Por favor, tente novamente."
+  },
+  "bpd": {
+    "donate": "Doar para BPD",
+    "impact": "Seu impacto",
+    "projects": "Projetos atuais",
+    "transparency": "Relatório de transparência"
+  },
+  "user": {
+    "login": "Entrar",
+    "signup": "Cadastrar",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "savedArticles": "Artigos salvos",
+    "readingHistory": "Histórico de leitura"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "retry": "Tentar novamente",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "readMore": "Leia mais",
+    "share": "Compartilhar"
+  }
+}

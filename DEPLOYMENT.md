@@ -23,8 +23,9 @@ Vercel provides the best experience for Next.js applications:
 3. **Set Environment Variables** (Optional)
    ```bash
    XAI_API_KEY=your_grok_api_key
-   NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=your_ga_id
-   NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT=ca-pub-your-id
+   NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
+   NEXT_PUBLIC_MATOMO_SITE_ID=your-matomo-site-id
+   NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
    ```
 
 4. **Deploy**
@@ -154,11 +155,12 @@ services:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `XAI_API_KEY` | No | Grok AI integration |
-| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | No | Google Analytics |
-| `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` | No | Google AdSense client id |
-| `NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT` | No | In-feed/native ad unit slot id |
-| `NEXT_PUBLIC_GOOGLE_ADSENSE_LEADERBOARD_SLOT` | No | Leaderboard ad unit slot id |
-| `NEXT_PUBLIC_GOOGLE_ADSENSE_SIDEBAR_SLOT` | No | Sidebar ad unit slot id |
+| `NEXT_PUBLIC_MATOMO_URL` | No | Matomo analytics instance URL |
+| `NEXT_PUBLIC_MATOMO_SITE_ID` | No | Matomo analytics site ID |
+| `NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID` | No | Adsterra banner zone id |
+| `NEXT_PUBLIC_ADSTERRA_NATIVE_ZONE_ID` | No | Native ad unit zone id |
+| `NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_ZONE_ID` | No | Social bar ad unit zone id |
+| `NEXT_PUBLIC_ADSTERRA_POPUNDER_ZONE_ID` | No | Popunder ad unit zone id |
 | `NEXT_PUBLIC_STRIPE_PUBLIC_KEY` | No | Stripe publishable key for client-side checkout |
 | `STRIPE_SECRET_KEY` | No | Stripe secret key for server-side APIs |
 | `NEXT_PUBLIC_DONATION_PRICE_ID` | No | Stripe Price ID for donations (or Payment Link URL) |
@@ -273,7 +275,7 @@ For updates and maintenance, simply push to your repository and the deployment w
 - [x] Enhanced search functionality with relevance scoring
 - [x] Dark/Light theme switcher with system detection
 - [x] Responsive design for mobile, tablet, desktop
-- [x] Google AdSense integration (development placeholders ready)
+- [x] Adsterra integration (development placeholders ready)
 
 #### **SEO & Performance**
 - [x] Comprehensive SEO metadata with structured data (Schema.org)
@@ -300,8 +302,8 @@ For updates and maintenance, simply push to your repository and the deployment w
 #### **2. Environment Configuration** 🔧
 - [ ] Set up Vercel environment variables:
   - `NEXT_PUBLIC_SITE_URL=https://bali.report`
-  - `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` and slot IDs (when Google AdSense account ready)
-  - `NEXT_PUBLIC_GA_MEASUREMENT_ID` (when Google Analytics ready)
+  - `NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID` and other zone IDs (when Adsterra account ready)
+  - `NEXT_PUBLIC_MATOMO_URL` and `NEXT_PUBLIC_MATOMO_SITE_ID` (when Matomo ready)
 
 #### **3. Domain & DNS Setup** 🌐
 - [ ] Configure **bali.report** domain
@@ -311,13 +313,13 @@ For updates and maintenance, simply push to your repository and the deployment w
 - [ ] www redirect setup (www.bali.report → bali.report)
 
 #### **4. Production Services** 📊
-- [ ] **Google AdSense Account**:
-  - Create Google AdSense publisher account
-  - Get ad unit slot IDs for different ad types
+- [ ] **Adsterra Account**:
+  - Create Adsterra publisher account
+  - Get ad unit zone IDs for different ad types
   - Configure environment variables
-- [ ] **Google Analytics** (Optional):
-  - Create GA4 property
-  - Add measurement ID to environment
+- [ ] **Matomo Analytics** (Optional):
+  - Set up Matomo instance
+  - Add site ID and URL to environment
 - [ ] **Google Search Console**:
   - Add and verify domain ownership
   - Submit sitemap.xml
@@ -362,8 +364,8 @@ The main blocker is the ThemeProvider context issue. Need to:
 3. Update DNS records as instructed by Vercel
 
 ### **Step 4: Monetization Setup**
-1. Create Google AdSense account
-2. Get ad unit slot IDs for different ad formats
+1. Create Adsterra account
+2. Get ad unit zone IDs for different ad formats
 3. Update environment variables in Vercel
 
 ## 🚦 **Deployment Readiness Status**
@@ -376,14 +378,14 @@ The main blocker is the ThemeProvider context issue. Need to:
 | **Responsive Design** | ✅ Ready | Mobile, tablet, desktop tested |
 | **Environment Config** | ✅ Ready | .env.example created |
 | **Domain Setup** | ❌ Pending | Need to configure bali.report |
-|| **Monetization** | 🔄 Partial | Placeholder ready, need Google AdSense account |
+| **Monetization** | 🔄 Partial | Placeholder ready, need Adsterra account |
 
 ## 📝 **Post-Deployment Tasks**
 
 ### **Week 1 After Launch**
 - [ ] Monitor RSS feed reliability
 - [ ] Check Google Search Console for indexing
-- [ ] Verify Google AdSense revenue tracking
+- [ ] Verify Adsterra revenue tracking
 - [ ] Monitor site performance and Core Web Vitals
 - [ ] Test all functionality on live domain
 

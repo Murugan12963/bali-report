@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "home": "Beranda",
+    "news": "Berita",
+    "events": "Acara",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "search": "Cari"
+  },
+  "categories": {
+    "brics": "BRICS",
+    "indonesia": "Indonesia",
+    "bali": "Bali",
+    "economy": "Ekonomi",
+    "politics": "Politik",
+    "culture": "Budaya"
+  },
+  "search": {
+    "placeholder": "Cari artikel...",
+    "filters": "Filter",
+    "categories": "Kategori",
+    "sources": "Sumber",
+    "dateRange": "Rentang Tanggal",
+    "languages": "Bahasa",
+    "sortBy": "Urutkan berdasarkan",
+    "relevance": "Relevansi",
+    "date": "Tanggal",
+    "noResults": "Tidak ada hasil ditemukan",
+    "trending": "Trending",
+    "recent": "Terbaru",
+    "saveSearch": "Simpan Pencarian",
+    "clearAll": "Hapus Semua"
+  },
+  "newsletter": {
+    "title": "Berlangganan Newsletter Kami",
+    "description": "Dapatkan berita dan update terbaru langsung di inbox Anda",
+    "emailPlaceholder": "Masukkan email Anda",
+    "subscribe": "Berlangganan",
+    "success": "Berhasil berlangganan!",
+    "error": "Gagal berlangganan. Silakan coba lagi."
+  },
+  "bpd": {
+    "donate": "Donasi ke BPD",
+    "impact": "Dampak Anda",
+    "projects": "Proyek Saat Ini",
+    "transparency": "Laporan Transparansi"
+  },
+  "user": {
+    "login": "Masuk",
+    "signup": "Daftar",
+    "profile": "Profil",
+    "settings": "Pengaturan",
+    "logout": "Keluar",
+    "savedArticles": "Artikel Tersimpan",
+    "readingHistory": "Riwayat Bacaan"
+  },
+  "common": {
+    "loading": "Memuat...",
+    "error": "Terjadi kesalahan",
+    "retry": "Coba lagi",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "apply": "Terapkan",
+    "readMore": "Baca Selengkapnya",
+    "share": "Bagikan"
+  }
+}

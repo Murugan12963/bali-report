@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Header from "@/components/Header";
 import ArticleCard from "@/components/ArticleCard";
 import { rssAggregator } from "@/lib/rss-parser";
 import Link from "next/link";
@@ -39,8 +38,6 @@ export default async function BaliPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">

@@ -1,0 +1,82 @@
+{
+  "common": {
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "share": "Share",
+    "copy": "Copy",
+    "readMore": "Read more",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "news": "News",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "createAccount": "Create account",
+    "welcome": "Welcome back"
+  },
+  "search": {
+    "placeholder": "Search articles...",
+    "filters": "Filters",
+    "categories": "Categories",
+    "sources": "Sources",
+    "dateRange": "Date range",
+    "languages": "Languages",
+    "applyFilters": "Apply filters",
+    "clearFilters": "Clear filters"
+  },
+  "articles": {
+    "readTime": "min read",
+    "published": "Published",
+    "author": "Author",
+    "source": "Source",
+    "category": "Category",
+    "tags": "Tags",
+    "related": "Related articles",
+    "comments": "Comments",
+    "share": "Share article",
+    "save": "Save for later"
+  },
+  "social": {
+    "upvote": "Upvote",
+    "downvote": "Downvote",
+    "report": "Report",
+    "share": "Share",
+    "comment": "Comment",
+    "likes": "Likes",
+    "views": "Views",
+    "shares": "Shares"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "serverError": "Server error",
+    "networkError": "Network error",
+    "unauthorized": "Unauthorized access"
+  },
+  "success": {
+    "saved": "Saved successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "shared": "Shared successfully"
+  }
+}

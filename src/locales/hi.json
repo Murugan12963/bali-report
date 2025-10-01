@@ -1,0 +1,67 @@
+{
+  "navigation": {
+    "home": "होम",
+    "news": "समाचार",
+    "events": "कार्यक्रम",
+    "about": "हमारे बारे में",
+    "contact": "संपर्क",
+    "search": "खोज"
+  },
+  "categories": {
+    "brics": "ब्रिक्स",
+    "indonesia": "इंडोनेशिया",
+    "bali": "बाली",
+    "economy": "अर्थव्यवस्था",
+    "politics": "राजनीति",
+    "culture": "संस्कृति"
+  },
+  "search": {
+    "placeholder": "लेख खोजें...",
+    "filters": "फ़िल्टर",
+    "categories": "श्रेणियाँ",
+    "sources": "स्रोत",
+    "dateRange": "तिथि सीमा",
+    "languages": "भाषाएँ",
+    "sortBy": "इसके अनुसार क्रमबद्ध करें",
+    "relevance": "प्रासंगिकता",
+    "date": "तिथि",
+    "noResults": "कोई परिणाम नहीं मिला",
+    "trending": "ट्रेंडिंग",
+    "recent": "हाल ही का",
+    "saveSearch": "खोज सहेजें",
+    "clearAll": "सभी साफ़ करें"
+  },
+  "newsletter": {
+    "title": "हमारे न्यूज़लेटर की सदस्यता लें",
+    "description": "नवीनतम समाचार और अपडेट सीधे अपने इनबॉक्स में प्राप्त करें",
+    "emailPlaceholder": "अपना ईमेल दर्ज करें",
+    "subscribe": "सदस्यता लें",
+    "success": "सफलतापूर्वक सदस्यता ली गई!",
+    "error": "सदस्यता में त्रुटि। कृपया पुनः प्रयास करें।"
+  },
+  "bpd": {
+    "donate": "BPD को दान करें",
+    "impact": "आपका प्रभाव",
+    "projects": "वर्तमान परियोजनाएं",
+    "transparency": "पारदर्शिता रिपोर्ट"
+  },
+  "user": {
+    "login": "लॉगिन",
+    "signup": "साइन अप",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
+    "logout": "लॉगआउट",
+    "savedArticles": "सहेजे गए लेख",
+    "readingHistory": "पढ़ने का इतिहास"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "एक त्रुटि हुई",
+    "retry": "पुनः प्रयास करें",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "apply": "लागू करें",
+    "readMore": "और पढ़ें",
+    "share": "शेयर करें"
+  }
+}

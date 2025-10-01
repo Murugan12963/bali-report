@@ -81,7 +81,7 @@ This document outlines Bali Report's comprehensive compliance framework, coverin
 
 ## 💰 Monetization Compliance
 
-### 1. Google AdSense
+### 1. Adsterra Advertising
 
 #### Content Guidelines
 - No shocking content
@@ -96,6 +96,8 @@ This document outlines Bali Report's comprehensive compliance framework, coverin
 - Mobile optimization
 - User experience priority
 - Loading performance
+- Privacy-focused configuration
+- Development placeholders for testing
 
 ### 2. Risk Mitigation
 
@@ -105,6 +107,13 @@ This document outlines Bali Report's comprehensive compliance framework, coverin
 - Clear attribution
 - Professional language
 - Regular review
+
+#### Analytics & Privacy
+- Matomo Analytics for privacy-focused tracking
+- No data sharing with third parties
+- User data ownership
+- GDPR compliance features
+- Cookie consent management
 
 #### Backup Plans
 - Affiliate partnerships
@@ -191,10 +200,10 @@ interface CookieConsent {
 
 const initializeCookies = (consent: CookieConsent) => {
   if (consent.analytics) {
-    initializeAnalytics();
+    initializeMatomo();
   }
   if (consent.advertising) {
-    initializeAdsense();
+    initializeAdsterra();
   }
 };
 ```

@@ -29,8 +29,8 @@
 - **Error Handling**: Exponential backoff and graceful failures
 
 ### Monetization & Analytics ✅
-- **Ads**: Google AdSense integration (production ready)
-- **Analytics**: Google Analytics 4 integration ready
+- **Ads**: Adsterra integration (production ready)
+- **Analytics**: Matomo analytics integration ready
 - **SEO**: Dynamic sitemap, robots.txt, structured data
 - **Future**: Newsletter (Mailchimp), Comments (Disqus)
 
@@ -105,7 +105,7 @@
   - Curated BRICS analyses
   - Early access to webinars
 
-### Google AdSense Integration
+### Adsterra Integration
 - **Ad Formats**:
   - Leaderboard banners (728x90) on homepage
   - Sidebar banners (300x250) on articles  
@@ -151,7 +151,7 @@ npm run type-check
 - **Responsive UI**: Mobile-first with dark/light themes
 - **Performance**: <7ms response, 91KB bundle
 - **SEO**: Sitemap, structured data, social sharing
-- **Monetization**: Google AdSense integration ready
+- **Monetization**: Adsterra integration ready
 - **Error Handling**: 404 pages, RSS fallbacks
 
 ### 🚀 **Deployment Ready**

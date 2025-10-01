@@ -18,7 +18,13 @@
 - **📹 Viral Content**: Short video snippets and shareable BRICS perspectives
 - **🌙 Dark/Light Themes**: Beautiful tropical Balinese design with system detection
 
-### Community & Events
+### Community & Events ✅
+- **🎫 BRICS Events**: In-person events and webinars with ticketing
+- **💰 BPD Integration**: Complete fundraising and donation system
+- **📊 Impact Dashboard**: Real-time project tracking and visualization
+- **📧 Newsletter**: Comprehensive Mailchimp integration with multiple signup variants
+- **💬 Project Updates**: Real-time updates from BPD-funded projects
+- **🎯 Campaign Management**: Themed fundraising campaigns with progress tracking
 - **🎫 BRICS Events**: Virtual webinars and in-person meetups
 - **💰 BPD Fundraising**: Support South-South cooperation initiatives
 - **🎯 Impact Tracking**: Real-time donation progress and project updates
@@ -76,20 +82,22 @@ npm run type-check # Run TypeScript checks
 - **AI Integration**: x.ai (Grok) for content analysis
 - **Real-time**: Socket.IO for live updates
 
-### Monetization & Payments
-- **Advertising**: Google AdSense with native ad support
-- **Payments**: Stripe SDK for donations and subscriptions
+### Monetization & Payments ✅
+- **Advertising**: Adsterra with native ad support
+- **Payments**: Stripe integration for donations and subscriptions
+- **Premium**: Multiple subscription tiers with BPD allocation
 - **Events**: Stripe Checkout for event ticketing
+- **Newsletter**: Mailchimp API with advanced features
 
 ### Testing & Deployment
 - **Testing**: Jest with React Testing Library
 - **Deployment**: Vercel (optimized)
-- **Analytics**: Google Analytics 4
+- **Analytics**: Matomo Analytics
 - **Monitoring**: Health checks and performance tracking
 
 ## 📊 News Sources
 
-### BRICS-Aligned (245+ daily articles)
+### BRICS-Aligned Sources
 - **RT News** - Russian perspectives
 - **TASS** - Russian state news agency
 - **Xinhua News** - Chinese international coverage
@@ -98,26 +106,58 @@ npm run type-check # Run TypeScript checks
 - **China Daily** - English-language Chinese news
 - **Sputnik Globe** - International news network
 
-### Indonesia/Southeast Asia (67+ daily articles)
+### Indonesia/Southeast Asia Sources
 - **Antara News** - Indonesian national news agency
 - **BBC Asia** - Regional coverage
 
 ## 🔧 Configuration
 
-### Environment Variables (Optional)
+### Environment Variables
+
+```bash
+# Required for Core Features
+NODE_ENV=production
+NEXT_PUBLIC_SITE_URL=https://bali.report
+
+# Analytics Services
+NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
+NEXT_PUBLIC_MATOMO_SITE_ID=your-matomo-site-id
+
+# Adsterra Integration
+NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
+NEXT_PUBLIC_ADSTERRA_NATIVE_ZONE_ID=your-native-zone-id
+NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_ZONE_ID=your-social-bar-zone-id
+NEXT_PUBLIC_ADSTERRA_POPUNDER_ZONE_ID=your-popunder-zone-id
+
+# Stripe Integration
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_key
+STRIPE_SECRET_KEY=sk_test_your_key
+NEXT_PUBLIC_STRIPE_PRICE_ID_BASIC=price_your_id
+NEXT_PUBLIC_STRIPE_PRICE_ID_PREMIUM=price_your_id
+NEXT_PUBLIC_STRIPE_PRICE_ID_ENTERPRISE=price_your_id
+
+# Mailchimp Integration
+MAILCHIMP_API_KEY=your-api-key
+MAILCHIMP_SERVER_PREFIX=your-server-prefix
+MAILCHIMP_AUDIENCE_ID=your-audience-id
+
+# AI Features (Optional)
+XAI_API_KEY=your_grok_api_key
+```
 
 ```bash
 # AI Features (x.ai integration)
 XAI_API_KEY=your_grok_api_key
 
 # Analytics (optional)
-NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=your_ga_id
+NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
+NEXT_PUBLIC_MATOMO_SITE_ID=your-matomo-site-id
 
-# AdSense Integration (optional)
-NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT=ca-pub-your-id
-NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT=your-native-slot
-NEXT_PUBLIC_GOOGLE_ADSENSE_LEADERBOARD_SLOT=your-leaderboard-slot
-NEXT_PUBLIC_GOOGLE_ADSENSE_SIDEBAR_SLOT=your-sidebar-slot
+# Adsterra Integration (optional)
+NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
+NEXT_PUBLIC_ADSTERRA_NATIVE_ZONE_ID=your-native-zone-id
+NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_ZONE_ID=your-social-bar-zone-id
+NEXT_PUBLIC_ADSTERRA_POPUNDER_ZONE_ID=your-popunder-zone-id
 
 # Stripe Integration (optional)
 NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_key
@@ -158,7 +198,7 @@ Performance metrics:
 - **Lighthouse Score**: 95+ across all metrics
 - **Core Web Vitals**: All passing
 - **Cache Hit Rate**: 90%+ with intelligent caching
-- **RSS Sources**: 12 active sources (600+ articles/day)
+- **RSS Sources**: 9 active sources (530+ articles/day)
 - **Uptime**: 99.9%+
 
 ## 🚀 Deployment
@@ -182,7 +222,7 @@ npm start
 - **Response Time**: <7ms average
 - **Bundle Size**: ~147KB optimized
 - **Lighthouse Score**: 95+ across all metrics
-- **RSS Sources**: 9 active sources, 100% uptime
+- **RSS Sources**: 9 active sources
 - **Cache Hit Rate**: 90%+ with intelligent caching
 
 ## 🤝 Contributing
@@ -227,7 +267,7 @@ Bali Report is an independent news aggregation platform providing BRICS-aligned 
 - **Mission**: Multi-polar news perspectives challenging Western media monopoly
 - **Focus Areas**: BRICS nations (Russia, China, India, Brazil, South Africa), Indonesia, Bali local
 - **Technology**: Next.js 15, TypeScript, Tailwind CSS 4, RSS aggregation
-- **Monetization**: PropellerAds integration (development ready)
+- **Monetization**: Adsterra integration (development ready)
 
 ## 🏗️ Tech Stack
 
@@ -295,7 +335,7 @@ bali-report/
 - **Social Media** sharing (Open Graph, Twitter Cards)
 
 ### 💰 **Monetization Ready**
-- **Google AdSense Integration** (banner, sidebar, native, responsive)
+- **Adsterra Integration** (banner, native, social-bar, popunder)
 - Development placeholders active
 - Production environment variables configured
 
@@ -306,17 +346,20 @@ bali-report/
 - **TASS** - Russian state news
 - **Xinhua News** - Chinese international
 - **Al Jazeera** - Middle Eastern viewpoints
+- **CGTN News** - China Global Television
+- **China Daily** - English-language Chinese news
+- **Sputnik Globe** - International news network
 
 ### 🇮🇩 **Indonesia Sources** (Active)
 - **Antara News** - National Indonesian news
 - **BBC Asia** - Regional coverage
 
-*Sources aggregating **245 BRICS articles** and **67 Indonesia articles** daily*
+*Sources aggregating **530+ articles daily** from 9 active sources*
 
-## 🎨 Design Principles
+### 🎨 Design Principles
 
 - **Mobile-First**: Optimized for smartphone users
-- **BRICS Theme**: Red and gold color scheme
+- **Tropical Bali Theme**: Emerald, ocean blue, sunset orange, temple gold
 - **Accessibility**: WCAG 2.1 compliant
 - **Performance**: Fast loading with optimized images
 
@@ -361,20 +404,52 @@ See [Next.js deployment documentation](https://nextjs.org/docs/app/building-your
 
 ## 📋 Development Status
 
-### ✅ **Completed (Ready for Production)**
+### ✅ **Completed Features**
+
+#### **Core Platform**
+- ✅ **RSS Aggregation**: 9 active sources, 530+ daily articles
+- ✅ **UI/UX**: Responsive design, dark/light themes, accessibility
+- ✅ **SEO**: Complete optimization with structured data
+- ✅ **Performance**: <7ms response time, optimized bundle
+
+#### Community Features
+- ✅ **BPD Integration**: Complete fundraising system with Stripe
+- ✅ **Events Platform**: BRICS events with ticketing
+- ✅ **Newsletter**: Comprehensive Mailchimp integration
+- ✅ **Impact Dashboard**: Real-time fund tracking
+- ✅ **Project Updates**: Live project tracking system
+
+#### Monetization
+- ✅ **Premium Subscriptions**: Multiple tiers with BPD allocation
+- ✅ **Donations**: One-click donations with Stripe
+- ✅ **Advertising**: Adsterra integration
+- ✅ **Events Revenue**: Ticket sales system
 - ✅ **Core Development**: RSS aggregation, routing, components
 - ✅ **UI/UX**: Responsive design, dark/light themes, accessibility
-- ✅ **Content**: 6 active RSS sources, 312+ daily articles
+- ✅ **Content**: 9 active RSS sources, 530+ daily articles
 - ✅ **SEO**: Sitemap, robots.txt, structured data, meta tags
 - ✅ **Performance**: Production build optimized (<7ms response)
 - ✅ **Testing**: Unit tests, production server tested
-- ✅ **Monetization**: Google AdSense integration ready
+- ✅ **Monetization**: Adsterra integration ready
 - ✅ **Error Handling**: 404 pages, fallbacks, graceful failures
 
 ### 📅 **Next Steps**
+
+#### Immediate Deployment
 - Deploy to Vercel with custom domain (bali.report)
 - Configure production environment variables
-- Set up Google AdSense account and ad units
+- Set up service accounts (Stripe, Mailchimp, Google)
+- Submit to search engines
+
+#### Future Features
+- User accounts and personalization
+- Advanced search with filters
+- Mobile app development
+- Admin dashboard
+- Disqus comments integration
+- Deploy to Vercel with custom domain (bali.report)
+- Configure production environment variables
+- Set up Adsterra account and ad units
 - Submit to search engines
 
 ## 🚀 **Quick Deployment**
@@ -392,11 +467,12 @@ npx vercel --prod
 ```bash
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://bali.report
-NEXT_PUBLIC_GA_TRACKING_ID=your-ga-id
-NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT=ca-pub-your-adsense-client-id
-NEXT_PUBLIC_GOOGLE_ADSENSE_LEADERBOARD_SLOT=your-leaderboard-slot-id
-NEXT_PUBLIC_GOOGLE_ADSENSE_SIDEBAR_SLOT=your-sidebar-slot-id
-NEXT_PUBLIC_GOOGLE_ADSENSE_NATIVE_SLOT=your-native-slot-id
+NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
+NEXT_PUBLIC_MATOMO_SITE_ID=your-matomo-site-id
+NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
+NEXT_PUBLIC_ADSTERRA_NATIVE_ZONE_ID=your-native-zone-id
+NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_ZONE_ID=your-social-bar-zone-id
+NEXT_PUBLIC_ADSTERRA_POPUNDER_ZONE_ID=your-popunder-zone-id
 ```
 
 ## 📞 Support
