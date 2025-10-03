@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 // Import icons
-import { Github, Mail } from 'lucide-react';
+import { Github, Mail } from "lucide-react";
 
 const providerIcons = {
   google: (
@@ -50,14 +49,16 @@ interface Provider {
 
 interface SignInFormProps {
   providers: Record<string, Provider> | null;
+  callbackUrl?: string;
 }
 
-export default function SignInForm({ providers }: SignInFormProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function SignInForm({
+  providers,
+  callbackUrl = "/",
+}: SignInFormProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const handleOAuthSignIn = (providerId: string) => {
     setIsLoading(true);
@@ -67,7 +68,7 @@ export default function SignInForm({ providers }: SignInFormProps) {
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await signIn('credentials', {
+    await signIn("credentials", {
       email,
       password,
       callbackUrl,
@@ -83,11 +84,18 @@ export default function SignInForm({ providers }: SignInFormProps) {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-3">
         {Object.values(providers).map((provider) => {
-          if (provider.id === 'credentials') {
+          if (provider.id === "credentials") {
             return (
-              <form key="credentials" onSubmit={handleEmailSignIn} className="space-y-4">
+              <form
+                key="credentials"
+                onSubmit={handleEmailSignIn}
+                className="space-y-4"
+              >
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     Email address
                   </label>
                   <input
@@ -103,7 +111,10 @@ export default function SignInForm({ providers }: SignInFormProps) {
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     Password
                   </label>
                   <input
@@ -123,7 +134,7 @@ export default function SignInForm({ providers }: SignInFormProps) {
                   disabled={isLoading}
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
-                  {isLoading ? 'Signing in...' : 'Sign in with Email'}
+                  {isLoading ? "Signing in..." : "Sign in with Email"}
                 </button>
               </form>
             );
@@ -135,10 +146,15 @@ export default function SignInForm({ providers }: SignInFormProps) {
               onClick={() => handleOAuthSignIn(provider.id)}
               disabled={isLoading}
               className={`w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 ${
-                provider.id === 'vk' ? 'hover:text-[#4C75A3]' :
-                provider.id === 'google' ? 'hover:text-[#4285F4]' :
-                provider.id === 'yandex' ? 'hover:text-[#FF0000]' :
-                provider.id === 'github' ? 'hover:text-[#333]' : ''
+                provider.id === "vk"
+                  ? "hover:text-[#4C75A3]"
+                  : provider.id === "google"
+                    ? "hover:text-[#4285F4]"
+                    : provider.id === "yandex"
+                      ? "hover:text-[#FF0000]"
+                      : provider.id === "github"
+                        ? "hover:text-[#333]"
+                        : ""
               }`}
             >
               <span className="sr-only">Sign in with {provider.name}</span>
@@ -155,7 +171,8 @@ export default function SignInForm({ providers }: SignInFormProps) {
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-            Protected by reCAPTCHA and subject to our Privacy Policy and Terms of Service
+            Protected by reCAPTCHA and subject to our Privacy Policy and Terms
+            of Service
           </span>
         </div>
       </div>

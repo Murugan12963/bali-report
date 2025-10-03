@@ -1,22 +1,27 @@
-import { Metadata } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import UserProfileForm from '@/components/profile/UserProfileForm';
-import UserPreferencesForm from '@/components/profile/UserPreferencesForm';
-import ChangePasswordForm from '@/components/profile/ChangePasswordForm';
-import DeleteAccountButton from '@/components/profile/DeleteAccountButton';
+import { Metadata } from "next";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/config/auth";
+import UserProfileForm from "@/components/profile/UserProfileForm";
+import UserPreferencesForm from "@/components/profile/UserPreferencesForm";
+import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
+import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 
 export const metadata: Metadata = {
-  title: 'Profile - Bali Report',
-  description: 'Manage your Bali Report profile and preferences',
+  title: "Profile Settings - Bali Report",
+  description: "Manage your Bali Report profile, personalization preferences, content settings, and account security.",
+  keywords: "profile, settings, preferences, account, security, personalization",
+  robots: {
+    index: false, // Private user data
+    follow: false,
+  },
 };
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/auth/signin?callbackUrl=/profile');
+    redirect("/auth/signin?callbackUrl=/profile");
   }
 
   return (
@@ -56,7 +61,9 @@ export default async function ProfilePage() {
                 </h2>
                 <div className="mt-4 space-y-4">
                   <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Change Password</h3>
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Change Password
+                    </h3>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                       Update your password to keep your account secure
                     </p>
@@ -65,7 +72,9 @@ export default async function ProfilePage() {
                     </div>
                   </div>
                   <div className="pt-4">
-                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Delete Account</h3>
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Delete Account
+                    </h3>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                       Permanently delete your account and all associated data
                     </p>

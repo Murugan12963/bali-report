@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 import ArticleCard from "@/components/ArticleCard";
 import { rssAggregator } from "@/lib/rss-parser";
@@ -5,40 +6,47 @@ import Link from "next/link";
 import StockMarketTracker from "@/components/StockMarketTracker";
 
 import { generateSEOMetadata } from "@/components/SEOHead";
+import {
+  generateCategoryMetadata,
+  generateBreadcrumbSchema,
+} from "@/lib/metadata";
 
 /**
  * Indonesia category page - shows Indonesian and Asia-focused news sources.
  */
-export const metadata = generateSEOMetadata({
-  title: "Indonesia News - Southeast Asian Perspectives | Bali Report",
-  description:
-    "Comprehensive Indonesia news coverage from Antara News, BBC Asia, and regional sources. Indonesian politics, economy, culture, ASEAN developments, and archipelago insights. Updated daily with 67+ articles.",
-  keywords:
-    "Indonesia news, Indonesian politics, Jakarta news, Southeast Asia, ASEAN, archipelago, Indonesian economy, Indonesian culture, Antara News, BBC Asia, regional news, Jokowi, Indonesian democracy",
-  canonical: "https://bali.report/indonesia",
-});
+export const metadata: Metadata = generateCategoryMetadata("Indonesia");
 
 export default async function IndonesiaPage() {
   // Fetch Indonesia-specific articles including scraped sources
   const articles = await rssAggregator.fetchByCategory("Indonesia", true); // Enable scrapers
   const featuredArticles = articles.slice(0, 2);
   const latestArticles = articles.slice(2);
+  const topArticle = articles[0] || null;
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "https://bali.report" },
+    { name: "Indonesia News", url: "https://bali.report/indonesia" },
+  ]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 theme-transition">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+          <div className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400 theme-transition">
             <Link
               href="/"
-              className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition"
+              className="hover:text-blue-600 dark:hover:text-teal-400 theme-transition"
             >
-              🌊 Home
+              Home
             </Link>
             <span>›</span>
-            <span className="font-medium text-cyan-600 dark:text-cyan-400 theme-transition">
-              🏝️ Indonesia Islands
+            <span className="font-medium text-zinc-900 dark:text-zinc-100 theme-transition">
+              Indonesia
             </span>
           </div>
         </nav>
@@ -48,46 +56,76 @@ export default async function IndonesiaPage() {
           <StockMarketTracker markets="Indonesia" />
         </section>
 
-        {/* Page Header */}
+        {/* Page Header - Modern Hero */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 dark:from-cyan-700 dark:via-blue-700 dark:to-indigo-700 text-white rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden theme-transition">
-            {/* Tropical decorative elements */}
-            <div className="absolute top-0 right-0 opacity-10">
-              <div className="text-6xl transform rotate-12">🏝️</div>
-            </div>
-            <div className="absolute bottom-0 left-0 opacity-10">
-              <div className="text-4xl transform -rotate-12">🌊</div>
-            </div>
-
-            <div className="relative z-10">
-              <div className="flex items-center mb-4">
-                <span className="text-4xl mr-4">🏝️</span>
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    Indonesia Uncovered
-                  </h1>
-                  <p className="text-cyan-200 dark:text-blue-200 mt-2 theme-transition">
-                    🇮🇩 Southeast Asia's Hidden Superpower Speaks
+          <div className="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800 theme-transition">
+            <div className="relative">
+              {topArticle ? (
+                <>
+                  {/* Featured Image */}
+                  {topArticle.imageUrl && (
+                    <div className="relative w-full h-64 md:h-80 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                      <img
+                        src={topArticle.imageUrl}
+                        alt={topArticle.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    </div>
+                  )}
+                  <div className="p-8">
+                    <div className="mb-4">
+                      <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 theme-transition leading-tight">
+                        {topArticle.title}
+                      </h1>
+                      <p className="text-zinc-600 dark:text-zinc-400 theme-transition font-medium text-sm">
+                        {topArticle.source} • {new Date(topArticle.pubDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="text-lg text-zinc-700 dark:text-zinc-300 mb-6 max-w-4xl theme-transition leading-relaxed">
+                      {topArticle.description?.substring(0, 200)}...
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <a
+                        href={topArticle.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center bg-blue-600 hover:bg-blue-700 dark:bg-teal-600 dark:hover:bg-teal-500 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-sm"
+                      >
+                        Read Full Story
+                        <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="p-8">
+                  <div className="mb-4">
+                    <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 theme-transition leading-tight">
+                      Indonesia News & Updates
+                    </h1>
+                    <p className="text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      Southeast Asia's Hidden Superpower
+                    </p>
+                  </div>
+                  <p className="text-lg text-zinc-700 dark:text-zinc-300 mb-6 max-w-4xl theme-transition leading-relaxed">
+                    270 million people. 17,508 islands. The world's 4th most populous nation that Western media ignores. Discover why Indonesia is ASEAN's powerhouse and democracy's biggest success story.
                   </p>
+                  <div className="flex flex-wrap gap-3">
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      Antara News
+                    </span>
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      BBC Asia
+                    </span>
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      Southeast Focus
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <p className="text-xl text-cyan-100 dark:text-blue-100 mb-6 max-w-4xl theme-transition">
-                270 million people. 17,508 islands. The world&apos;s 4th most
-                populous nation that Western media ignores. Discover why
-                Indonesia is ASEAN&apos;s powerhouse and democracy&apos;s
-                biggest success story.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🌊 Antara Ocean News
-                </span>
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🏝️ BBC Island Asia
-                </span>
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  ⛩️ Southeast Temple Focus
-                </span>
-              </div>
+              )}
             </div>
           </div>
         </section>

@@ -1,31 +1,19 @@
-import createMiddleware from 'next-intl/middleware';
-import { locales } from '@/config/i18n';
+import { NextRequest, NextResponse } from "next/server";
 
-export default createMiddleware({
-  // A list of all locales that are supported
-  locales: locales,
-  
-  // Used when no locale matches
-  defaultLocale: 'en',
-  
-  // Domains can be used for language-specific domains
-  // domains: [
-  //   {
-  //     domain: 'bali.report',
-  //     defaultLocale: 'en',
-  //   },
-  //   {
-  //     domain: 'id.bali.report',
-  //     defaultLocale: 'id',
-  //   },
-  // ],
-});
+export function middleware(request: NextRequest) {
+  // Simple pass-through middleware
+  // Add any custom logic here if needed (e.g., redirects, headers)
+  return NextResponse.next();
+}
 
 export const config = {
-  // Match all routes except for
-  // - static files in the public folder
-  // - api routes
-  // - static assets
-  // - _next internal routes
-  matcher: ['/((?!api|_next|.*\\..*).*)']
+  // Match all pathnames except for
+  // - API routes
+  // - _next/static (static files)
+  // - _next/image (image optimization files)
+  // - favicon.ico (favicon file)
+  // - public files (public folder)
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|icons|manifest.json|sw.js|.*\\..*).*)",
+  ],
 };

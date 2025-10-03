@@ -1,8 +1,10 @@
-import DonationForm from '@/components/donation/DonationForm';
+import { Metadata } from "next";
+import DonationForm from "@/components/donation/DonationForm";
 
-export const metadata = {
-  title: 'Donate to BPD Initiatives | Bali Report',
-  description: 'Support sustainable development projects across BRICS nations through your contribution to BPD initiatives.',
+export const metadata: Metadata = {
+  title: "Donate to BPD Initiatives | Bali Report",
+  description:
+    "Support sustainable development projects across BRICS nations through your contribution to BPD initiatives.",
 };
 
 export default function DonatePage() {
@@ -14,8 +16,9 @@ export default function DonatePage() {
             Support BPD Initiatives
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Your contribution helps fund sustainable development projects, from agricultural 
-            innovation to renewable energy solutions across BRICS nations.
+            Your contribution helps fund sustainable development projects, from
+            agricultural innovation to renewable energy solutions across BRICS
+            nations.
           </p>
         </div>
 
@@ -57,8 +60,9 @@ export default function DonatePage() {
 
         <div className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
           <p>
-            BPD (BRICS Partnership for Development) is committed to transparency in fund allocation.
-            20% of all donations directly support community-chosen development projects.
+            BPD (BRICS Partnership for Development) is committed to transparency
+            in fund allocation. 20% of all donations directly support
+            community-chosen development projects.
           </p>
         </div>
       </div>

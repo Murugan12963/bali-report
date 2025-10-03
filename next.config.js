@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    dirs: ['src'],
+    dirs: ["src"],
     ignoreDuringBuilds: false,
   },
   typescript: {
@@ -11,41 +11,91 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
       },
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   // PWA Configuration
   experimental: {
     webpackBuildWorker: true,
   },
-  // Headers for PWA and caching
+  // Headers for PWA, caching, and security
   async headers() {
     return [
+      // Security headers for all routes
       {
-        source: '/manifest.json',
+        source: "/:path*",
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/manifest+json',
+            key: "X-Frame-Options",
+            value: "DENY",
           },
           {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.adsterra.com *.highperformanceformats.com cdn.matomo.cloud",
+              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+              "img-src 'self' data: https: http:",
+              "font-src 'self' fonts.gstatic.com data:",
+              "connect-src 'self' *.bali.report cdn.matomo.cloud",
+              "frame-src 'self' *.adsterra.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
+              "upgrade-insecure-requests",
+            ].join("; "),
           },
         ],
       },
       {
-        source: '/sw.js',
+        source: "/manifest.json",
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/javascript',
+            key: "Content-Type",
+            value: "application/manifest+json",
           },
           {
-            key: 'Cache-Control',
-            value: 'public, max-age=0, must-revalidate',
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/javascript",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
           },
         ],
       },
@@ -53,6 +103,4 @@ const nextConfig = {
   },
 };
 
-const withNextIntl = require('next-intl/plugin')();
-
-module.exports = withNextIntl(nextConfig)
+module.exports = nextConfig;

@@ -1,9 +1,13 @@
-import {getRequestConfig} from 'next-intl/server';
+import { getRequestConfig } from "next-intl/server";
 
-export default getRequestConfig(async ({locale}) => {
-  // Provide a static locale, resolve messages or provide fallback
+export default getRequestConfig(async () => {
+  // Always use English for now since we only have en.json
+  const locale = "en";
+
   return {
-    locale: locale || 'en',
-    messages: (await import(`../../locales/${locale || 'en'}.json`)).default
+    locale,
+    messages: (await import(`../../locales/${locale}.json`)).default,
+    timeZone: "Asia/Jakarta",
+    now: new Date(),
   };
 });

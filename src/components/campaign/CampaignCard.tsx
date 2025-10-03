@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Campaign } from '@/types/campaign';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Campaign } from "@/types/campaign";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -13,33 +13,37 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
   const [imageError, setImageError] = useState(false);
 
   const percentComplete = Math.round((campaign.raised / campaign.goal) * 100);
-  
-  const daysRemaining = Math.max(
-    0,
-    Math.ceil(
-      (new Date(campaign.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-    )
-  );
+
+  const daysRemaining = campaign.endDate
+    ? Math.max(
+        0,
+        Math.ceil(
+          (new Date(campaign.endDate).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      )
+    : 0;
 
   const categoryEmoji = {
-    agritech: '🌱',
-    energy: '⚡',
-    ngo: '🎓',
-    other: '🌟'
+    education: "📚",
+    healthcare: "🏥",
+    infrastructure: "🏗️",
+    environment: "🌿",
+    community: "👥",
   }[campaign.category];
 
   const statusClasses = {
-    active: 'bg-green-100 text-green-800',
-    completed: 'bg-blue-100 text-blue-800',
-    upcoming: 'bg-yellow-100 text-yellow-800'
+    active: "bg-green-100 text-green-800",
+    completed: "bg-blue-100 text-blue-800",
+    pending: "bg-orange-100 text-orange-800",
   }[campaign.status];
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       <div className="relative h-48 w-full">
-        {!imageError && campaign.coverImage ? (
+        {!imageError && campaign.image ? (
           <Image
-            src={campaign.coverImage}
+            src={campaign.image}
             alt={campaign.title}
             fill
             className="object-cover"
@@ -51,7 +55,9 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
           </div>
         )}
         <div className="absolute top-4 right-4">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusClasses}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${statusClasses}`}
+          >
             {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
           </span>
         </div>
@@ -64,7 +70,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
             {campaign.title}
           </h3>
         </div>
-        
+
         <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
           {campaign.description}
         </p>
@@ -92,7 +98,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
             <span>{daysRemaining} days left</span>
           </div>
 
-          {campaign.status === 'active' && (
+          {campaign.status === "active" && (
             <Link
               href={`/campaigns/${campaign.id}`}
               className="block w-full text-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"

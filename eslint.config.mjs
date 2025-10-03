@@ -1,6 +1,7 @@
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,6 +11,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  js.configs.recommended,
   {
     ignores: [
       ".next/**",
@@ -23,13 +25,13 @@ const eslintConfig = [
   {
     rules: {
       // Allow unescaped quotes in JSX for better readability
-      'react/no-unescaped-entities': 'warn',
+      "react/no-unescaped-entities": "warn",
       // Allow any type in specific cases
-      '@typescript-eslint/no-explicit-any': 'warn',
+      "@typescript-eslint/no-explicit-any": "warn",
       // Allow unused variables in development
-      '@typescript-eslint/no-unused-vars': 'warn',
+      "@typescript-eslint/no-unused-vars": "warn",
       // More lenient exhaustive deps rule
-      'react-hooks/exhaustive-deps': 'warn',
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
 ];

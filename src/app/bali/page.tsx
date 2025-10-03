@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 import ArticleCard from "@/components/ArticleCard";
 import { rssAggregator } from "@/lib/rss-parser";
@@ -5,18 +6,15 @@ import Link from "next/link";
 import StockMarketTracker from "@/components/StockMarketTracker";
 
 import { generateSEOMetadata } from "@/components/SEOHead";
+import {
+  generateCategoryMetadata,
+  generateBreadcrumbSchema,
+} from "@/lib/metadata";
 
 /**
  * Bali category page - shows Bali-specific local news.
  */
-export const metadata = generateSEOMetadata({
-  title: "Bali Local News - Island of the Gods Coverage | Bali Report",
-  description:
-    "Local Bali news covering tourism updates, cultural events, Hindu festivals, Denpasar politics, Ubud developments, and environmental issues. Island of the Gods local perspective with dedicated Balinese sources.",
-  keywords:
-    "Bali local news, Bali tourism, Bali culture, Hindu festivals, Denpasar, Ubud, Canggu, Sanur, Balinese culture, Island of the Gods, Bali politics, Bali environment, Nyepi, Galungan, Kuningan",
-  canonical: "https://bali.report/bali",
-});
+export const metadata: Metadata = generateCategoryMetadata("Bali");
 
 export default async function BaliPage() {
   // Fetch Bali-specific articles including scraped sources
@@ -35,22 +33,32 @@ export default async function BaliPage() {
 
   const featuredArticles = baliRelatedArticles.slice(0, 2);
   const latestArticles = baliRelatedArticles.slice(2);
+  const topArticle = baliRelatedArticles[0] || null;
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "https://bali.report" },
+    { name: "Bali News", url: "https://bali.report/bali" },
+  ]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-teal-900/20 dark:to-emerald-900/10 theme-transition">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 theme-transition">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-teal-700 dark:text-teal-300 theme-transition">
+          <div className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400 theme-transition">
             <Link
               href="/"
-              className="hover:text-emerald-600 dark:hover:text-emerald-400 theme-transition"
+              className="hover:text-blue-600 dark:hover:text-teal-400 theme-transition"
             >
-              🌊 Home
+              Home
             </Link>
             <span>›</span>
-            <span className="font-medium text-amber-600 dark:text-amber-400 theme-transition">
-              ⛩️ Sacred Bali
+            <span className="font-medium text-zinc-900 dark:text-zinc-100 theme-transition">
+              Bali
             </span>
           </div>
         </nav>
@@ -60,49 +68,76 @@ export default async function BaliPage() {
           <StockMarketTracker markets="Indonesia" />
         </section>
 
-        {/* Page Header */}
+        {/* Page Header - Modern Hero */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 dark:from-amber-700 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl p-8 shadow-2xl shadow-amber-500/20 relative overflow-hidden theme-transition">
-            {/* Sacred Balinese decorative elements */}
-            <div className="absolute top-0 right-0 opacity-15">
-              <div className="text-8xl transform rotate-12">⛩️</div>
-            </div>
-            <div className="absolute bottom-0 left-0 opacity-15">
-              <div className="text-6xl transform -rotate-12">🌺</div>
-            </div>
-            <div className="absolute top-1/2 right-1/4 opacity-10">
-              <div className="text-5xl transform rotate-45">🕏</div>
-            </div>
-
-            <div className="relative z-10">
-              <div className="flex items-center mb-4">
-                <span className="text-4xl mr-4">⛩️</span>
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-shadow-lg">
-                    Real Bali Revealed
-                  </h1>
-                  <p className="text-amber-200 dark:text-orange-200 mt-2 theme-transition">
-                    🌴 Beyond Tourist Traps: What's Really Happening in Paradise
+          <div className="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800 theme-transition">
+            <div className="relative">
+              {topArticle ? (
+                <>
+                  {/* Featured Image */}
+                  {topArticle.imageUrl && (
+                    <div className="relative w-full h-64 md:h-80 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                      <img
+                        src={topArticle.imageUrl}
+                        alt={topArticle.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    </div>
+                  )}
+                  <div className="p-8">
+                    <div className="mb-4">
+                      <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 theme-transition leading-tight">
+                        {topArticle.title}
+                      </h1>
+                      <p className="text-zinc-600 dark:text-zinc-400 theme-transition font-medium text-sm">
+                        {topArticle.source} • {new Date(topArticle.pubDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="text-lg text-zinc-700 dark:text-zinc-300 mb-6 max-w-4xl theme-transition leading-relaxed">
+                      {topArticle.description?.substring(0, 200)}...
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <a
+                        href={topArticle.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center bg-blue-600 hover:bg-blue-700 dark:bg-teal-600 dark:hover:bg-teal-500 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-sm"
+                      >
+                        Read Full Story
+                        <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="p-8">
+                  <div className="mb-4">
+                    <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 theme-transition leading-tight">
+                      Bali News & Updates
+                    </h1>
+                    <p className="text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      Beyond Tourist Traps: What's Really Happening in Paradise
+                    </p>
+                  </div>
+                  <p className="text-lg text-zinc-700 dark:text-zinc-300 mb-6 max-w-4xl theme-transition leading-relaxed">
+                    4 million locals. 6 million tourists yearly. The world's most famous island that Instagram doesn't show you. Real news about overtourism, water crisis, cultural preservation, and local struggles for balance.
                   </p>
+                  <div className="flex flex-wrap gap-3">
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      Tourism & Culture
+                    </span>
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      Environment & Sustainability
+                    </span>
+                    <span className="inline-block px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                      Local Communities
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <p className="text-xl text-amber-100 dark:text-orange-100 mb-6 max-w-4xl theme-transition">
-                4 million locals. 6 million tourists yearly. The world&apos;s
-                most famous island that Instagram doesn&apos;t show you. Real
-                news about overtourism, water crisis, cultural preservation, and
-                local struggles for balance.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  ⛩️ Denpasar Temple • 🌺 Ubud Sacred • 🌊 Canggu Waves
-                </span>
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🕏 Divine Culture & Sacred Festivals
-                </span>
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/30">
-                  🌺 Holy Tourism & Temple Environment
-                </span>
-              </div>
+              )}
             </div>
           </div>
         </section>
@@ -110,30 +145,28 @@ export default async function BaliPage() {
         <Suspense
           fallback={
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-              <p className="text-teal-700 dark:text-teal-300 theme-transition">
-                ⛩️ Loading sacred temple sources...
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-teal-600 mx-auto mb-4"></div>
+              <p className="text-zinc-700 dark:text-zinc-300 theme-transition">
+                Loading articles...
               </p>
             </div>
           }
         >
           {baliRelatedArticles.length === 0 ? (
             <div className="text-center py-12">
-              <span className="text-6xl mb-4 block">🌺</span>
-              <p className="text-gray-600 mb-4">
+              <p className="text-zinc-600 dark:text-zinc-400 mb-4">
                 No Bali-specific articles available at the moment.
               </p>
-              <p className="text-sm text-gray-500 mb-6">
-                We&apos;re working to add more local Bali news sources. Check
-                back soon!
+              <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-6">
+                We're working to add more local Bali news sources. Check back soon!
               </p>
 
               {/* Placeholder for future sources */}
-              <div className="bg-amber-50 rounded-lg p-6 max-w-2xl mx-auto">
-                <h3 className="text-lg font-semibold text-amber-800 mb-3">
-                  📰 Coming Soon: Local Bali Sources
+              <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 max-w-2xl mx-auto">
+                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+                  Coming Soon: Local Bali Sources
                 </h3>
-                <div className="text-sm text-amber-700 space-y-2">
+                <div className="text-sm text-zinc-700 dark:text-zinc-300 space-y-2">
                   <p>• Bali Post - Local news and events</p>
                   <p>• Bali Discovery - Tourism and culture</p>
                   <p>• Regional government announcements</p>
@@ -144,12 +177,13 @@ export default async function BaliPage() {
           ) : (
             <>
               {articles.length === 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
                   <div className="flex items-center">
-                    <span className="text-blue-600 mr-2">ℹ️</span>
-                    <p className="text-blue-800 text-sm">
-                      Currently showing articles mentioning Bali from our
-                      general sources. Dedicated Bali local sources coming soon!
+                    <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    <p className="text-blue-800 dark:text-blue-300 text-sm">
+                      Currently showing articles mentioning Bali from our general sources. Dedicated Bali local sources coming soon!
                     </p>
                   </div>
                 </div>
@@ -158,8 +192,8 @@ export default async function BaliPage() {
               {/* Featured Bali Articles */}
               {featuredArticles.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-amber-600 dark:border-amber-400 pb-2 theme-transition">
-                    ⛩️ Featured Sacred Temple Stories
+                  <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 border-b-2 border-zinc-200 dark:border-zinc-800 pb-3 theme-transition">
+                    Featured Stories
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {featuredArticles.map((article) => (
@@ -176,9 +210,8 @@ export default async function BaliPage() {
               {/* All Bali Articles */}
               {latestArticles.length > 0 && (
                 <section>
-                  <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-6 border-b-4 border-orange-600 dark:border-orange-400 pb-2 theme-transition">
-                    🌺 All Sacred Wisdom ({latestArticles.length} divine
-                    articles)
+                  <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 border-b-2 border-zinc-200 dark:border-zinc-800 pb-3 theme-transition">
+                    All Articles ({latestArticles.length})
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {latestArticles.map((article) => (
@@ -188,30 +221,30 @@ export default async function BaliPage() {
                 </section>
               )}
 
-              {/* Sacred Bali Stats */}
-              <section className="mt-12 bg-gradient-to-r from-white via-amber-50/30 to-orange-50/30 dark:from-gray-800 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl shadow-xl shadow-amber-100/20 dark:shadow-amber-900/10 p-6 border border-amber-100 dark:border-amber-800/30 theme-transition">
-                <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">
-                  ⛩️ Sacred Temple Coverage
+              {/* Bali Stats */}
+              <section className="mt-12 bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-6 border border-zinc-200 dark:border-zinc-800 theme-transition">
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4 theme-transition">
+                  Coverage Overview
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 theme-transition">
-                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 theme-transition">
+                  <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-teal-400 theme-transition">
                       {baliRelatedArticles.length}
                     </div>
-                    <div className="text-sm text-amber-700 dark:text-amber-300 theme-transition font-medium">
-                      🌺 Divine Articles
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      Total Articles
                     </div>
                   </div>
-                  <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 theme-transition">
-                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 theme-transition">
+                  <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-teal-400 theme-transition">
                       {articles.length}
                     </div>
-                    <div className="text-sm text-orange-700 dark:text-orange-300 theme-transition font-medium">
-                      🕏 Sacred Sources
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      Direct Sources
                     </div>
                   </div>
-                  <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 theme-transition">
-                    <div className="text-2xl font-bold text-red-600 dark:text-red-400 theme-transition">
+                  <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-teal-400 theme-transition">
                       {
                         baliRelatedArticles.filter(
                           (a) =>
@@ -220,56 +253,52 @@ export default async function BaliPage() {
                         ).length
                       }
                     </div>
-                    <div className="text-sm text-red-700 dark:text-red-300 theme-transition font-medium">
-                      ⛩️ Temple Day
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      Last 24 Hours
                     </div>
                   </div>
-                  <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 theme-transition">
-                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 theme-transition">
+                  <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-teal-400 theme-transition">
                       9
                     </div>
-                    <div className="text-sm text-amber-700 dark:text-amber-300 theme-transition font-medium">
-                      🏝️ Sacred Regencies
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 theme-transition font-medium">
+                      RSS Sources
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Sacred Bali Temple Context */}
-              <section className="mt-8 bg-gradient-to-r from-emerald-50/50 via-amber-50/50 to-orange-50/50 dark:from-emerald-900/10 dark:via-amber-900/10 dark:to-orange-900/10 rounded-2xl p-6 border border-amber-200/50 dark:border-amber-800/30 theme-transition">
-                <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 theme-transition">
-                  ⛩️ About Sacred Bali Temple Island
+              {/* About Bali */}
+              <section className="mt-8 bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800 theme-transition">
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4 theme-transition">
+                  About Bali
                 </h3>
-                <p className="text-amber-800 dark:text-amber-200 mb-4 theme-transition">
-                  Bali generates $20 billion in tourism but locals can&apos;t
-                  afford rice. Sacred sites become Instagram backdrops. Water
-                  tables drop while resorts fill pools. This is the Bali story
-                  travel bloggers won&apos;t tell you — straight from local
-                  sources.
+                <p className="text-zinc-700 dark:text-zinc-300 mb-4 theme-transition leading-relaxed">
+                  Bali generates $20 billion in tourism but locals can't afford rice. Sacred sites become Instagram backdrops. Water tables drop while resorts fill pools. This is the Bali story travel bloggers won't tell you — straight from local sources.
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
-                    <div className="font-semibold text-orange-700 dark:text-orange-300 theme-transition">
-                      🕏 Sacred Cultural
+                  <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2 theme-transition">
+                      Culture & Heritage
                     </div>
-                    <div className="text-amber-700 dark:text-amber-300 theme-transition">
-                      Divine Hindu temples, blessed arts, holy ceremonies
-                    </div>
-                  </div>
-                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
-                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 theme-transition">
-                      🌺 Paradise Tourism
-                    </div>
-                    <div className="text-amber-700 dark:text-amber-300 theme-transition">
-                      Sacred beaches, temple resorts, blessed visitors
+                    <div className="text-zinc-600 dark:text-zinc-400 theme-transition">
+                      Hindu temples, traditional arts, ceremonies
                     </div>
                   </div>
-                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-xl p-4 backdrop-blur-sm theme-transition">
-                    <div className="font-semibold text-teal-700 dark:text-teal-300 theme-transition">
-                      🌊 Sacred Environment
+                  <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2 theme-transition">
+                      Tourism & Economy
                     </div>
-                    <div className="text-amber-700 dark:text-amber-300 theme-transition">
-                      Temple sustainability, divine preservation, holy waters
+                    <div className="text-zinc-600 dark:text-zinc-400 theme-transition">
+                      Beaches, resorts, local businesses
+                    </div>
+                  </div>
+                  <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4 border border-zinc-200 dark:border-zinc-700 theme-transition">
+                    <div className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2 theme-transition">
+                      Environment
+                    </div>
+                    <div className="text-zinc-600 dark:text-zinc-400 theme-transition">
+                      Sustainability, water resources, preservation
                     </div>
                   </div>
                 </div>

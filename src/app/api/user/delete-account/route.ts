@@ -1,18 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/config/auth";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const { password } = await req.json();
@@ -20,8 +17,8 @@ export async function POST(req: NextRequest) {
     // Validate input
     if (!password) {
       return NextResponse.json(
-        { error: 'Password is required' },
-        { status: 400 }
+        { error: "Password is required" },
+        { status: 400 },
       );
     }
 
@@ -33,8 +30,8 @@ export async function POST(req: NextRequest) {
 
     if (!user?.credentials?.password) {
       return NextResponse.json(
-        { error: 'No password set for this account' },
-        { status: 400 }
+        { error: "No password set for this account" },
+        { status: 400 },
       );
     }
 
@@ -43,8 +40,8 @@ export async function POST(req: NextRequest) {
 
     if (!isValid) {
       return NextResponse.json(
-        { error: 'Password is incorrect' },
-        { status: 400 }
+        { error: "Password is incorrect" },
+        { status: 400 },
       );
     }
 
@@ -54,13 +51,13 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: 'Account deleted successfully',
+      message: "Account deleted successfully",
     });
   } catch (error) {
-    console.error('Account deletion error:', error);
+    console.error("Account deletion error:", error);
     return NextResponse.json(
-      { error: 'An error occurred while deleting account' },
-      { status: 500 }
+      { error: "An error occurred while deleting account" },
+      { status: 500 },
     );
   }
 }

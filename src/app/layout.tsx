@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Orbitron } from "next/font/google";
+import Script from "next/script";
+import { Suspense } from "react";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Header from "@/components/Header";
+import ClientBackground from "@/components/ClientBackground";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Analytics from "@/components/Analytics";
+import MatomoAnalytics from "@/components/MatomoAnalytics";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
 import "./globals.css";
 
@@ -94,8 +99,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="format-detection" content="telephone=no" />
+
+        {/* Preconnect to critical domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+
         {/* Adsterra Verification */}
         <meta
           name="adsterra-verification"
@@ -111,9 +129,14 @@ export default function RootLayout({
         />
         <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
         <link rel="mask-icon" href="/icons/icon-base.svg" color="#0d9488" />
-
+      </head>
+      <body
+        className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition bg-zinc-50 dark:bg-zinc-900 min-h-screen`}
+      >
         {/* Service worker registration */}
-        <script
+        <Script
+          id="sw-registration"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -130,30 +153,29 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body
-        className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition bg-dark-bg dark`}
-      >
         <ThemeProvider>
           <Analytics />
+          <Suspense fallback={null}>
+            <MatomoAnalytics />
+          </Suspense>
           {/* Adsterra Script */}
           {process.env.NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID && (
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  if (typeof window !== 'undefined' && window.atag === undefined) {
-                    const script = document.createElement('script');
-                    script.src = '//www.highperformancedformats.com/atTag.js';
-                    script.async = true;
-                    document.head.appendChild(script);
-                  }
-                `,
-              }}
+            <Script
+              id="adsterra-script"
+              strategy="lazyOnload"
+              src="//www.highperformancedformats.com/atTag.js"
             />
           )}
           <PersonalizationProvider>
-            <Header />
-            {children}
+            <ErrorBoundary>
+              {/* Futuristic Background Effects (dark mode only) - Temporarily disabled for debugging */}
+              {/* <ClientBackground /> */}
+
+              <div className="contents relative z-10">
+                <Header />
+                <main className="relative">{children}</main>
+              </div>
+            </ErrorBoundary>
           </PersonalizationProvider>
         </ThemeProvider>
       </body>

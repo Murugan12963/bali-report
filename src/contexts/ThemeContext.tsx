@@ -48,6 +48,7 @@ interface ThemeProviderProps {
  *   children (ReactNode): Child components to wrap with theme context.
  */
 export function ThemeProvider({ children }: ThemeProviderProps) {
+  // Initialize with SSR-safe defaults
   const [theme, setThemeState] = useState<Theme>("system");
   const [effectiveTheme, setEffectiveTheme] = useState<"light" | "dark">(
     "light",
@@ -144,16 +145,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       setTheme(effectiveTheme === "dark" ? "light" : "dark");
     }
   };
-
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    // Return a minimal wrapper without theme classes to avoid hydration mismatch
-    return (
-      <div style={{ visibility: "hidden" }} aria-hidden="true">
-        {children}
-      </div>
-    );
-  }
 
   return (
     <ThemeContext.Provider

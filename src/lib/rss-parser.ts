@@ -131,6 +131,14 @@ class RSSAggregator {
         'Accept-Language': 'en-US,en;q=0.9',
         'Cache-Control': 'no-cache',
       },
+      customFields: {
+        item: [
+          ['media:content', 'media:content'],
+          ['media:thumbnail', 'media:thumbnail'],
+          ['enclosure', 'enclosure'],
+          ['image', 'image'],
+        ],
+      },
     });
     this.sources = sources;
   }
@@ -178,18 +186,24 @@ class RSSAggregator {
           throw new Error(`No articles found in RSS feed for ${source.name}`);
         }
         
-        const articles: Article[] = feed.items.map((item, index) => ({
-          id: `${source.name.toLowerCase().replace(/\\s+/g, '-')}-${index}-${Date.now()}`,
-          title: item.title || 'No title',
-          link: item.link || '',
-          description: this.extractDescription(item.contentSnippet || item.description || ''),
-          pubDate: item.pubDate || new Date().toISOString(),
-          author: item.creator || item.author,
-          category: source.category,
-          source: source.name,
-          sourceUrl: source.url,
-          imageUrl: this.extractImageUrl(item),
-        }));
+        const articles: Article[] = feed.items.map((item, index) => {
+          const imageUrl = this.extractImageUrl(item);
+          if (imageUrl && index === 0) {
+            console.log(`📸 Found image for ${source.name}: ${imageUrl.substring(0, 60)}...`);
+          }
+          return {
+            id: `${source.name.toLowerCase().replace(/\\s+/g, '-')}-${index}-${Date.now()}`,
+            title: item.title || 'No title',
+            link: item.link || '',
+            description: this.extractDescription(item.contentSnippet || item.description || ''),
+            pubDate: item.pubDate || new Date().toISOString(),
+            author: item.creator || item.author,
+            category: source.category,
+            source: source.name,
+            sourceUrl: source.url,
+            imageUrl,
+          };
+        });
 
         console.log(`✅ Successfully fetched ${articles.length} articles from ${source.name}`);
         
@@ -415,24 +429,67 @@ class RSSAggregator {
    *   string | undefined: Image URL if found.
    */
   private extractImageUrl(item: any): string | undefined {
-    // Try multiple possible image fields
-    if (item.enclosure?.url && item.enclosure?.type?.startsWith('image/')) {
-      return item.enclosure.url;
+    // Try enclosure
+    if (item.enclosure?.url) {
+      const url = item.enclosure.url;
+      if (typeof url === 'string' && (item.enclosure?.type?.startsWith('image/') || url.match(/\.(jpg|jpeg|png|gif|webp)$/i))) {
+        return url;
+      }
     }
     
-    if (item['media:thumbnail']?.['@_url']) {
-      return item['media:thumbnail']['@_url'];
+    // Try media:thumbnail
+    if (item['media:thumbnail']) {
+      const thumb = item['media:thumbnail'];
+      if (typeof thumb === 'object' && thumb['$']?.url) {
+        return thumb['$'].url;
+      }
+      if (typeof thumb === 'object' && thumb.url) {
+        return thumb.url;
+      }
+      if (typeof thumb === 'string') {
+        return thumb;
+      }
     }
     
-    if (item['media:content']?.['@_url'] && item['media:content']?.['@_type']?.startsWith('image/')) {
-      return item['media:content']['@_url'];
+    // Try media:content
+    if (item['media:content']) {
+      const media = item['media:content'];
+      if (Array.isArray(media)) {
+        const imageMedia = media.find((m: any) => 
+          m['$']?.type?.startsWith('image/') || m['$']?.medium === 'image'
+        );
+        if (imageMedia?.['$']?.url) {
+          return imageMedia['$'].url;
+        }
+      } else if (typeof media === 'object') {
+        if (media['$']?.url && (media['$']?.type?.startsWith('image/') || media['$']?.medium === 'image')) {
+          return media['$'].url;
+        }
+      }
     }
     
-    // Try to extract from description/content
-    const content = item.content || item.description || '';
-    const imgMatch = content.match(/<img[^>]+src="([^"]+)"/);
-    if (imgMatch) {
-      return imgMatch[1];
+    // Try item.image
+    if (item.image) {
+      if (typeof item.image === 'string') {
+        return item.image;
+      }
+      if (typeof item.image === 'object' && item.image.url) {
+        return item.image.url;
+      }
+    }
+    
+    // Try to extract from content/description HTML
+    const content = item.content || item['content:encoded'] || item.description || '';
+    if (typeof content === 'string') {
+      // Try img src
+      const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (imgMatch && imgMatch[1]) {
+        const url = imgMatch[1];
+        // Skip tracking pixels and small images
+        if (!url.includes('1x1') && !url.includes('pixel')) {
+          return url;
+        }
+      }
     }
     
     return undefined;

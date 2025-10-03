@@ -1,512 +1,217 @@
 /**
- * Service Worker for Bali Report PWA
- * Handles offline caching, background sync, and push notifications
+ * Service Worker for Bali Report
+ *
+ * Provides:
+ * - Offline support for core pages
+ * - Article caching for Save for Later
+ * - Static asset caching
+ * - Background sync for saved articles
  */
 
-const CACHE_NAME = 'bali-report-v1';
-const STATIC_CACHE = 'bali-report-static-v1';
-const DYNAMIC_CACHE = 'bali-report-dynamic-v1';
-const ARTICLES_CACHE = 'bali-report-articles-v1';
+const CACHE_VERSION = "v1.0.0";
+const STATIC_CACHE = `bali-report-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `bali-report-dynamic-${CACHE_VERSION}`;
+const ARTICLE_CACHE = `bali-report-articles-${CACHE_VERSION}`;
 
-// Assets to cache immediately
+// Static assets to cache immediately
 const STATIC_ASSETS = [
-  '/',
-  '/brics',
-  '/indonesia', 
-  '/bali',
-  '/search',
-  '/offline',
-  '/manifest.json',
-  // Add critical CSS and JS files here
+  "/",
+  "/brics",
+  "/indonesia",
+  "/bali",
+  "/manifest.json",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
 ];
 
-// Articles cache limit
-const ARTICLES_CACHE_LIMIT = 50;
+// Install event - cache static assets
+self.addEventListener("install", (event) => {
+  console.log("[SW] Installing service worker...");
 
-/**
- * Install event - cache static assets
- */
-self.addEventListener('install', (event) => {
-  console.log('🌺 Service Worker: Installing...');
-  
   event.waitUntil(
-    caches.open(STATIC_CACHE)
+    caches
+      .open(STATIC_CACHE)
       .then((cache) => {
-        console.log('🏝️ Service Worker: Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        console.log('✅ Service Worker: Installation complete');
-        return self.skipWaiting();
-      })
-  );
-});
-
-/**
- * Activate event - cleanup old caches
- */
-self.addEventListener('activate', (event) => {
-  console.log('🌊 Service Worker: Activating...');
-  
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
-        const deletePromises = cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && 
-              cacheName !== DYNAMIC_CACHE && 
-              cacheName !== ARTICLES_CACHE) {
-            console.log('🧹 Service Worker: Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+        console.log("[SW] Caching static assets");
+        return cache.addAll(STATIC_ASSETS).catch((err) => {
+          console.error("[SW] Failed to cache static assets:", err);
         });
-        
-        return Promise.all(deletePromises);
       })
       .then(() => {
-        console.log('✅ Service Worker: Activation complete');
-        return self.clients.claim();
-      })
+        return self.skipWaiting();
+      }),
   );
 });
 
-/**
- * Fetch event - handle network requests
- */
-self.addEventListener('fetch', (event) => {
+// Activate event - clean up old caches
+self.addEventListener("activate", (event) => {
+  console.log("[SW] Activating service worker...");
+
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (
+              cacheName !== STATIC_CACHE &&
+              cacheName !== DYNAMIC_CACHE &&
+              cacheName !== ARTICLE_CACHE
+            ) {
+              console.log("[SW] Deleting old cache:", cacheName);
+              return caches.delete(cacheName);
+            }
+          }),
+        );
+      })
+      .then(() => {
+        return self.clients.claim();
+      }),
+  );
+});
+
+// Fetch event - serve from cache, fallback to network
+self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-HTTP requests
-  if (!request.url.startsWith('http')) {
+  // Skip non-GET requests
+  if (request.method !== "GET") {
     return;
   }
 
-  // Handle different types of requests
-  if (isNavigationRequest(request)) {
-    event.respondWith(handleNavigationRequest(request));
-  } else if (isArticleAPIRequest(url)) {
-    event.respondWith(handleArticleRequest(request));
-  } else if (isImageRequest(request)) {
-    event.respondWith(handleImageRequest(request));
-  } else {
-    event.respondWith(handleGenericRequest(request));
+  // Skip external requests
+  if (url.origin !== location.origin) {
+    return;
   }
+
+  // API routes - network first, cache fallback
+  if (url.pathname.startsWith("/api/")) {
+    event.respondWith(networkFirst(request, DYNAMIC_CACHE));
+    return;
+  }
+
+  // Static assets - cache first, network fallback
+  if (
+    url.pathname.startsWith("/_next/static/") ||
+    url.pathname.startsWith("/icons/") ||
+    url.pathname.endsWith(".png") ||
+    url.pathname.endsWith(".jpg") ||
+    url.pathname.endsWith(".svg") ||
+    url.pathname.endsWith(".woff2")
+  ) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    return;
+  }
+
+  // Pages - network first, cache fallback
+  event.respondWith(networkFirst(request, DYNAMIC_CACHE));
 });
 
-/**
- * Handle navigation requests (HTML pages)
- */
-async function handleNavigationRequest(request) {
+// Cache first strategy
+async function cacheFirst(request, cacheName) {
+  const cachedResponse = await caches.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
   try {
-    // Try network first for navigation
     const networkResponse = await fetch(request);
-    
-    // Cache successful navigation responses
-    if (networkResponse && networkResponse.status === 200) {
-      const cache = await caches.open(DYNAMIC_CACHE);
+    if (networkResponse.ok) {
+      const cache = await caches.open(cacheName);
       cache.put(request, networkResponse.clone());
     }
-    
     return networkResponse;
   } catch (error) {
-    console.log('🌴 Serving from cache for navigation:', request.url);
-    
-    // Fallback to cache
+    console.error("[SW] Cache first failed:", error);
+    return new Response("Offline", { status: 503 });
+  }
+}
+
+// Network first strategy
+async function networkFirst(request, cacheName) {
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok) {
+      const cache = await caches.open(cacheName);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;
     }
-    
-    // Fallback to offline page
-    return caches.match('/offline');
+
+    // Return offline page for navigation requests
+    if (request.mode === "navigate") {
+      return new Response(
+        `<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Offline - Bali Report</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+                color: white;
+              }
+              .container {
+                text-align: center;
+                padding: 2rem;
+              }
+              h1 { font-size: 3rem; margin: 0; }
+              p { font-size: 1.25rem; opacity: 0.9; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🏝️ You're Offline</h1>
+              <p>No internet connection. Check your saved articles or try again later.</p>
+            </div>
+          </body>
+        </html>`,
+        {
+          headers: { "Content-Type": "text/html" },
+          status: 503,
+        },
+      );
+    }
+
+    return new Response("Offline", { status: 503 });
   }
 }
 
-/**
- * Handle article API requests
- */
-async function handleArticleRequest(request) {
+// Message event - handle commands from the app
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "CACHE_ARTICLE") {
+    const { url, content } = event.data;
+    cacheArticle(url, content);
+  }
+
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+// Cache article content for offline reading
+async function cacheArticle(url, content) {
   try {
-    // Network first for fresh content
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse && networkResponse.status === 200) {
-      const cache = await caches.open(ARTICLES_CACHE);
-      
-      // Limit article cache size
-      const cachedRequests = await cache.keys();
-      if (cachedRequests.length >= ARTICLES_CACHE_LIMIT) {
-        // Remove oldest cached article
-        await cache.delete(cachedRequests[0]);
-      }
-      
-      cache.put(request, networkResponse.clone());
-      
-      // Notify clients about new content
-      notifyClientsAboutNewContent();
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('🌊 Serving article from cache:', request.url);
-    
-    // Fallback to cached articles
-    return caches.match(request);
-  }
-}
-
-/**
- * Handle image requests
- */
-async function handleImageRequest(request) {
-  try {
-    // Try cache first for images
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // Fetch from network and cache
-    const networkResponse = await fetch(request);
-    if (networkResponse && networkResponse.status === 200) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('🦋 Image failed to load:', request.url);
-    
-    // Return a placeholder or fallback image
-    return new Response(
-      '<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#0d9488"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="16">🌺 Image Offline</text></svg>',
-      {
-        headers: { 'Content-Type': 'image/svg+xml' }
-      }
-    );
-  }
-}
-
-/**
- * Handle generic requests
- */
-async function handleGenericRequest(request) {
-  try {
-    // Try cache first
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // Fetch from network
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse && networkResponse.status === 200) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('⛩️ Request failed:', request.url);
-    return new Response('Offline', { status: 503 });
-  }
-}
-
-/**
- * Background sync for saved articles
- */
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync-saved-articles') {
-    console.log('🔄 Background sync: Syncing saved articles');
-    event.waitUntil(syncSavedArticles());
-  }
-});
-
-/**
- * Push notification handler
- */
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
-
-  const data = event.data.json();
-  const options = {
-    body: data.body || 'New articles available from paradise sources!',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
-    data: data.url || '/',
-    actions: [
-      {
-        action: 'open',
-        title: '🌺 Read Now',
-        icon: '/icons/icon-96x96.png'
-      },
-      {
-        action: 'save',
-        title: '💾 Save for Later',
-        icon: '/icons/icon-96x96.png'
-      }
-    ],
-    tag: 'bali-report-news',
-    renotify: true,
-    requireInteraction: false,
-    vibrate: [200, 100, 200],
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(
-      data.title || '🏝️ Bali Report - New Content!',
-      options
-    )
-  );
-});
-
-/**
- * Notification click handler
- */
-self.addEventListener('notificationclick', (event) => {
-  const { action, data } = event;
-  
-  event.notification.close();
-
-  if (action === 'open') {
-    event.waitUntil(
-      clients.openWindow(event.notification.data || '/')
-    );
-  } else if (action === 'save') {
-    event.waitUntil(saveArticleForLater(event.notification.data));
-  } else {
-    // Default action - open app
-    event.waitUntil(
-      clients.openWindow(event.notification.data || '/')
-    );
-  }
-});
-
-/**
- * Message handler for client communication
- */
-self.addEventListener('message', (event) => {
-  const { type, payload } = event.data;
-
-  switch (type) {
-    case 'SKIP_WAITING':
-      self.skipWaiting();
-      break;
-      
-    case 'GET_CACHE_STATUS':
-      getCacheStatus().then(status => {
-        event.ports[0].postMessage(status);
-      });
-      break;
-      
-    case 'SAVE_ARTICLE':
-      saveArticleToCache(payload).then(() => {
-        event.ports[0].postMessage({ success: true });
-      });
-      break;
-      
-    case 'SYNC_SAVED_ARTICLES':
-      syncSavedArticles().then(() => {
-        event.ports[0].postMessage({ success: true });
-      }).catch((error) => {
-        event.ports[0].postMessage({ success: false, error: error.message });
-      });
-      break;
-      
-    case 'PRELOAD_SAVED_ARTICLES':
-      preloadSavedArticles(payload).then(() => {
-        event.ports[0].postMessage({ success: true });
-      });
-      break;
-      
-    case 'CLEAR_CACHE':
-      clearCache().then(() => {
-        event.ports[0].postMessage({ success: true });
-      });
-      break;
-  }
-});
-
-// Helper functions
-
-function isNavigationRequest(request) {
-  return request.mode === 'navigate' || 
-         (request.method === 'GET' && 
-          request.headers.get('accept').includes('text/html'));
-}
-
-function isArticleAPIRequest(url) {
-  return url.pathname.includes('/api/') && 
-         (url.pathname.includes('articles') || url.pathname.includes('rss'));
-}
-
-function isImageRequest(request) {
-  return request.destination === 'image' ||
-         request.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
-}
-
-async function notifyClientsAboutNewContent() {
-  const clients = await self.clients.matchAll();
-  clients.forEach(client => {
-    client.postMessage({
-      type: 'NEW_CONTENT_AVAILABLE',
-      timestamp: Date.now()
+    const cache = await caches.open(ARTICLE_CACHE);
+    const response = new Response(JSON.stringify(content), {
+      headers: { "Content-Type": "application/json" },
     });
-  });
-}
-
-async function syncSavedArticles() {
-  try {
-    // Get saved articles from IndexedDB
-    const savedArticles = await getSavedArticlesFromDB();
-    
-    // Sync with server if needed
-    // Implementation depends on your backend
-    console.log('🔄 Synced', savedArticles.length, 'saved articles');
-    
-    return Promise.resolve();
+    await cache.put(url, response);
+    console.log("[SW] Cached article:", url);
   } catch (error) {
-    console.error('❌ Background sync failed:', error);
-    return Promise.reject(error);
+    console.error("[SW] Failed to cache article:", error);
   }
 }
 
-async function saveArticleForLater(articleUrl) {
-  try {
-    // Get article data from cache or fetch
-    const articleResponse = await caches.match(articleUrl);
-    if (articleResponse) {
-      const article = await articleResponse.json();
-      
-      // Save to Save for Later system via localStorage (accessible from main thread)
-      const savedArticles = JSON.parse(localStorage.getItem('bali-report-saved-articles') || '{}');
-      const articleData = {
-        ...article,
-        savedAt: new Date().toISOString(),
-        readStatus: 'unread',
-        readingProgress: 0,
-        tags: [],
-        notes: '',
-        estimatedReadTime: Math.max(1, Math.round(article.description?.split(/\s+/).length / 200) || 1),
-        priority: 'normal'
-      };
-      
-      if (!savedArticles.articles) {
-        savedArticles.articles = [];
-        savedArticles.version = '1.0';
-        savedArticles.lastUpdated = new Date().toISOString();
-      }
-      
-      savedArticles.articles.unshift(articleData);
-      localStorage.setItem('bali-report-saved-articles', JSON.stringify(savedArticles));
-      
-      console.log('💾 Saved article for later:', article.title);
-      
-      // Notify client about successful save
-      const clients = await self.clients.matchAll();
-      clients.forEach(client => {
-        client.postMessage({
-          type: 'ARTICLE_SAVED_FOR_LATER',
-          article: articleData
-        });
-      });
-    }
-  } catch (error) {
-    console.error('❌ Failed to save article for later:', error);
-  }
-}
-
-async function saveArticleToCache(article) {
-  const cache = await caches.open(ARTICLES_CACHE);
-  const response = new Response(JSON.stringify(article), {
-    headers: { 'Content-Type': 'application/json' }
-  });
-  
-  return cache.put(`/cached-article/${article.id}`, response);
-}
-
-async function getCacheStatus() {
-  const caches_list = await caches.keys();
-  const cache_sizes = await Promise.all(
-    caches_list.map(async (name) => {
-      const cache = await caches.open(name);
-      const keys = await cache.keys();
-      return { name, size: keys.length };
-    })
-  );
-  
-  return {
-    caches: cache_sizes,
-    total: cache_sizes.reduce((sum, cache) => sum + cache.size, 0)
-  };
-}
-
-async function clearCache() {
-  const caches_list = await caches.keys();
-  return Promise.all(
-    caches_list.map(cache_name => {
-      if (cache_name !== STATIC_CACHE) {
-        return caches.delete(cache_name);
-      }
-    })
-  );
-}
-
-async function getSavedArticlesFromDB() {
-  try {
-    // Get saved articles from localStorage (main thread storage)
-    const savedData = localStorage.getItem('bali-report-saved-articles');
-    if (savedData) {
-      const parsed = JSON.parse(savedData);
-      return parsed.articles || [];
-    }
-    return [];
-  } catch (error) {
-    console.error('❌ Failed to get saved articles:', error);
-    return [];
-  }
-}
-
-async function preloadSavedArticles(articles) {
-  try {
-    const cache = await caches.open(ARTICLES_CACHE);
-    const preloadPromises = articles.map(async (article) => {
-      try {
-        // Create a cache entry for the article content
-        const response = new Response(JSON.stringify(article), {
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'max-age=86400' // 24 hours
-          }
-        });
-        
-        await cache.put(`/saved-article/${article.id}`, response);
-        
-        // Also try to cache the original article URL if available
-        if (article.link) {
-          try {
-            const originalResponse = await fetch(article.link);
-            if (originalResponse.ok) {
-              await cache.put(article.link, originalResponse);
-            }
-          } catch (linkError) {
-            // Ignore errors when preloading original links
-            console.warn('⚠️ Could not preload original article:', article.link);
-          }
-        }
-      } catch (articleError) {
-        console.warn('⚠️ Failed to preload article:', article.title, articleError);
-      }
-    });
-    
-    await Promise.allSettled(preloadPromises);
-    console.log('📦 Preloaded', articles.length, 'saved articles for offline access');
-    
-  } catch (error) {
-    console.error('❌ Failed to preload saved articles:', error);
-    throw error;
-  }
-}
-
-console.log('🌺 Bali Report Service Worker loaded successfully!');
+console.log("[SW] Service worker loaded");

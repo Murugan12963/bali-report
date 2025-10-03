@@ -24,7 +24,8 @@ export default function StockMarketTracker({
 }: StockMarketTrackerProps) {
   const [marketData, setMarketData] = useState<MarketData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   // BRICS market country mapping
   const bricsFlags: { [key: string]: { flag: string; currency: string } } = {
@@ -160,6 +161,11 @@ export default function StockMarketTracker({
   );
 
   useEffect(() => {
+    setMounted(true);
+    setLastRefresh(new Date());
+  }, []);
+
+  useEffect(() => {
     const fetchMarketData = async () => {
       try {
         setLoading(true);
@@ -205,6 +211,7 @@ export default function StockMarketTracker({
           }));
           setMarketData(mappedData);
         }
+        setLastRefresh(new Date());
       } catch (error) {
         console.error("Error fetching market data:", error);
         // Fallback to static data
@@ -218,11 +225,12 @@ export default function StockMarketTracker({
       }
     };
 
-    fetchMarketData();
-    const interval = setInterval(fetchMarketData, 30000); // Update every 30 seconds
-
-    return () => clearInterval(interval);
-  }, [markets, bricsMarkets, indonesiaMarkets]);
+    if (mounted) {
+      fetchMarketData();
+      const interval = setInterval(fetchMarketData, 30000); // Update every 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [markets, bricsMarkets, indonesiaMarkets, mounted]);
 
   const handleRefresh = async () => {
     setLoading(true);
@@ -419,7 +427,7 @@ export default function StockMarketTracker({
             </div>
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Last updated: {lastRefresh.toLocaleTimeString()}
+            {mounted && lastRefresh ? `Last updated: ${lastRefresh.toLocaleTimeString()}` : 'Loading...'}
           </div>
         </div>
       </div>

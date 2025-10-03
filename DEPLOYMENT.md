@@ -2,25 +2,33 @@
 
 This guide covers deploying Bali Report to production environments.
 
-## ✨ Quick Deploy (Recommended)
+## ✨ Deployment Options
 
-### Vercel Deployment
+### ✅ Digital Ocean Deployment (Current Production)
 
-Vercel provides the best experience for Next.js applications:
+**Status**: Currently deployed on Digital Ocean droplet
 
-1. **Push to GitHub**
+The application is running on a Digital Ocean droplet with the following setup:
+
+1. **Server Configuration**
+   - Platform: Digital Ocean Droplet
+   - Node.js 18+
+   - Process Manager: PM2 (recommended)
+   - Reverse Proxy: Nginx
+
+2. **Deployment Process**
    ```bash
-   git add .
-   git commit -m "Deploy Bali Report"
-   git push origin main
+   # On Digital Ocean droplet
+   git clone <your-repo-url>
+   cd bali-report
+   npm install
+   npm run build
+   pm2 start "npm start" --name "bali-report"
+   pm2 save
    ```
 
-2. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel auto-detects Next.js and configures everything
-
-3. **Set Environment Variables** (Optional)
+3. **Environment Variables**
+   Configure in `/home/user/bali-report/.env`:
    ```bash
    XAI_API_KEY=your_grok_api_key
    NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com
@@ -28,11 +36,22 @@ Vercel provides the best experience for Next.js applications:
    NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=your-banner-zone-id
    ```
 
-4. **Deploy**
-   - Vercel deploys automatically on every push
-   - Custom domain setup available in dashboard
+4. **Updates**
+   ```bash
+   cd /path/to/bali-report
+   git pull
+   npm install
+   npm run build
+   pm2 restart bali-report
+   ```
 
-🎉 **Done!** Your site will be live at `https://your-project.vercel.app`
+### Alternative: Vercel Deployment
+
+Vercel provides automated deployment for Next.js applications:
+
+1. **Push to GitHub** → 2. **Connect to Vercel** → 3. **Set Environment Variables** → 4. **Auto-deploy**
+
+🎉 **Currently Live on Digital Ocean**
 
 ## 💻 Manual Deployment
 

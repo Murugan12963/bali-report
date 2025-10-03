@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { Metadata } from 'next';
 import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
 import SearchBar from '@/components/SearchBar';
@@ -8,11 +9,34 @@ import Link from 'next/link';
 /**
  * Search results page for finding articles by query.
  */
-export const metadata = {
-  title: 'Search Results - Bali Report',
-  description: 'Search through BRICS and Indonesian news articles from multiple international sources.',
-  keywords: 'search, news, articles, BRICS, Indonesia, Bali, find news',
-};
+export function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
+  return searchParams.then(params => {
+    const query = params?.q || '';
+    const title = query ? `Search: ${query} - Bali Report` : 'Search - Bali Report';
+    const description = query 
+      ? `Search results for "${query}" in BRICS news, Indonesia updates, and Bali events from multipolar news sources.`
+      : 'Search through BRICS news, Indonesia updates, and Bali events from our comprehensive multipolar news aggregation.';
+
+    return {
+      title,
+      description,
+      keywords: query 
+        ? `${query}, search, news, articles, BRICS, Indonesia, Bali, multipolar media`
+        : 'search, news, articles, BRICS, Indonesia, Bali, find news, multipolar media',
+      openGraph: {
+        type: 'website',
+        title,
+        description,
+        siteName: 'Bali Report',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+      },
+    };
+  });
+}
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;
