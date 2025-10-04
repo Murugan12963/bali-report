@@ -41,7 +41,8 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Add bottom padding for mobile PWA navigation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
             BRICS Bali Events
@@ -52,7 +53,7 @@ export default function EventsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 mb-8">
           <div className="text-center">
             <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
               {upcomingEvents}
@@ -74,7 +75,7 @@ export default function EventsPage() {
         </div>
 
         <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Category
@@ -141,7 +142,7 @@ export default function EventsPage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               Featured Events
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
               {filteredEvents
                 .filter(event => event.featured)
                 .map(event => (
@@ -156,7 +157,7 @@ export default function EventsPage() {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
             All Events
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredEvents
               .filter(event => !event.featured)
               .map(event => (

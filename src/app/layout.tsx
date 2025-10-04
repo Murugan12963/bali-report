@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import Analytics from "@/components/Analytics";
 import MatomoAnalytics from "@/components/MatomoAnalytics";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
+import BottomNavigation, { defaultNavItems } from "@/components/pwa/BottomNavigation";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -150,6 +151,13 @@ export default function RootLayout({
                     });
                 });
               }
+              
+              // Initialize mobile PWA features after window load
+              window.addEventListener('load', function() {
+                import('@/lib/mobile-features').then(({ initializeMobileFeatures }) => {
+                  initializeMobileFeatures();
+                }).catch(console.error);
+              });
             `,
           }}
         />
@@ -174,6 +182,8 @@ export default function RootLayout({
               <div className="contents relative z-10">
                 <Header />
                 <main className="relative">{children}</main>
+                {/* PWA Bottom Navigation */}
+                <BottomNavigation items={defaultNavItems} />
               </div>
             </ErrorBoundary>
           </PersonalizationProvider>

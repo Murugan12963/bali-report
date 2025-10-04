@@ -5,6 +5,14 @@ import Image from 'next/image';
 import { Event, MOCK_EVENTS, MOCK_TICKETS } from '@/types/event';
 import EventTickets from '@/components/events/EventTickets';
 
+const categoryEmojis = {
+  conference: '🏛️',
+  webinar: '💻',
+  workshop: '🔨',
+  cultural: '🎭',
+  networking: '🤝'
+};
+
 export default function EventDetailPage() {
   const params = useParams();
   const event = MOCK_EVENTS.find(e => e.id === params.id);
@@ -38,8 +46,11 @@ export default function EventDetailPage() {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-            <span className="text-6xl">🎪</span>
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-600 to-gray-800">
+            <span className="text-8xl mb-4">{categoryEmojis[event.category]}</span>
+            <span className="text-white text-xl font-medium capitalize opacity-80">
+              {event.category}
+            </span>
           </div>
         )}
         <div className="absolute inset-0 bg-black bg-opacity-50" />
@@ -78,7 +89,7 @@ export default function EventDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-12">

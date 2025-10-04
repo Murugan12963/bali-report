@@ -188,6 +188,159 @@ async function networkFirst(request, cacheName) {
   }
 }
 
+// Cache article for offline reading
+async function cacheArticle(url, content) {
+  try {
+    const cache = await caches.open(ARTICLE_CACHE);
+    const response = new Response(JSON.stringify(content), {
+      headers: { "Content-Type": "application/json" },
+    });
+    await cache.put(url, response);
+    console.log("[SW] Cached article:", url);
+  } catch (error) {
+    console.error("[SW] Failed to cache article:", error);
+  }
+}
+
+// Background sync for offline actions
+self.addEventListener("sync", (event) => {
+  if (event.tag === "background-sync") {
+    event.waitUntil(doBackgroundSync());
+  }
+  if (event.tag === "sync-saved-articles") {
+    event.waitUntil(syncSavedArticles());
+  }
+});
+
+async function doBackgroundSync() {
+  console.log("[SW] Background sync triggered");
+  // Sync any pending offline actions
+  try {
+    // Send any queued actions to the server
+    const queuedActions = await getQueuedActions();
+    for (const action of queuedActions) {
+      await sendActionToServer(action);
+    }
+  } catch (error) {
+    console.error("[SW] Background sync failed:", error);
+  }
+}
+
+async function syncSavedArticles() {
+  console.log("[SW] Syncing saved articles");
+  // Implementation for syncing saved articles across devices
+}
+
+async function getQueuedActions() {
+  // Get queued actions from IndexedDB or localStorage
+  return [];
+}
+
+async function sendActionToServer(action) {
+  // Send action to server
+  console.log("[SW] Sending action:", action);
+}
+
+// Push notification handling
+self.addEventListener("push", (event) => {
+  console.log("[SW] Push message received");
+  
+  let notificationData = {
+    title: "🏝️ Bali Report",
+    body: "New articles available",
+    icon: "/icons/icon-192x192.png",
+    badge: "/icons/icon-72x72.png",
+    tag: "bali-report-news",
+    data: {
+      url: "/",
+      timestamp: Date.now(),
+    },
+  };
+
+  if (event.data) {
+    try {
+      const pushData = event.data.json();
+      notificationData = {
+        ...notificationData,
+        ...pushData,
+      };
+    } catch (error) {
+      console.error("[SW] Error parsing push data:", error);
+    }
+  }
+
+  const options = {
+    body: notificationData.body,
+    icon: notificationData.icon,
+    badge: notificationData.badge,
+    tag: notificationData.tag,
+    data: notificationData.data,
+    requireInteraction: false,
+    silent: false,
+    actions: [
+      {
+        action: "open",
+        title: "Read Now",
+        icon: "/icons/icon-96x96.png",
+      },
+      {
+        action: "save",
+        title: "Save for Later",
+        icon: "/icons/icon-96x96.png",
+      },
+    ],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(notificationData.title, options)
+  );
+});
+
+// Notification click handling
+self.addEventListener("notificationclick", (event) => {
+  console.log("[SW] Notification click received");
+  
+  event.notification.close();
+  
+  const urlToOpen = event.notification.data?.url || "/";
+  
+  if (event.action === "save") {
+    // Handle save for later action
+    event.waitUntil(
+      self.registration.showNotification("🌺 Article Saved", {
+        body: "Article saved for offline reading",
+        icon: "/icons/icon-192x192.png",
+        tag: "save-confirmation",
+        requireInteraction: false,
+      })
+    );
+    return;
+  }
+  
+  // Open the app
+  event.waitUntil(
+    clients.matchAll({ type: "window" }).then((clientList) => {
+      // If a window is already open, focus it
+      for (const client of clientList) {
+        if (client.url === urlToOpen && "focus" in client) {
+          return client.focus();
+        }
+      }
+      
+      // Otherwise, open a new window
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
+
+// Notification close handling
+self.addEventListener("notificationclose", (event) => {
+  console.log("[SW] Notification closed:", event.notification.tag);
+  // Track notification dismissal for analytics
+});
+
 // Message event - handle commands from the app
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "CACHE_ARTICLE") {
@@ -198,6 +351,26 @@ self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
+  
+  if (event.data && event.data.type === "SHOW_NOTIFICATION") {
+    const { title, body, url, icon } = event.data;
+    showNotification(title, body, url, icon);
+  }
+});
+
+// Helper function to show notifications
+async function showNotification(title, body, url = "/", icon = "/icons/icon-192x192.png") {
+  const options = {
+    body,
+    icon,
+    badge: "/icons/icon-72x72.png",
+    tag: "bali-report-manual",
+    data: { url },
+    requireInteraction: false,
+  };
+  
+  await self.registration.showNotification(title, options);
+}
 });
 
 // Cache article content for offline reading

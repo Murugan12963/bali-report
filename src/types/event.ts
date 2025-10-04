@@ -55,14 +55,12 @@ export const MOCK_EVENTS: Event[] = [
       {
         name: 'Dr. Li Wei',
         title: 'Director of Economic Development',
-        organization: 'BRICS Research Institute',
-        image: '/images/speakers/li-wei.jpg'
+        organization: 'BRICS Research Institute'
       },
       {
         name: 'Prof. Maria Silva',
         title: 'Sustainable Development Expert',
-        organization: 'University of São Paulo',
-        image: '/images/speakers/maria-silva.jpg'
+        organization: 'University of São Paulo'
       }
     ],
     agenda: [
@@ -77,7 +75,6 @@ export const MOCK_EVENTS: Event[] = [
         description: 'Discussion on expanding economic partnerships'
       }
     ],
-    image: '/images/events/brics-summit.jpg',
     tags: ['BRICS', 'Development', 'Economics', 'Leadership'],
     featured: true
   },
@@ -96,11 +93,9 @@ export const MOCK_EVENTS: Event[] = [
       {
         name: 'Raj Patel',
         title: 'Chief Innovation Officer',
-        organization: 'TechBRICS',
-        image: '/images/speakers/raj-patel.jpg'
+        organization: 'TechBRICS'
       }
     ],
-    image: '/images/events/tech-forum.jpg',
     tags: ['Technology', 'Innovation', 'Digital', 'BRICS'],
     featured: true
   },
@@ -115,7 +110,6 @@ export const MOCK_EVENTS: Event[] = [
     capacity: 1000,
     ticketsSold: 567,
     location: 'Online',
-    image: '/images/events/energy-webinar.jpg',
     tags: ['Energy', 'Sustainability', 'Virtual', 'BRICS']
   }
 ];

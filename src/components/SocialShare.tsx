@@ -131,7 +131,7 @@ export function SocialShare({
    * Handle native share API.
    */
   const handleNativeShare = async () => {
-    if (!isNativeShareSupported) return;
+    if (!isNativeShareSupported || !navigator.share) return;
 
     try {
       await navigator.share({

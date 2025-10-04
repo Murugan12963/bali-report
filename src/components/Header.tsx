@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import SearchBar from "./SearchBar";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { PushNotificationButton } from "./pwa/PushNotificationManager";
 
 /**
  * Clean, modern Header component
@@ -79,6 +80,12 @@ const Header: React.FC = () => {
           {/* Desktop Navigation & Search */}
           <div className="hidden md:flex items-center space-x-6">
             <nav className="flex items-center space-x-1">
+              <Link href="/opinion" className={navLinkClass}>
+                📰 Opinion
+              </Link>
+              <Link href="/about" className={navLinkClass}>
+                ℹ️ About
+              </Link>
               <Link href="/" className={navLinkClass}>
                 Home
               </Link>
@@ -90,6 +97,9 @@ const Header: React.FC = () => {
               </Link>
               <Link href="/bali" className={navLinkClass}>
                 Bali
+              </Link>
+              <Link href="/events" className={navLinkClass}>
+                Events
               </Link>
               <Link href="/saved" className={navLinkClass}>
                 Saved
@@ -104,8 +114,11 @@ const Header: React.FC = () => {
               <SearchBar placeholder="Search uncensored news..." />
             </div>
 
-            {/* Theme Switcher */}
-            <ThemeSwitcher className="ml-2" />
+            {/* PWA Features */}
+            <div className="flex items-center space-x-2">
+              <PushNotificationButton />
+              <ThemeSwitcher />
+            </div>
           </div>
 
           {/* Mobile Actions */}
@@ -185,6 +198,27 @@ const Header: React.FC = () => {
                 onClick={closeMobileMenu}
               >
                 🏝️ Bali
+              </Link>
+              <Link
+                href="/events"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                🎉 Events
+              </Link>
+              <Link
+                href="/opinion"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                💭 Opinion
+              </Link>
+              <Link
+                href="/about"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                ℹ️ About
               </Link>
               <Link
                 href="/saved"

@@ -24,5 +24,29 @@ module.exports = {
         NODE_ENV: 'production',
       },
     },
+    {
+      name: 'newsletter-daily-morning',
+      script: './scripts/newsletter-automation.js',
+      args: 'daily-morning',
+      instances: 1,
+      autorestart: false,
+      watch: false,
+      cron_restart: '0 8 * * *', // Daily at 8:00 AM
+      env: {
+        NODE_ENV: 'production',
+      },
+    },
+    {
+      name: 'newsletter-weekly-friday',
+      script: './scripts/newsletter-automation.js',
+      args: 'weekly-roundup',
+      instances: 1,
+      autorestart: false,
+      watch: false,
+      cron_restart: '0 17 * * 5', // Friday at 5:00 PM
+      env: {
+        NODE_ENV: 'production',
+      },
+    },
   ],
 };

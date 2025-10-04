@@ -292,6 +292,143 @@ export const SCRAPER_SOURCES: ScraperConfig[] = [
     baseUrl: 'https://johnhelmer.net',
     maxArticles: 15,
     active: true  // Enabled - 8 articles scraped successfully
+  },
+  // New scraper configs for failed RSS sources
+  {
+    name: 'Tempo News (Scraper)',
+    url: 'https://www.tempo.co/',
+    category: 'Indonesia',
+    selectors: {
+      articleList: 'article, .post, .news-item, .card',
+      articleLink: 'a[href*="/read/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .card__title',
+      articleDescription: '.excerpt, .summary, .card__excerpt, p:first-of-type',
+      articleDate: 'time, .date, .published, .card__meta time',
+      articleAuthor: '.author, .by-author, .card__author',
+      articleImage: 'img:first-of-type, .card__image img, .featured-image img'
+    },
+    baseUrl: 'https://www.tempo.co',
+    maxArticles: 25,
+    active: true  // Enable scraping for Tempo since RSS is blocked
+  },
+  {
+    name: 'Kompas News (Scraper)',
+    url: 'https://www.kompas.com/',
+    category: 'Indonesia',
+    selectors: {
+      articleList: 'article, .article__list, .most-popular__item, .latest__item',
+      articleLink: 'a[href*="/read/"], .article__link, h3 a, .most-popular__link',
+      articleTitle: 'h3, .article__title, .most-popular__title, .latest__title',
+      articleDescription: '.article__lead, .article__subtitle, .summary',
+      articleDate: 'time, .article__date, .most-popular__date',
+      articleAuthor: '.article__author, .author',
+      articleImage: '.article__asset img, .most-popular__asset img, img:first-of-type'
+    },
+    baseUrl: 'https://www.kompas.com',
+    maxArticles: 25,
+    active: true  // Enable scraping for Kompas since RSS is broken
+  },
+  {
+    name: 'SCMP China (Scraper)',
+    url: 'https://www.scmp.com/news/china',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .story, .story-item, .article-item',
+      articleLink: 'a[href*="/article/"], h2 a, h3 a, .story__headline a',
+      articleTitle: 'h2, h3, .story__headline, .article__headline',
+      articleDescription: '.story__summary, .article__summary, .summary, p:first-of-type',
+      articleDate: 'time, .story__time, .article__time, .published',
+      articleAuthor: '.story__author, .article__author, .author',
+      articleImage: '.story__image img, .article__image img, img:first-of-type'
+    },
+    baseUrl: 'https://www.scmp.com',
+    maxArticles: 20,
+    active: true  // Enable scraping for SCMP since RSS is malformed
+  },
+  {
+    name: 'SCMP Asia (Scraper)',
+    url: 'https://www.scmp.com/news/asia',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .story, .story-item, .article-item',
+      articleLink: 'a[href*="/article/"], h2 a, h3 a, .story__headline a',
+      articleTitle: 'h2, h3, .story__headline, .article__headline',
+      articleDescription: '.story__summary, .article__summary, .summary, p:first-of-type',
+      articleDate: 'time, .story__time, .article__time, .published',
+      articleAuthor: '.story__author, .article__author, .author',
+      articleImage: '.story__image img, .article__image img, img:first-of-type'
+    },
+    baseUrl: 'https://www.scmp.com',
+    maxArticles: 20,
+    active: true  // Enable scraping for SCMP Asia since RSS is malformed
+  },
+  {
+    name: 'Antara News (Scraper)',
+    url: 'https://www.antaranews.com/berita/terkini',
+    category: 'Indonesia',
+    selectors: {
+      articleList: 'article, .article-item, .simple-post, .post',
+      articleLink: 'a[href*="/berita/"], h2 a, h3 a, .article-title a',
+      articleTitle: 'h2, h3, .article-title, .post-title',
+      articleDescription: '.article-content, .post-excerpt, .summary, p:first-of-type',
+      articleDate: 'time, .article-date, .post-date, .published',
+      articleAuthor: '.article-author, .author, .by-author',
+      articleImage: '.article-image img, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://www.antaranews.com',
+    maxArticles: 25,
+    active: true  // Enable scraping for Antara News since RSS parsing fails
+  },
+  {
+    name: 'BBC Asia News (Scraper)', 
+    url: 'https://www.bbc.com/news/world/asia',
+    category: 'BRICS',
+    selectors: {
+      articleList: '[data-testid="edinburgh-article"], .gs-c-promo, .media__content',
+      articleLink: 'a[href*="/news/"], .gs-c-promo-heading a, .media__link',
+      articleTitle: '.gs-c-promo-heading__title, .media__title, h3',
+      articleDescription: '.gs-c-promo-summary, .media__summary, .gs-c-promo__summary',
+      articleDate: 'time, [data-testid="card-metadata"], .gs-c-promo-timestamp',
+      articleAuthor: '.gs-c-byline, .media__byline',
+      articleImage: '.gs-c-promo-image img, .media__image img, img:first-of-type'
+    },
+    baseUrl: 'https://www.bbc.com',
+    maxArticles: 20,
+    active: true  // Enable scraping for BBC Asia since RSS parsing fails
+  },
+  {
+    name: 'RT News (Scraper)',
+    url: 'https://www.rt.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.card, .card-rows__item, .main-promos__item',
+      articleLink: '.card__heading a, .main-promos__link, a[href*="/news/"]',
+      articleTitle: '.card__heading, .main-promos__title, h3',
+      articleDescription: '.card__summary, .main-promos__summary, .card__text',
+      articleDate: '.card__date, .main-promos__date, time',
+      articleAuthor: '.card__author, .author',
+      articleImage: '.card__media img, .main-promos__media img, img:first-of-type'
+    },
+    baseUrl: 'https://www.rt.com',
+    maxArticles: 25,
+    active: true  // Enable scraping for RT since RSS parsing fails
+  },
+  {
+    name: 'Al Jazeera (Scraper)',
+    url: 'https://www.aljazeera.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .gc, .topics-sec-item, .featured-articles-list__item',
+      articleLink: 'a[href*="/news/"], .gc__link, .topics-sec-item__link, h3 a',
+      articleTitle: 'h3, .gc__title, .topics-sec-item__title, .featured-articles-list__item__title',
+      articleDescription: '.gc__excerpt, .topics-sec-item__summary, .featured-articles-list__item__excerpt',
+      articleDate: 'time, .gc__date, .topics-sec-item__date, .screen-reader-text',
+      articleAuthor: '.gc__author, .author',
+      articleImage: '.gc__image img, .topics-sec-item__image img, img:first-of-type'
+    },
+    baseUrl: 'https://www.aljazeera.com',
+    maxArticles: 20,
+    active: true  // Enable scraping for Al Jazeera since RSS parsing fails
   }
 ];
 
@@ -502,6 +639,43 @@ class WebScraper {
     return articles.sort((a, b) => 
       new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
     );
+  }
+
+  /**
+   * Scrape articles by source name (for RSS fallback)
+   */
+  async scrapeBySourceName(sourceName: string): Promise<Article[]> {
+    // Map RSS source names to scraper equivalents
+    const sourceMapping: { [key: string]: string } = {
+      'Tempo News': 'Tempo News (Scraper)',
+      'Kompas News': 'Kompas News (Scraper)',
+      'South China Morning Post - China': 'SCMP China (Scraper)',
+      'South China Morning Post - Asia': 'SCMP Asia (Scraper)',
+      'Antara News': 'Antara News (Scraper)',
+      'BBC Asia News': 'BBC Asia News (Scraper)',
+      'RT News': 'RT News (Scraper)',
+      'Al Jazeera': 'Al Jazeera (Scraper)',
+    };
+    
+    // Try direct name first, then mapped name
+    const scraperName = sourceMapping[sourceName] || sourceName;
+    
+    const source = SCRAPER_SOURCES.find(
+      s => s.name === scraperName || s.name === sourceName
+    );
+    
+    if (!source) {
+      console.log(`ℹ️ No scraper configuration found for: ${sourceName}`);
+      return [];
+    }
+    
+    if (!source.active) {
+      console.log(`ℹ️ Scraper for ${sourceName} is disabled`);
+      return [];
+    }
+    
+    console.log(`🕷️ Scraping fallback for ${sourceName} using config: ${source.name}`);
+    return await this.scrapeSource(source);
   }
 
   /**

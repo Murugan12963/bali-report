@@ -1,0 +1,26 @@
+
+> bali-report@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+  - Environments: .env
+  - Experiments (use with caution):
+    · webpackBuildWorker
+
+ ✓ Starting...
+ ✓ Ready in 1322ms
+ ✓ Compiled /src/middleware in 125ms (72 modules)
+ ○ Compiling /opinion ...
+ ✓ Compiled /opinion in 2.6s (584 modules)
+ GET /opinion 200 in 2915ms
+ ✓ Compiled in 686ms (283 modules)
+ ✓ Compiled /opinion/[id] in 416ms (577 modules)
+ GET /opinion/op-1 200 in 971ms
+ GET /opinion 200 in 78ms
+ ✓ Compiled /_not-found in 496ms (571 modules)
+ GET /authors/maya-sari.jpg 404 in 757ms
+ ✓ Compiled /favicon.ico in 263ms (334 modules)
+ GET /favicon.ico 200 in 384ms
+ ✓ Compiled /opinion/[id] in 88ms (341 modules)
+ GET /authors/maya-sari.jpg 404 in 120ms

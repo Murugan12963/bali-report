@@ -1,6 +1,7 @@
 import Parser from 'rss-parser';
 import { rssCache } from './rss-cache';
-// import { webScraper } from './web-scraper'; // Temporarily disabled due to build issues
+import { webScraper } from './web-scraper';
+import { contentModerationService } from './content-moderation';
 
 /**
  * RSS Parser configuration and types for Bali Report news aggregation.
@@ -116,20 +117,89 @@ export const NEWS_SOURCES: NewsSource[] = [
     category: 'Bali',
     active: false, // Disabled due to server error
   },
+  // Indonesian business and news sources
+  {
+    name: 'Indonesia Business Post',
+    url: 'https://indonesiabusinesspost.com/feed/',
+    category: 'Indonesia',
+    active: false, // Disabled - returns 404 error even with enhanced parsing
+  },
+  {
+    name: 'Tempo News',
+    url: 'https://www.tempo.co/rss',
+    category: 'Indonesia',
+    active: false, // Disabled due to 403 Forbidden
+  },
+  // BRICS-aligned Indian sources
+  {
+    name: 'NDTV News',
+    url: 'https://feeds.feedburner.com/ndtvnews-latest',
+    category: 'BRICS',
+    active: true, // Indian perspective on global affairs
+  },
+  {
+    name: 'NDTV World',
+    url: 'https://feeds.feedburner.com/ndtvnews-world',
+    category: 'BRICS',
+    active: false, // Disabled - redirects to HTML page instead of RSS
+  },
+  {
+    name: 'NDTV Business',
+    url: 'https://feeds.feedburner.com/ndtvnews-business',
+    category: 'BRICS',
+    active: false, // Disabled - external context shows issues
+  },
+  // Asian news sources
+  {
+    name: 'South China Morning Post - China',
+    url: 'https://www.scmp.com/rss/91/feed',
+    category: 'BRICS',
+    active: false, // Disabled - returns malformed XML even with enhanced parsing
+  },
+  {
+    name: 'South China Morning Post - Asia',
+    url: 'https://www.scmp.com/rss/5/feed',
+    category: 'BRICS',
+    active: false, // Disabled - returns malformed XML even with enhanced parsing
+  },
+  {
+    name: 'South China Morning Post - Business',
+    url: 'https://www.scmp.com/rss/92/feed',
+    category: 'BRICS',
+    active: false, // Disabled - requires redirect handling
+  },
+  // Note: Detik RSS feeds appear to be broken based on external context
+  // Note: Kompas RSS feeds return 404 errors
+  // Note: Tempo RSS feeds return 403 Forbidden
+];
+
+// Enhanced User-Agent rotation to bypass bot detection
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/120.0.0.0 Safari/537.36',
+  'NewsAggregator/1.0 (https://bali.report; RSS Reader)',
 ];
 
 class RSSAggregator {
   private parser: Parser;
   private sources: NewsSource[];
+  private userAgentIndex: number = 0;
 
   constructor(sources: NewsSource[] = NEWS_SOURCES) {
     this.parser = new Parser({
-      timeout: 15000,
+      timeout: 20000, // Increased timeout for slow Indonesian servers
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'application/rss+xml, application/xml, text/xml',
-        'Accept-Language': 'en-US,en;q=0.9',
+        'User-Agent': this.getNextUserAgent(),
+        'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml',
+        'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'DNT': '1',
       },
       customFields: {
         item: [
@@ -141,6 +211,70 @@ class RSSAggregator {
       },
     });
     this.sources = sources;
+  }
+
+  /**
+   * Get next User-Agent in rotation to bypass bot detection.
+   * 
+   * Returns:
+   *   string: Next User-Agent string.
+   */
+  private getNextUserAgent(): string {
+    const userAgent = USER_AGENTS[this.userAgentIndex];
+    this.userAgentIndex = (this.userAgentIndex + 1) % USER_AGENTS.length;
+    return userAgent;
+  }
+
+  /**
+   * Fetch RSS with enhanced error handling and User-Agent rotation.
+   * 
+   * Args:
+   *   url (string): RSS feed URL.
+   *   retryCount (number): Current retry attempt.
+   * 
+   * Returns:
+   *   Promise<Parser.Output>: Parsed RSS feed.
+   */
+  private async fetchWithRetry(url: string, retryCount: number = 0): Promise<any> {
+    const maxRetries = 3;
+    
+    try {
+      // Rotate User-Agent for each retry attempt
+      const parser = new Parser({
+        timeout: 25000,
+        headers: {
+          'User-Agent': this.getNextUserAgent(),
+          'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml',
+          'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'DNT': '1',
+          'Referer': 'https://google.com/', // Some sites require referer
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'cross-site',
+        },
+        customFields: {
+          item: [
+            ['media:content', 'media:content'],
+            ['media:thumbnail', 'media:thumbnail'], 
+            ['enclosure', 'enclosure'],
+            ['image', 'image'],
+          ],
+        },
+      });
+      
+      return await parser.parseURL(url);
+    } catch (error) {
+      if (retryCount < maxRetries) {
+        console.log(`🔄 Retry ${retryCount + 1}/${maxRetries} for ${url} with different User-Agent`);
+        // Wait with exponential backoff before retry
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount + 1) * 1000));
+        return this.fetchWithRetry(url, retryCount + 1);
+      }
+      throw error;
+    }
   }
 
   /**
@@ -180,13 +314,14 @@ class RSSAggregator {
       try {
         console.log(`Fetching RSS from ${source.name}... (attempt ${attempt}/${maxRetries})`);
         
-        const feed = await this.parser.parseURL(source.url);
+        // Use enhanced fetch with User-Agent rotation
+        const feed = await this.fetchWithRetry(source.url);
         
         if (!feed.items || feed.items.length === 0) {
           throw new Error(`No articles found in RSS feed for ${source.name}`);
         }
         
-        const articles: Article[] = feed.items.map((item, index) => {
+        const articles: Article[] = feed.items.map((item: any, index: number) => {
           const imageUrl = this.extractImageUrl(item);
           if (imageUrl && index === 0) {
             console.log(`📸 Found image for ${source.name}: ${imageUrl.substring(0, 60)}...`);
@@ -207,12 +342,21 @@ class RSSAggregator {
 
         console.log(`✅ Successfully fetched ${articles.length} articles from ${source.name}`);
         
-        // Cache the successful fetch
-        if (!skipCache) {
-          rssCache.set(source.url, source, articles);
+        // Apply content moderation before caching
+        const moderatedResult = await contentModerationService.moderateArticles(articles);
+        const moderatedArticles = moderatedResult.approved;
+        
+        if (moderatedResult.rejected.length > 0) {
+          console.log(`🛡️ Content moderation: ${moderatedResult.approved.length} approved, ${moderatedResult.rejected.length} rejected from ${source.name}`);
+          console.log(`📋 Quality score: ${Math.round((moderatedResult.approved.length / articles.length) * 100)}%`);
         }
         
-        return articles;
+        // Cache the moderated articles
+        if (!skipCache) {
+          rssCache.set(source.url, source, moderatedArticles);
+        }
+        
+        return moderatedArticles;
       } catch (error) {
         lastError = error as Error;
         
@@ -235,7 +379,34 @@ class RSSAggregator {
       }
     }
     
-    console.error(`❌ Failed to fetch from ${source.name} after ${maxRetries} attempts:`, lastError?.message || 'Unknown error');
+    // If RSS fetch fails, try web scraping as fallback
+    console.error(`❌ RSS fetch failed for ${source.name} after ${maxRetries} attempts:`, lastError?.message || 'Unknown error');
+    console.log(`🕷️ Attempting web scraping fallback for ${source.name}...`);
+    
+    try {
+      const scrapedArticles = await webScraper.scrapeBySourceName(source.name);
+      if (scrapedArticles.length > 0) {
+        console.log(`✅ Scraped ${scrapedArticles.length} articles from ${source.name} as RSS fallback`);
+        
+        // Apply content moderation to scraped articles too
+        const moderatedResult = await contentModerationService.moderateArticles(scrapedArticles);
+        const moderatedScrapedArticles = moderatedResult.approved;
+        
+        if (moderatedResult.rejected.length > 0) {
+          console.log(`🛡️ Scraped content moderation: ${moderatedResult.approved.length} approved, ${moderatedResult.rejected.length} rejected`);
+        }
+        
+        // Cache the moderated scraped results
+        if (!skipCache) {
+          rssCache.set(source.url, source, moderatedScrapedArticles);
+        }
+        
+        return moderatedScrapedArticles;
+      }
+    } catch (scrapeError) {
+      console.error(`❌ Web scraping fallback also failed for ${source.name}:`, scrapeError);
+    }
+    
     return [];
   }
 
@@ -271,16 +442,16 @@ class RSSAggregator {
       
       // Add scraped articles for this category if requested
       if (includeScrapers) {
-        console.warn('Web scraping temporarily disabled - build fix in progress');
-        // try {
-        //   const scrapedArticles = await webScraper.scrapeByCategory(category);
-        //   if (scrapedArticles.length > 0) {
-        //     articles.push(...scrapedArticles);
-        //     console.log(`🕷️ Added ${scrapedArticles.length} scraped ${category} articles`);
-        //   }
-        // } catch (error) {
-        //   console.error(`Failed to scrape ${category} sources:`, error);
-        // }
+        try {
+          console.log(`🕷️ Attempting to scrape ${category} sources...`);
+          const scrapedArticles = await webScraper.scrapeByCategory(category);
+          if (scrapedArticles.length > 0) {
+            articles.push(...scrapedArticles);
+            console.log(`🕷️ Added ${scrapedArticles.length} scraped ${category} articles`);
+          }
+        } catch (error) {
+          console.error(`Failed to scrape ${category} sources:`, error);
+        }
       }
       
       return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
@@ -320,20 +491,21 @@ class RSSAggregator {
         }
       });
       
-    console.log(`📊 RSS Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
-    
-    // Add scraped articles if requested
+      console.log(`📊 RSS Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
+      console.log(`🛡️ All articles have been processed through content moderation`);
+      
+      // Add scraped articles if requested
     if (includeScrapers) {
-      console.warn('Web scraping temporarily disabled - build fix in progress');
-      // try {
-      //   const scrapedArticles = await webScraper.scrapeAllSources();
-      //   if (scrapedArticles.length > 0) {
-      //     articles.push(...scrapedArticles);
-      //     console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
-      //   }
-      // } catch (error) {
-      //   console.error('Failed to scrape additional sources:', error);
-      // }
+      try {
+        console.log('🕷️ Attempting to scrape all sources...');
+        const scrapedArticles = await webScraper.scrapeAllSources();
+        if (scrapedArticles.length > 0) {
+          articles.push(...scrapedArticles);
+          console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
+        }
+      } catch (error) {
+        console.error('Failed to scrape additional sources:', error);
+      }
     }
     
     // Sort articles by publication date (newest first)

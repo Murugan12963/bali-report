@@ -23,6 +23,14 @@ const formatColors = {
   hybrid: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
 };
 
+const categoryEmojis = {
+  conference: '🏛️',
+  webinar: '💻',
+  workshop: '🔨',
+  cultural: '🎭',
+  networking: '🤝'
+};
+
 export default function EventCard({ event }: EventCardProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -44,8 +52,11 @@ export default function EventCard({ event }: EventCardProps) {
               onError={() => setImageError(true)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-              <span className="text-4xl">🎪</span>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+              <span className="text-6xl mb-2">{categoryEmojis[event.category]}</span>
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300 capitalize">
+                {event.category}
+              </span>
             </div>
           )}
           {event.featured && (
@@ -57,11 +68,11 @@ export default function EventCard({ event }: EventCardProps) {
           )}
         </div>
 
-        <div className="absolute bottom-4 right-4 flex space-x-2">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${categoryColors[event.category]}`}>
+        <div className="absolute bottom-4 right-4 flex flex-wrap gap-2 max-w-[calc(100%-2rem)]">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColors[event.category]}`}>
             {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
           </span>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${formatColors[event.format]}`}>
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${formatColors[event.format]}`}>
             {event.format.charAt(0).toUpperCase() + event.format.slice(1)}
           </span>
         </div>
@@ -78,15 +89,17 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
             <div className="flex items-center text-gray-600 dark:text-gray-300">
               <span className="mr-2">📅</span>
-              {new Date(event.date).toLocaleDateString()}
-              {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString()}`}
+              <span className="truncate">
+                {new Date(event.date).toLocaleDateString()}
+                {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString()}`}
+              </span>
             </div>
             <div className="flex items-center text-gray-600 dark:text-gray-300">
               <span className="mr-2">📍</span>
-              {event.location}
+              <span className="truncate">{event.location}</span>
             </div>
           </div>
 
@@ -117,13 +130,13 @@ export default function EventCard({ event }: EventCardProps) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               ${event.price}
             </div>
             <Link
               href={`/events/${event.id}`}
-              className={`px-4 py-2 rounded-md text-white ${
+              className={`px-4 py-2 rounded-md text-white text-center font-medium transition-colors duration-200 ${
                 isSoldOut
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700'

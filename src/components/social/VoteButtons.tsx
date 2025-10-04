@@ -32,7 +32,7 @@ export function VoteButtons({
   onVote,
   onReport,
 }: VoteButtonsProps) {
-  const { data: session } = useSession();
+  const { data: session } = useSession() || { data: null };
   const { toast } = useToast();
 
   const [votes, setVotes] = useState(initialVotes);
