@@ -101,6 +101,9 @@ const Header: React.FC = () => {
               <Link href="/events" className={navLinkClass}>
                 Events
               </Link>
+              <Link href="/videos" className={navLinkClass}>
+                Videos
+              </Link>
               <Link href="/saved" className={navLinkClass}>
                 Saved
               </Link>
@@ -205,6 +208,13 @@ const Header: React.FC = () => {
                 onClick={closeMobileMenu}
               >
                 🎉 Events
+              </Link>
+              <Link
+                href="/videos"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                📺 Videos
               </Link>
               <Link
                 href="/opinion"

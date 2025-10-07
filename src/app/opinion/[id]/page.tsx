@@ -379,13 +379,14 @@ const OPINION_ARTICLES: OpinionArticle[] = [
 ];
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = OPINION_ARTICLES.find(a => a.id === params.id);
+  const { id } = await params;
+  const article = OPINION_ARTICLES.find(a => a.id === id);
   
   if (!article) {
     return {
@@ -436,8 +437,9 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export default function OpinionArticlePage({ params }: Props) {
-  const article = OPINION_ARTICLES.find(a => a.id === params.id);
+export default async function OpinionArticlePage({ params }: Props) {
+  const { id } = await params;
+  const article = OPINION_ARTICLES.find(a => a.id === id);
 
   if (!article) {
     notFound();

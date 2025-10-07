@@ -100,6 +100,11 @@ export default function EventCard({ event }: EventCardProps) {
             <div className="flex items-center text-gray-600 dark:text-gray-300">
               <span className="mr-2">📍</span>
               <span className="truncate">{event.location}</span>
+              {event.country !== 'Online' && (
+                <span className="ml-1 text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full font-medium">
+                  {event.country}
+                </span>
+              )}
             </div>
           </div>
 

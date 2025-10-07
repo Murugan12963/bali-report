@@ -213,8 +213,7 @@ export default function StockMarketTracker({
         }
         setLastRefresh(new Date());
       } catch (error) {
-        console.error("Error fetching market data:", error);
-        // Fallback to static data
+        // Silently fall back to static data (API errors are expected)
         if (markets === "Indonesia") {
           setMarketData(indonesiaMarkets);
         } else {
@@ -279,7 +278,7 @@ export default function StockMarketTracker({
         setMarketData(mappedData);
       }
     } catch (error) {
-      console.error("Error refreshing market data:", error);
+      // Silently handle refresh errors - using cached data
       setLoading(false);
     }
   };

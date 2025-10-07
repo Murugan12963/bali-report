@@ -29,7 +29,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <form onSubmit={handleSearch} className={`relative ${className}`}>
       <div className="relative">
+        <label htmlFor="search-input" className="sr-only">
+          Search articles
+        </label>
         <input
+          id="search-input"
+          name="search"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

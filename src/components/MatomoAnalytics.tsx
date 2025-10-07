@@ -1,17 +1,35 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { initMatomo, trackPageView } from "@/lib/analytics/matomo";
+
+/**
+ * Matomo Analytics Tracker Component
+ * Inner component that uses useSearchParams
+ */
+function MatomoTracker() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Track page views on route changes
+    if (pathname) {
+      const url =
+        pathname +
+        (searchParams?.toString() ? `?${searchParams.toString()}` : "");
+      trackPageView(url);
+    }
+  }, [pathname, searchParams]);
+
+  return null;
+}
 
 /**
  * Matomo Analytics Component
  * Automatically tracks page views on route changes
  */
 export default function MatomoAnalytics() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
   useEffect(() => {
     // Initialize Matomo on first load
     const matomoUrl = process.env.NEXT_PUBLIC_MATOMO_URL;
@@ -31,16 +49,10 @@ export default function MatomoAnalytics() {
     });
   }, []);
 
-  useEffect(() => {
-    // Track page views on route changes
-    if (pathname) {
-      const url =
-        pathname +
-        (searchParams?.toString() ? `?${searchParams.toString()}` : "");
-      trackPageView(url);
-    }
-  }, [pathname, searchParams]);
-
-  // No UI rendered - this is a tracking-only component
-  return null;
+  // Wrap the tracker in Suspense for Next.js 15 compatibility
+  return (
+    <Suspense fallback={null}>
+      <MatomoTracker />
+    </Suspense>
+  );
 }

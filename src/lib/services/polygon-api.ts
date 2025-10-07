@@ -133,7 +133,7 @@ class PolygonApiService {
             timestamp: new Date((quoteData.last?.timestamp || Date.now()) / 1000000).toISOString(),
           });
         } catch (error) {
-          console.error(`Error fetching data for ${symbolInfo.symbol}:`, error);
+          // Silently skip symbols that fail - this is expected for some international markets
         }
       }
 
@@ -144,7 +144,7 @@ class PolygonApiService {
       console.log(`Successfully fetched ${results.length} real-time BRICS market quotes from Polygon.io`);
       return results;
     } catch (error) {
-      console.error("Error fetching BRICS markets from Polygon.io:", error);
+      // Silently throw - caller will handle with fallback data
       throw error;
     }
   }
@@ -264,10 +264,7 @@ class PolygonApiService {
               ).toISOString(),
             });
           } catch (error) {
-            console.error(
-              `Error fetching individual quote for ${symbolInfo.symbol}:`,
-              error,
-            );
+            // Silently skip symbols that fail
           }
         }
       }
@@ -281,10 +278,7 @@ class PolygonApiService {
       );
       return results;
     } catch (error) {
-      console.error(
-        "Error fetching Indonesian markets from Polygon.io:",
-        error,
-      );
+      // Silently throw - caller will handle with fallback data
       throw error;
     }
   }

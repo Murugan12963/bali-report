@@ -429,7 +429,537 @@ export const SCRAPER_SOURCES: ScraperConfig[] = [
     baseUrl: 'https://www.aljazeera.com',
     maxArticles: 20,
     active: true  // Enable scraping for Al Jazeera since RSS parsing fails
-  }
+  },
+  // New geopolitical analysis sources
+  {
+    name: 'UN News (Scraper)',
+    url: 'https://news.un.org/en/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .story, .news-item',
+      articleLink: 'a.story-link, h2 a, h3 a',
+      articleTitle: 'h2, h3, .story-headline',
+      articleDescription: '.story-teaser, .summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .story-image img'
+    },
+    baseUrl: 'https://news.un.org',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'The Diplomat (Scraper)',
+    url: 'https://thediplomat.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .td-block-span12',
+      articleLink: 'a.td-image-wrap, h3 a, .entry-title a',
+      articleTitle: 'h3, .entry-title, .td-module-title',
+      articleDescription: '.td-excerpt, .entry-summary, p:first-of-type',
+      articleDate: 'time, .td-post-date, .entry-date',
+      articleAuthor: '.td-post-author-name, .author',
+      articleImage: '.td-module-thumb img, .entry-thumb img, img:first-of-type'
+    },
+    baseUrl: 'https://thediplomat.com',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'Global Issues (Scraper)',
+    url: 'https://www.globalissues.org/news',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story',
+      articleLink: 'h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title',
+      articleDescription: '.excerpt, .summary, p:first-of-type',
+      articleDate: 'time, .date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .featured-image img'
+    },
+    baseUrl: 'https://www.globalissues.org',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'E-International Relations (Scraper)',
+    url: 'https://www.e-ir.info/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .article-item',
+      articleLink: 'h2 a, h3 a, .entry-title a',
+      articleTitle: 'h2, h3, .entry-title',
+      articleDescription: '.entry-summary, .excerpt, p:first-of-type',
+      articleDate: 'time, .entry-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.wp-post-image, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://www.e-ir.info',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'Foreign Affairs (Scraper)',
+    url: 'https://www.foreignaffairs.com/topics/geopolitics',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .article-item, .promo',
+      articleLink: 'a.article-link, h2 a, h3 a',
+      articleTitle: 'h2, h3, .article-title',
+      articleDescription: '.article-dek, .summary, p:first-of-type',
+      articleDate: 'time, .article-date, .published',
+      articleAuthor: '.article-author, .author',
+      articleImage: 'img:first-of-type, .article-image img'
+    },
+    baseUrl: 'https://www.foreignaffairs.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Geopolitical Economy (Scraper)',
+    url: 'https://geopoliticaleconomy.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .article-item',
+      articleLink: 'h2 a, .entry-title a',
+      articleTitle: 'h2, .entry-title',
+      articleDescription: '.entry-summary, .excerpt, p:first-of-type',
+      articleDate: 'time, .entry-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.wp-post-image, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://geopoliticaleconomy.com',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'Financial Times Geopolitics (Scraper)',
+    url: 'https://www.ft.com/geopolitics',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .o-teaser, .story',
+      articleLink: 'a.js-teaser-heading-link, h2 a, .o-teaser__heading a',
+      articleTitle: 'h2, .o-teaser__heading',
+      articleDescription: '.o-teaser__standfirst, .summary, p:first-of-type',
+      articleDate: 'time, .o-teaser__timestamp, .article-date',
+      articleAuthor: '.o-teaser__byline, .author',
+      articleImage: 'img:first-of-type, .o-teaser__image img'
+    },
+    baseUrl: 'https://www.ft.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'RAND Corporation (Scraper)',
+    url: 'https://www.rand.org/topics/international-affairs.html',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .product-main, .product-listing',
+      articleLink: 'a.product-link, h3 a, h2 a',
+      articleTitle: 'h3, h2, .product-title',
+      articleDescription: '.product-desc, .summary, p:first-of-type',
+      articleDate: 'time, .product-date, .date',
+      articleAuthor: '.product-authors, .author',
+      articleImage: 'img:first-of-type, .product-image img'
+    },
+    baseUrl: 'https://www.rand.org',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Geopolitical Futures (Scraper)',
+    url: 'https://geopoliticalfutures.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .vp-portfolio__item',
+      articleLink: 'a.vp-portfolio__item-img, h2 a, h3 a',
+      articleTitle: 'h2, h3, .vp-portfolio__item-title',
+      articleDescription: '.vp-portfolio__item-excerpt, .excerpt, p:first-of-type',
+      articleDate: 'time, .vp-portfolio__item-meta-date, .date',
+      articleAuthor: '.vp-portfolio__item-meta-author, .author',
+      articleImage: 'img:first-of-type, .vp-portfolio__item-img img'
+    },
+    baseUrl: 'https://geopoliticalfutures.com',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'Fifty Year Perspective (Scraper)',
+    url: 'https://fiftyyearperspective.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .entry',
+      articleLink: 'h2 a, .entry-title a',
+      articleTitle: 'h2, .entry-title',
+      articleDescription: '.entry-summary, .excerpt, p:first-of-type',
+      articleDate: 'time, .entry-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.wp-post-image, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://fiftyyearperspective.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Eclinik WordPress',
+    url: 'https://eclinik.wordpress.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .entry',
+      articleLink: 'h2 a, .entry-title a',
+      articleTitle: 'h2, .entry-title',
+      articleDescription: '.entry-summary, .excerpt, p:first-of-type',
+      articleDate: 'time, .entry-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.wp-post-image, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://eclinik.wordpress.com',
+    maxArticles: 20,
+    active: true
+  },
+  // Scraper configs for newly re-enabled RSS sources
+  {
+    name: 'Press TV (Scraper)',
+    url: 'https://www.presstv.ir/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/Detail/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.summary, .excerpt, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://www.presstv.ir',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Global Times (Scraper)',
+    url: 'https://www.globaltimes.cn/',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-box',
+      articleLink: 'a[href*="/content/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.summary, .excerpt, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-time, .publish-time',
+      articleAuthor: '.author, .byline, .source',
+      articleImage: 'img:first-of-type, .story-img img, .news-img img'
+    },
+    baseUrl: 'https://www.globaltimes.cn',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Jakarta Globe (Scraper)',
+    url: 'https://jakartaglobe.id/',
+    category: 'Indonesia',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.excerpt, .summary, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline, .writer',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://jakartaglobe.id',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Jakarta Post (Scraper)',
+    url: 'https://www.thejakartapost.com/',
+    category: 'Indonesia',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.excerpt, .summary, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline, .writer',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://www.thejakartapost.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Bali Post (Scraper)',
+    url: 'https://www.balipost.com/',
+    category: 'Bali',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.excerpt, .summary, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline, .writer',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://www.balipost.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'NDTV World (Scraper)',
+    url: 'https://www.ndtv.com/world-news',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.excerpt, .summary, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://www.ndtv.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'NDTV Business (Scraper)',
+    url: 'https://www.ndtv.com/business',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .post, .news-item, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .story-title',
+      articleDescription: '.excerpt, .summary, .story-summary, p:first-of-type',
+      articleDate: 'time, .date, .story-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .story-image img, .featured-image img'
+    },
+    baseUrl: 'https://www.ndtv.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'South China Morning Post - Business (Scraper)',
+    url: 'https://www.scmp.com/business',
+    category: 'BRICS',
+    selectors: {
+      articleList: 'article, .story, .story-item, .article-item',
+      articleLink: 'a[href*="/article/"], h2 a, h3 a, .story__headline a',
+      articleTitle: 'h2, h3, .story__headline, .article__headline',
+      articleDescription: '.story__summary, .article__summary, .summary, p:first-of-type',
+      articleDate: 'time, .story__time, .article__time, .published',
+      articleAuthor: '.story__author, .article__author, .author',
+      articleImage: '.story__image img, .article__image img, img:first-of-type'
+    },
+    baseUrl: 'https://www.scmp.com',
+    maxArticles: 20,
+    active: true
+  },
+  // BRICS Organizations Scraper Configurations
+  {
+    name: 'InfoBRICS (Scraper)',
+    url: 'https://infobrics.org/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.post, .news-item, article, .entry',
+      articleLink: 'a[href*="/post/"], h2 a, h3 a, .entry-title a',
+      articleTitle: 'h2, h3, .entry-title, .post-title',
+      articleDescription: '.entry-summary, .excerpt, .summary, p:first-of-type',
+      articleDate: 'time, .entry-date, .post-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.entry-thumbnail img, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://infobrics.org',
+    maxArticles: 25,
+    active: true
+  },
+  {
+    name: 'BRICS Policy Center (Scraper)',
+    url: 'https://bricspolicycenter.org/en/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.post, .news-item, article, .entry',
+      articleLink: 'a[href*="/homepagepost/"], h2 a, h3 a, .entry-title a',
+      articleTitle: 'h2, h3, .entry-title, .post-title',
+      articleDescription: '.entry-summary, .excerpt, .summary, p:first-of-type',
+      articleDate: 'time, .entry-date, .post-date, .published',
+      articleAuthor: '.author, .entry-author',
+      articleImage: '.entry-thumbnail img, .post-thumbnail img, img:first-of-type'
+    },
+    baseUrl: 'https://bricspolicycenter.org',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'TV BRICS (Scraper)',
+    url: 'https://tvbrics.com/en/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .story-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .news-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .news-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .news-image img, .featured-image img'
+    },
+    baseUrl: 'https://tvbrics.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'BRICS Business Council India (Scraper)',
+    url: 'https://bricsbusinesscouncil.co.in/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .announcement',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .news-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .news-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .news-image img, .featured-image img'
+    },
+    baseUrl: 'https://bricsbusinesscouncil.co.in',
+    maxArticles: 15,
+    active: true
+  },
+  {
+    name: 'SA BRICS Business Council (Scraper)',
+    url: 'https://sabricsbusinesscouncil.co.za/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .media-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .media-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .media-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .media-image img, .featured-image img'
+    },
+    baseUrl: 'https://sabricsbusinesscouncil.co.za',
+    maxArticles: 15,
+    active: true
+  },
+  {
+    name: 'BRICS Chamber of Commerce (Scraper)',
+    url: 'https://bricscci.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .event-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .event-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .event-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .event-image img, .featured-image img'
+    },
+    baseUrl: 'https://bricscci.com',
+    maxArticles: 15,
+    active: true
+  },
+  {
+    name: 'Shanghai Cooperation Organisation (Scraper)',
+    url: 'https://eng.sectsco.org/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .event-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .news-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .news-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .news-image img, .featured-image img'
+    },
+    baseUrl: 'https://eng.sectsco.org',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'Valdai Discussion Club (Scraper)',
+    url: 'https://valdaiclub.com/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.post, .article, .news-item, .opinion-item',
+      articleLink: 'a[href*="/a/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .article-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .article-date, .published',
+      articleAuthor: '.author, .byline, .article-author',
+      articleImage: 'img:first-of-type, .article-image img, .featured-image img'
+    },
+    baseUrl: 'https://valdaiclub.com',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'BRICS Universities Association (Scraper)',
+    url: 'https://brics.world/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .update-item',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .update-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .update-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .update-image img, .featured-image img'
+    },
+    baseUrl: 'https://brics.world',
+    maxArticles: 15,
+    active: true
+  },
+  {
+    name: 'BRICS Brasil (Scraper)',
+    url: 'https://brics.br/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .noticia',
+      articleLink: 'a[href*="/noticia/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .noticia-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .noticia-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .noticia-image img, .featured-image img'
+    },
+    baseUrl: 'https://brics.br',
+    maxArticles: 20,
+    active: true
+  },
+  {
+    name: 'BRICS University of Toronto (Scraper)',
+    url: 'http://brics.utoronto.ca/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.news-item, .post, article, .update',
+      articleLink: 'a[href*="/news/"], h2 a, h3 a, .title a',
+      articleTitle: 'h2, h3, .title, .update-title',
+      articleDescription: '.excerpt, .summary, .description, p:first-of-type',
+      articleDate: 'time, .date, .update-date, .published',
+      articleAuthor: '.author, .byline',
+      articleImage: 'img:first-of-type, .update-image img, .featured-image img'
+    },
+    baseUrl: 'http://brics.utoronto.ca',
+    maxArticles: 15,
+    active: true
+  },
+  {
+    name: 'SouthFront (Scraper)',
+    url: 'https://southfront.press/',
+    category: 'BRICS',
+    selectors: {
+      articleList: '.post, article, .entry, .news-item',
+      articleLink: 'h2 a, h3 a, .entry-title a, .post-title a',
+      articleTitle: 'h2, h3, .entry-title, .post-title',
+      articleDescription: '.entry-excerpt, .post-excerpt, .summary, .post-content p:first-of-type',
+      articleDate: '.entry-date, .post-date, time, .date',
+      articleAuthor: '.author, .byline, .entry-author',
+      articleImage: '.post-thumbnail img, .entry-image img, .featured-image img, img:first-of-type'
+    },
+    baseUrl: 'https://southfront.press',
+    maxArticles: 20,
+    active: true
+  },
 ];
 
 class WebScraper {
@@ -559,14 +1089,14 @@ class WebScraper {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          console.error(`❌ HTTP ${error.response.status} from ${config.name}: ${error.response.statusText}`);
+          console.log(`❌ HTTP ${error.response.status} from ${config.name}: ${error.response.statusText}`);
         } else if (error.request) {
-          console.error(`❌ No response from ${config.name} - site may be down`);
+          console.log(`❌ No response from ${config.name} - site may be down`);
         } else {
-          console.error(`❌ Request setup error for ${config.name}:`, error.message);
+          console.log(`❌ Request setup error for ${config.name}:`, error.message);
         }
       } else {
-        console.error(`❌ Failed to scrape ${config.name}:`, error);
+        console.log(`❌ Failed to scrape ${config.name}`);
       }
       return [];
     }
@@ -647,6 +1177,7 @@ class WebScraper {
   async scrapeBySourceName(sourceName: string): Promise<Article[]> {
     // Map RSS source names to scraper equivalents
     const sourceMapping: { [key: string]: string } = {
+      // Original scraper mappings
       'Tempo News': 'Tempo News (Scraper)',
       'Kompas News': 'Kompas News (Scraper)',
       'South China Morning Post - China': 'SCMP China (Scraper)',
@@ -655,6 +1186,41 @@ class WebScraper {
       'BBC Asia News': 'BBC Asia News (Scraper)',
       'RT News': 'RT News (Scraper)',
       'Al Jazeera': 'Al Jazeera (Scraper)',
+      // Newly re-enabled RSS sources with backup scrapers
+      'Press TV': 'Press TV (Scraper)',
+      'Global Times': 'Global Times (Scraper)',
+      'Jakarta Globe': 'Jakarta Globe (Scraper)',
+      'Jakarta Post': 'Jakarta Post (Scraper)',
+      'Bali Post': 'Bali Post (Scraper)',
+      'Indonesia Business Post': 'Indonesia Business Post', // Already has active scraper
+      'NDTV World': 'NDTV World (Scraper)',
+      'NDTV Business': 'NDTV Business (Scraper)',
+      'South China Morning Post - Business': 'South China Morning Post - Business (Scraper)',
+      // Geopolitical sources (existing)
+      'UN News': 'UN News (Scraper)',
+      'The Diplomat': 'The Diplomat (Scraper)',
+      'Global Issues': 'Global Issues (Scraper)',
+      'E-International Relations': 'E-International Relations (Scraper)',
+      'Foreign Affairs Geopolitics': 'Foreign Affairs (Scraper)',
+      'Geopolitical Economy': 'Geopolitical Economy (Scraper)',
+      'Financial Times Geopolitics': 'Financial Times Geopolitics (Scraper)',
+      'RAND International Affairs': 'RAND Corporation (Scraper)',
+      'Geopolitical Futures': 'Geopolitical Futures (Scraper)',
+      'Fifty Year Perspective': 'Fifty Year Perspective (Scraper)',
+      'Eclinik WordPress': 'Eclinik WordPress (Scraper)',
+      // BRICS Organizations RSS-to-Scraper mappings
+      'InfoBRICS': 'InfoBRICS (Scraper)',
+      'BRICS Policy Center': 'BRICS Policy Center (Scraper)',
+      'TV BRICS': 'TV BRICS (Scraper)',
+      'BRICS Business Council India': 'BRICS Business Council India (Scraper)',
+      'SA BRICS Business Council': 'SA BRICS Business Council (Scraper)',
+      'BRICS Chamber of Commerce': 'BRICS Chamber of Commerce (Scraper)',
+      'Shanghai Cooperation Organisation': 'Shanghai Cooperation Organisation (Scraper)',
+      'Valdai Discussion Club': 'Valdai Discussion Club (Scraper)',
+      'BRICS Universities Association': 'BRICS Universities Association (Scraper)',
+      'BRICS Brasil': 'BRICS Brasil (Scraper)',
+      'BRICS University of Toronto': 'BRICS University of Toronto (Scraper)',
+      'SouthFront': 'SouthFront (Scraper)',
     };
     
     // Try direct name first, then mapped name

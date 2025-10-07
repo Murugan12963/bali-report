@@ -151,13 +151,6 @@ export default function RootLayout({
                     });
                 });
               }
-              
-              // Initialize mobile PWA features after window load
-              window.addEventListener('load', function() {
-                import('@/lib/mobile-features').then(({ initializeMobileFeatures }) => {
-                  initializeMobileFeatures();
-                }).catch(console.error);
-              });
             `,
           }}
         />
