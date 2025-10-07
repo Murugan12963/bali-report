@@ -1,0 +1,336 @@
+"use client";
+
+import React, { useState, useMemo } from 'react';
+import VideoCard from '@/components/VideoCard';
+import { VideoService, VideoContent, VIDEO_COLLECTIONS } from '@/lib/video-service';
+
+type CategoryFilter = 'all' | 'BRICS' | 'Indonesia' | 'Bali';
+type SortOption = 'newest' | 'popular' | 'duration';
+
+/**
+ * Videos Page Client Component
+ * 
+ * Client component with interactive functionality for the videos page
+ */
+const VideosPageClient: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('newest');
+  const [showCollections, setShowCollections] = useState(true);
+
+  // Get all videos and apply filters
+  const filteredVideos = useMemo(() => {
+    let videos = VideoService.getAllVideos();
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      videos = VideoService.searchVideos(searchQuery);
+    }
+
+    // Apply category filter
+    if (categoryFilter !== 'all') {
+      videos = videos.filter(video => video.category === categoryFilter);
+    }
+
+    // Apply sorting
+    switch (sortOption) {
+      case 'popular':
+        videos = videos.sort((a, b) => (b.views || 0) - (a.views || 0));
+        break;
+      case 'duration':
+        videos = videos.sort((a, b) => {
+          const aDuration = a.duration.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+          const bDuration = b.duration.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+          return bDuration - aDuration;
+        });
+        break;
+      case 'newest':
+      default:
+        videos = videos.sort((a, b) => 
+          new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+        );
+    }
+
+    return videos;
+  }, [searchQuery, categoryFilter, sortOption]);
+
+  const videoStats = VideoService.getVideoStats();
+
+  const getCategoryEmoji = (category: string) => {
+    switch (category) {
+      case 'BRICS': return '🌍';
+      case 'Indonesia': return '🇮🇩';
+      case 'Bali': return '🏝️';
+      default: return '📺';
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 text-white">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-4xl">
+            <div className="flex items-center mb-4">
+              <span className="text-4xl mr-3">📺</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Video Library
+              </h1>
+            </div>
+            <p className="text-lg md:text-xl text-blue-100 mb-6 max-w-3xl">
+              Explore exclusive video content from BRICS media sources, Indonesian outlets, 
+              and Balinese coverage. Alternative perspectives on global events, infrastructure 
+              developments, and cultural stories.
+            </p>
+            
+            {/* Video Stats */}
+            <div className="flex flex-wrap gap-6 text-sm">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v1a1 1 0 01-1 1v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7a1 1 0 01-1-1V5a1 1 0 011-1h4zM9 4h6V3H9v1zm7 7v6H8v-6h8z" />
+                </svg>
+                <span className="font-medium">{videoStats.totalVideos} Videos</span>
+              </div>
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span className="font-medium">{VideoService.formatViews(videoStats.totalViews)} Total Views</span>
+              </div>
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span className="font-medium">{Object.keys(videoStats.sourceCounts).length} Sources</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Filters and Search */}
+        <div className="mb-8">
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            {/* Search Bar */}
+            <div className="w-full lg:w-96">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search videos..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2.5 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500"
+                />
+                <svg className="absolute left-3 top-3 h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchQuery && (
+                  <button
+                    onClick={handleClearSearch}
+                    className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* Category Filter */}
+              <div className="flex bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-1">
+                {(['all', 'BRICS', 'Indonesia', 'Bali'] as CategoryFilter[]).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setCategoryFilter(category)}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      categoryFilter === category
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                    }`}
+                  >
+                    {category === 'all' ? '📺 All' : `${getCategoryEmoji(category)} ${category}`}
+                  </button>
+                ))}
+              </div>
+
+              {/* Sort Options */}
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                className="px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-sm focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="newest">🕒 Newest</option>
+                <option value="popular">🔥 Most Popular</option>
+                <option value="duration">⏱️ Longest</option>
+              </select>
+
+              {/* Collections Toggle */}
+              <button
+                onClick={() => setShowCollections(!showCollections)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  showCollections
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-600'
+                }`}
+              >
+                📚 Collections
+              </button>
+            </div>
+          </div>
+
+          {/* Active Filters Display */}
+          {(searchQuery || categoryFilter !== 'all') && (
+            <div className="mt-4 flex flex-wrap gap-2 items-center">
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">Active filters:</span>
+              {searchQuery && (
+                <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-sm">
+                  Search: "{searchQuery}"
+                </span>
+              )}
+              {categoryFilter !== 'all' && (
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded text-sm">
+                  Category: {categoryFilter}
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCategoryFilter('all');
+                }}
+                className="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 text-sm underline"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Video Collections */}
+        {showCollections && !searchQuery && categoryFilter === 'all' && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
+              Featured Collections
+            </h2>
+            <div className="space-y-12">
+              {VIDEO_COLLECTIONS.map((collection) => (
+                <div key={collection.title} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center">
+                        {getCategoryEmoji(collection.category)}
+                        <span className="ml-2">{collection.title}</span>
+                      </h3>
+                      <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1">
+                        {collection.description}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setCategoryFilter(collection.category)}
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                    >
+                      View all →
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {collection.videos.map((video) => (
+                      <VideoCard 
+                        key={video.id} 
+                        video={video} 
+                        size="medium" 
+                        showDescription={false}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* All Videos */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+              {searchQuery ? `Search Results (${filteredVideos.length})` : 
+               categoryFilter !== 'all' ? `${categoryFilter} Videos (${filteredVideos.length})` :
+               'All Videos'}
+            </h2>
+            
+            {filteredVideos.length > 0 && (
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                Showing {filteredVideos.length} of {videoStats.totalVideos} videos
+              </span>
+            )}
+          </div>
+
+          {filteredVideos.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredVideos.map((video) => (
+                <VideoCard key={video.id} video={video} size="medium" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                No videos found
+              </h3>
+              <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+                {searchQuery 
+                  ? `No videos match "${searchQuery}". Try different keywords or browse by category.`
+                  : `No videos found in the ${categoryFilter} category.`
+                }
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCategoryFilter('all');
+                }}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Reset filters
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Source Information */}
+        <div className="bg-white dark:bg-zinc-800 rounded-xl p-6 border border-zinc-200 dark:border-zinc-700">
+          <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+            Our Video Sources
+          </h3>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-4 text-sm">
+            We curate video content from trusted BRICS-aligned sources and Indonesian outlets 
+            to provide diverse perspectives on global events, infrastructure development, 
+            and cultural stories.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(videoStats.sourceCounts).map(([source, count]) => (
+              <span
+                key={source}
+                className="px-3 py-1 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-full text-xs font-medium"
+              >
+                {source} ({count})
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VideosPageClient;
