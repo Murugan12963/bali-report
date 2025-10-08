@@ -39,7 +39,7 @@ export function MatomoAnalytics({ siteId, matomoUrl }: AnalyticsProps) {
     script.async = true;
     script.defer = true;
     script.src = `${matomoUrl}/matomo.js`;
-    if (document.head) { document.head.appendChild(script); }
+    document.head.appendChild(script);
 
     // Initialize Matomo
     const _paq = (window._paq = window._paq || []);

@@ -1,0 +1,136 @@
+import { Suspense } from "react";
+import ArticleCard from "@/components/ArticleCard";
+import AdsterraAds from "@/components/AdsterraAds";
+import MarketTicker from "@/components/MarketTicker";
+import {
+  HeroNewsletterSignup,
+  CompactNewsletterSignup,
+  FloatingNewsletterSignup,
+} from "@/components/NewsletterSignup";
+import { rssAggregator } from "@/lib/rss-parser";
+import { contentPersonalizationEngine } from "@/lib/content-personalization";
+import {
+  StructuredData,
+  websiteStructuredData,
+  organizationStructuredData,
+} from "@/components/SEOHead";
+import { generateBreadcrumbSchema } from "@/lib/metadata";
+
+/**
+ * Homepage for Bali Report - BRICS-aligned news aggregation.
+ */
+export const dynamic = 'force-dynamic'; // Pre-render at build time
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function Home() {
+  let rawArticles = [];
+  let featuredArticles = [];
+
+  try {
+    console.log("🌺 Starting RSS fetch...");
+    rawArticles = await rssAggregator.fetchAllSources();
+    console.log(`📊 RSS fetch completed: ${rawArticles.length} articles`);
+
+    // Filter and personalize
+    const personalizedArticles =
+      await contentPersonalizationEngine.personalizeContent(rawArticles);
+
+    featuredArticles = await contentPersonalizationEngine.getFeaturedArticles(
+      personalizedArticles,
+      2
+    );
+
+    // Rest of articles
+    rawArticles = personalizedArticles.filter(
+      (article) => !featuredArticles.find((fa) => fa.id === article.id)
+    );
+  } catch (error) {
+    console.error("❌ Error fetching articles:", error);
+    // Continue with empty arrays
+  }
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "https://bali.report" },
+  ]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <script
+        type="application/ld+json"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <header className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
+            📰 Bali Report
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Multi-polar News Perspectives • BRICS • Indonesia • Bali
+          </p>
+        </header>
+
+        {/* Market Ticker */}
+        <div className="mb-8">
+          <Suspense fallback={<div className="h-12 bg-white rounded-lg animate-pulse" />}>
+            <MarketTicker />
+          </Suspense>
+        </div>
+
+        {/* Featured Articles */}
+        {featuredArticles.length > 0 && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">📌 Featured</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {featuredArticles.map((article) => (
+                <ArticleCard key={article.id} article={article} featured />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Ad Space */}
+        <div className="my-8">
+          <AdsterraAds position="top" />
+        </div>
+
+        {/* Latest Articles */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">📰 Latest News</h2>
+          <div className="grid gap-6">
+            {rawArticles.slice(0, 20).map((article, index) => (
+              <div key={article.id}>
+                <ArticleCard article={article} />
+                {(index + 1) % 5 === 0 && (
+                  <div className="my-8">
+                    <AdsterraAds position={`inline-${index}`} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {rawArticles.length === 0 && (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-700 mb-4">
+              No articles loaded
+            </h2>
+            <p className="text-gray-600">
+              RSS feeds are being fetched. Please refresh in a moment.
+            </p>
+          </div>
+        )}
+
+        {/* Bottom Ad */}
+        <div className="mt-12">
+          <AdsterraAds position="bottom" />
+        </div>
+      </div>
+    </div>
+  );
+}

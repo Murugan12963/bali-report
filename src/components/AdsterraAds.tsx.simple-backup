@@ -1,0 +1,98 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+interface AdsterraAdsProps {
+  type: "banner" | "social-bar" | "native" | "popunder";
+  className?: string;
+  zoneId?: string;
+}
+
+const AdsterraAds: React.FC<AdsterraAdsProps> = ({
+  type,
+  className = "",
+  zoneId = process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_ADS,
+}) => {
+  const adRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production" && zoneId && adRef.current) {
+      // Create iframe element instead of using document.write
+      const iframe = document.createElement("iframe");
+      
+      // Set iframe properties based on ad type
+      let width = 300;
+      let height = 250;
+      
+      switch (type) {
+        case "banner":
+          width = 728;
+          height = 90;
+          break;
+        case "native":
+          width = 300;
+          height = 250;
+          break;
+        default:
+          width = 300;
+          height = 250;
+      }
+      
+      iframe.width = width.toString();
+      iframe.height = height.toString();
+      iframe.style.border = "none";
+      iframe.style.overflow = "hidden";
+      iframe.loading = "lazy";
+      
+      // Use the Adsterra iframe URL format
+      iframe.src = `https://www.displaycontentnetwork.com/${zoneId}/iframe.html`;
+      
+      // Append iframe to container
+      if (adRef.current) {
+        adRef.current.appendChild(iframe);
+      }
+
+      return () => {
+        // Cleanup
+        if (adRef.current && adRef.current.contains(iframe)) {
+          adRef.current.removeChild(iframe);
+        }
+      };
+    }
+  }, [type, zoneId]);
+
+  // Development placeholder
+  if (process.env.NODE_ENV === "development") {
+    return (
+      <div
+        className={`bg-gray-100 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 text-sm p-4 theme-transition ${className}`}
+        style={{
+          minHeight: type === "banner" ? "90px" : "250px",
+          minWidth: type === "banner" ? "728px" : "300px",
+        }}
+      >
+        <div className="text-center">
+          <div className="mb-2">📺</div>
+          <div className="font-medium">Adsterra {type} Ad</div>
+          <div className="text-xs opacity-75">Zone: {zoneId}</div>
+          <div className="text-xs opacity-50 mt-1">
+            (Development placeholder)
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={adRef}
+      className={`adsterra-ads ${className}`}
+      style={{
+        minHeight: type === "banner" ? "90px" : "250px",
+        minWidth: type === "banner" ? "728px" : "300px",
+      }}
+    />
+  );
+};
+
+export default AdsterraAds;

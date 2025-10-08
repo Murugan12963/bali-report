@@ -1,0 +1,114 @@
+/* Anti-adblock CSS - Makes ads harder to detect and block */
+
+/* Hide common adblock detection elements */
+.adblock-detector,
+.ad-blocker-detected,
+.adblocker-warning {
+    display: none !important;
+}
+
+/* Camouflage ad containers */
+.adsterra-ads,
+.adsterra-container {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.adsterra-ads::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: -1;
+}
+
+/* Make ads look like content */
+.native-ad-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 16px 0;
+}
+
+.native-ad-container .ad-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.native-ad-container .ad-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.native-ad-container .ad-source {
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Override common adblocker hiding rules */
+.ads,
+.ad,
+.advertisement,
+.advertising,
+[class*="ad-"],
+[id*="ad-"],
+[data-ad] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+    text-indent: 0 !important;
+    transform: none !important;
+    z-index: auto !important;
+}
+
+/* Specific overrides for common patterns */
+*[id*="google_ads"],
+*[class*="google-ads"],
+*[id*="adsense"],
+*[class*="adsense"] {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Iframe protection */
+iframe[src*="ads"],
+iframe[src*="ad."],
+iframe[src*="doubleclick"],
+iframe[src*="googlesyndication"] {
+    display: block !important;
+    visibility: visible !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Dynamic protection classes */
+.content-protection,
+.revenue-protection,
+.anti-block {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

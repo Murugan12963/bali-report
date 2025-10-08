@@ -1,0 +1,265 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+interface AdsterraAdsProps {
+  type: "banner" | "social-bar" | "native" | "popunder";
+  className?: string;
+  zoneId?: string;
+}
+
+const AdsterraAds: React.FC<AdsterraAdsProps> = ({
+  type,
+  className = "",
+  zoneId = process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_ADS || "5336445",
+}) => {
+  const adRef = useRef<HTMLDivElement>(null);
+  const [adBlocked, setAdBlocked] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !zoneId || !adRef.current) return;
+
+    const loadAd = async (attempt: number = 0) => {
+      if (!adRef.current) return;
+
+      // Clear previous attempts
+      adRef.current.innerHTML = "";
+
+      try {
+        // Method 1: Direct script injection with multiple fallbacks
+        if (attempt === 0) {
+          const script = document.createElement("script");
+          script.type = "text/javascript";
+          script.async = false;
+          
+          // Adsterra configuration
+          const adConfig = {
+            key: zoneId,
+            format: type === "banner" ? "iframe" : "iframe",
+            height: type === "banner" ? 90 : 250,
+            width: type === "banner" ? 728 : 300,
+            params: {}
+          };
+
+          // Set global variable for Adsterra
+          (window as any).atOptions = adConfig;
+
+          // Load Adsterra script
+          script.src = `https://www.displaycontentnetwork.com/${zoneId}/invoke.js`;
+          script.onerror = () => {
+            console.log("Primary ad script failed, trying fallback...");
+            setLoadAttempt(attempt + 1);
+          };
+          
+          document.head.appendChild(script);
+
+          // Timeout to check if ad loaded
+          setTimeout(() => {
+            if (adRef.current && adRef.current.children.length === 0) {
+              setLoadAttempt(attempt + 1);
+            }
+          }, 3000);
+        }
+        
+        // Method 2: Alternative domain fallback
+        else if (attempt === 1) {
+          const script = document.createElement("script");
+          script.type = "text/javascript";
+          script.async = false;
+          
+          const adConfig = {
+            key: zoneId,
+            format: "iframe",
+            height: type === "banner" ? 90 : 250,
+            width: type === "banner" ? 728 : 300,
+            params: {}
+          };
+
+          (window as any).atOptions = adConfig;
+          script.src = `https://www.highperformanceformats.com/atTag.js`;
+          script.onerror = () => {
+            console.log("Secondary ad script failed, trying iframe...");
+            setLoadAttempt(attempt + 1);
+          };
+          
+          document.head.appendChild(script);
+
+          setTimeout(() => {
+            if (adRef.current && adRef.current.children.length === 0) {
+              setLoadAttempt(attempt + 1);
+            }
+          }, 3000);
+        }
+        
+        // Method 3: Direct iframe with bypass techniques
+        else if (attempt === 2) {
+          const iframe = document.createElement("iframe");
+          
+          // Randomized attributes to avoid detection
+          const randomId = Math.random().toString(36).substring(7);
+          iframe.id = `adframe_${randomId}`;
+          iframe.style.border = "none";
+          iframe.style.overflow = "hidden";
+          iframe.style.background = "transparent";
+          iframe.width = (type === "banner" ? 728 : 300).toString();
+          iframe.height = (type === "banner" ? 90 : 250).toString();
+          
+          // Multiple potential iframe sources
+          const iframeSources = [
+            `https://www.displaycontentnetwork.com/${zoneId}/iframe.html`,
+            `https://syndication.adnxs.com/v?id=${zoneId}`,
+            `https://ads.adnxs.com/ttj?id=${zoneId}`
+          ];
+          
+          iframe.src = iframeSources[0];
+          iframe.onload = () => {
+            console.log("Iframe ad loaded successfully");
+          };
+          iframe.onerror = () => {
+            console.log("Iframe ad failed, trying next source...");
+            if (iframeSources[1]) {
+              iframe.src = iframeSources[1];
+            }
+          };
+
+          adRef.current.appendChild(iframe);
+          
+          setTimeout(() => {
+            if (adRef.current && !iframe.contentWindow) {
+              setLoadAttempt(attempt + 1);
+            }
+          }, 2000);
+        }
+        
+        // Method 4: Dynamic content loading
+        else if (attempt === 3) {
+          const adContainer = document.createElement("div");
+          adContainer.style.width = (type === "banner" ? 728 : 300) + "px";
+          adContainer.style.height = (type === "banner" ? 90 : 250) + "px";
+          adContainer.style.background = "#f0f0f0";
+          adContainer.style.border = "1px solid #ddd";
+          adContainer.style.display = "flex";
+          adContainer.style.alignItems = "center";
+          adContainer.style.justifyContent = "center";
+          adContainer.innerHTML = `
+            <div style="text-align: center; font-family: Arial, sans-serif;">
+              <div style="font-size: 14px; color: #666;">Advertisement</div>
+              <div style="font-size: 12px; color: #999; margin-top: 5px;">Loading content...</div>
+            </div>
+          `;
+
+          adRef.current.appendChild(adContainer);
+
+          // Try to load content via fetch
+          try {
+            const response = await fetch(`https://www.displaycontentnetwork.com/${zoneId}/content.json`);
+            if (response.ok) {
+              const adData = await response.json();
+              // Process ad data here if available
+              console.log("Ad content loaded:", adData);
+            }
+          } catch (e) {
+            console.log("Content fetch failed");
+            setAdBlocked(true);
+          }
+        }
+        
+        // Method 5: Final fallback - show ad placeholder
+        else {
+          setAdBlocked(true);
+          const placeholder = document.createElement("div");
+          placeholder.style.width = (type === "banner" ? 728 : 300) + "px";
+          placeholder.style.height = (type === "banner" ? 90 : 250) + "px";
+          placeholder.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+          placeholder.style.color = "white";
+          placeholder.style.display = "flex";
+          placeholder.style.alignItems = "center";
+          placeholder.style.justifyContent = "center";
+          placeholder.style.borderRadius = "8px";
+          placeholder.innerHTML = `
+            <div style="text-align: center; font-family: Arial, sans-serif;">
+              <div style="font-size: 16px; font-weight: bold;">🌟 Premium Content</div>
+              <div style="font-size: 12px; margin-top: 5px;">Support independent journalism</div>
+            </div>
+          `;
+          
+          adRef.current.appendChild(placeholder);
+        }
+      } catch (error) {
+        console.log("Ad loading error:", error);
+        setLoadAttempt(attempt + 1);
+      }
+    };
+
+    // Start loading process
+    loadAd(loadAttempt);
+
+    // Cleanup function
+    return () => {
+      if (adRef.current) {
+        adRef.current.innerHTML = "";
+      }
+    };
+  }, [type, zoneId, loadAttempt]);
+
+  // Anti-adblock detection
+  useEffect(() => {
+    const detectAdBlock = () => {
+      const testAd = document.createElement("div");
+      testAd.innerHTML = "&nbsp;";
+      testAd.className = "adsbox";
+      testAd.style.position = "absolute";
+      testAd.style.left = "-10000px";
+      document.body.appendChild(testAd);
+
+      setTimeout(() => {
+        if (testAd.offsetHeight === 0) {
+          setAdBlocked(true);
+          console.log("Ad blocker detected");
+        }
+        document.body.removeChild(testAd);
+      }, 100);
+    };
+
+    detectAdBlock();
+  }, []);
+
+  return (
+    <div className={`adsterra-container ${className}`}>
+      <div
+        ref={adRef}
+        className="adsterra-ads"
+        style={{
+          minHeight: type === "banner" ? "90px" : "250px",
+          minWidth: type === "banner" ? "728px" : "300px",
+          position: "relative",
+        }}
+      />
+      
+      {/* Anti-adblock message (optional) */}
+      {adBlocked && (
+        <div 
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.8)",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "14px",
+            zIndex: 1000,
+          }}
+        >
+          Please disable ad blocker to support our content
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdsterraAds;

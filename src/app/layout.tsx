@@ -5,9 +5,9 @@ import { Suspense } from "react";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Header from "@/components/Header";
 import ClientBackground from "@/components/ClientBackground";
-import { ThemeProvider } from "@/contexts/ThemeContext";
 import Analytics from "@/components/Analytics";
 import MatomoAnalytics from "@/components/MatomoAnalytics";
+import AdRecovery from "@/components/AdRecovery";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
 import BottomNavigation, { defaultNavItems } from "@/components/pwa/BottomNavigation";
 import "./globals.css";
@@ -100,7 +100,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning>
+    <html className="dark" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -130,9 +130,10 @@ export default function RootLayout({
         />
         <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
         <link rel="mask-icon" href="/icons/icon-base.svg" color="#0d9488" />
+	\t<link rel="stylesheet" href="/anti-adblock.css" />
       </head>
       <body
-        className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition bg-zinc-50 dark:bg-zinc-900 min-h-screen`}
+        className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition min-h-screen`}
       >
         {/* Service worker registration */}
         <Script
@@ -142,7 +143,7 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
+                  navigator.serviceWorker.register('/sw.js', { scope: '/' })
                     .then(function(registration) {
                       console.log('🌺 SW registered: ', registration);
                     })
@@ -154,8 +155,8 @@ export default function RootLayout({
             `,
           }}
         />
-        <ThemeProvider>
           <Analytics />
+	\t\t<AdRecovery />
           <Suspense fallback={null}>
             <MatomoAnalytics />
           </Suspense>
@@ -180,7 +181,6 @@ export default function RootLayout({
               </div>
             </ErrorBoundary>
           </PersonalizationProvider>
-        </ThemeProvider>
       </body>
     </html>
   );

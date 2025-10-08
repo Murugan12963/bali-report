@@ -1,3 +1,4 @@
+import { Article } from "@/lib/rss-parser";
 'use client';
 
 import { useEffect, useState } from 'react';
