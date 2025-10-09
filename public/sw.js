@@ -16,12 +16,7 @@ const ARTICLE_CACHE = `bali-report-articles-${CACHE_VERSION}`;
 // Static assets to cache immediately
 const STATIC_ASSETS = [
   "/",
-  "/brics",
-  "/indonesia",
-  "/bali",
-  "/manifest.json",
-  "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",
+  "/manifest.json"
 ];
 
 // Install event - cache static assets
@@ -31,11 +26,23 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then((cache) => {
+      .then(async (cache) => {
         console.log("[SW] Caching static assets");
-        return cache.addAll(STATIC_ASSETS).catch((err) => {
+        try {
+          await cache.addAll(STATIC_ASSETS);
+          console.log("[SW] Static assets cached successfully");
+        } catch (err) {
           console.error("[SW] Failed to cache static assets:", err);
-        });
+          // Try to cache assets individually to avoid failing entire cache
+          for (const asset of STATIC_ASSETS) {
+            try {
+              await cache.add(asset);
+              console.log(`[SW] Cached asset: ${asset}`);
+            } catch (assetErr) {
+              console.warn(`[SW] Failed to cache ${asset}:`, assetErr);
+            }
+          }
+        }
       })
       .then(() => {
         return self.skipWaiting();
@@ -371,7 +378,6 @@ async function showNotification(title, body, url = "/", icon = "/icons/icon-192x
   
   await self.registration.showNotification(title, options);
 }
-});
 
 // Cache article content for offline reading
 async function cacheArticle(url, content) {

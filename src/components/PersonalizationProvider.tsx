@@ -17,11 +17,17 @@ export default function PersonalizationProvider({
 }: PersonalizationProviderProps) {
   const [showTopicSelector, setShowTopicSelector] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setIsClient(true);
+  }, []);
 
-    // Only run on client side after hydration
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Only run after component is fully mounted to avoid hydration mismatch
     const checkFirstVisit = () => {
       try {
         const preferences = userPreferencesManager.loadPreferences();
@@ -42,8 +48,11 @@ export default function PersonalizationProvider({
       }
     };
 
-    checkFirstVisit();
-  }, []);
+    // Add a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(checkFirstVisit, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [mounted]);
 
   const handleTopicSelectorComplete = () => {
     console.log("🎉 Topic selector completed");
@@ -54,11 +63,12 @@ export default function PersonalizationProvider({
     window.dispatchEvent(new CustomEvent("personalizationComplete"));
   };
 
-  // Render children immediately, only show topic selector after client hydration
+  // Render children immediately, only show topic selector after full mount
+  // This prevents hydration mismatch by ensuring server and client render the same initially
   return (
     <>
       {children}
-      {isClient && showTopicSelector && (
+      {mounted && isClient && showTopicSelector && (
         <TopicSelector
           isVisible={showTopicSelector}
           onComplete={handleTopicSelectorComplete}

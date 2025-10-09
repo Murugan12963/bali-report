@@ -1,0 +1,10 @@
+{
+  "CORSRules": [
+    {
+      "AllowedOrigins": ["https://bali.report", "http://localhost:3000"],
+      "AllowedMethods": ["GET", "HEAD"],
+      "MaxAgeSeconds": 86400,
+      "AllowedHeaders": ["*"]
+    }
+  ]
+}

@@ -31,6 +31,12 @@ function MatomoTracker() {
  */
 export default function MatomoAnalytics() {
   useEffect(() => {
+    // Check if Matomo is disabled
+    if (process.env.NEXT_PUBLIC_DISABLE_MATOMO === 'true') {
+      console.log('✅ Matomo Analytics: Disabled via NEXT_PUBLIC_DISABLE_MATOMO');
+      return;
+    }
+
     // Initialize Matomo on first load
     const matomoUrl = process.env.NEXT_PUBLIC_MATOMO_URL;
     const matomoSiteId = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;

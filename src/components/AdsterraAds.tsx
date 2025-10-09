@@ -18,6 +18,26 @@ const AdsterraAds: React.FC<AdsterraAdsProps> = ({
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [adLoaded, setAdLoaded] = useState(false);
 
+  // Check if Adsterra should be disabled
+  const isExplicitlyDisabled = process.env.NEXT_PUBLIC_DISABLE_ADSTERRA === 'true';
+  const hasValidZoneId = zoneId && zoneId !== '5336445';
+  
+  if (isExplicitlyDisabled) {
+    console.log('📢 Adsterra: Disabled via NEXT_PUBLIC_DISABLE_ADSTERRA');
+    return null;
+  }
+  
+  if (!hasValidZoneId) {
+    console.log('📢 Adsterra: No valid zone ID provided. Current zone ID:', zoneId);
+    console.log('📢 Adsterra: Set your actual zone IDs from Adsterra dashboard in environment variables');
+    console.log('📢 Adsterra: Example: NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=1234567');
+    return (
+      <div className={className} ref={adRef} style={{display: 'none'}}>
+        {/* Adsterra: Configure zone IDs in environment variables */}
+      </div>
+    );
+  }
+
   useEffect(() => {
     if (typeof window === "undefined" || !zoneId || !adRef.current) return;
 
@@ -48,7 +68,7 @@ const AdsterraAds: React.FC<AdsterraAdsProps> = ({
           const script = document.createElement("script");
           script.type = "text/javascript";
           script.async = true;
-          script.src = `https://www.highperformanceformats.com/atTag.js`;
+          script.src = `https://adsterra.com/load.js?id=${zoneId}`;
           
           script.onload = () => {
             console.log("✅ Adsterra script loaded successfully");
@@ -91,7 +111,7 @@ const AdsterraAds: React.FC<AdsterraAdsProps> = ({
           const script = document.createElement("script");
           script.type = "text/javascript";  
           script.async = true;
-          script.src = `https://www.displaycontentnetwork.com/atTag.js`;
+          script.src = `https://a.adnxs.com/ttj?id=${zoneId}`;
           
           script.onload = () => {
             console.log("✅ Alternative domain script loaded");
@@ -130,7 +150,7 @@ const AdsterraAds: React.FC<AdsterraAdsProps> = ({
           iframe.setAttribute("allowtransparency", "true");
           
           // Use proper Adsterra iframe URL
-          iframe.src = `https://www.highperformanceformats.com/iframe.php?zone=${zoneId}`;
+          iframe.src = `https://adsterra.com/iframe/${zoneId}`;
           
           iframe.onload = () => {
             console.log("✅ Iframe ad loaded");

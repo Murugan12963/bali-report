@@ -9,6 +9,7 @@ import Analytics from "@/components/Analytics";
 import MatomoAnalytics from "@/components/MatomoAnalytics";
 import AdRecovery from "@/components/AdRecovery";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import BottomNavigation, {
   defaultNavItems,
 } from "@/components/pwa/BottomNavigation";
@@ -170,19 +171,21 @@ export default function RootLayout({
             src="//www.highperformancedformats.com/atTag.js"
           />
         )}
-        <PersonalizationProvider>
-          <ErrorBoundary>
-            {/* Futuristic Background Effects (dark mode only) - Temporarily disabled for debugging */}
-            {/* <ClientBackground /> */}
+        <ThemeProvider>
+          <PersonalizationProvider>
+            <ErrorBoundary>
+              {/* Futuristic Background Effects (dark mode only) - Temporarily disabled for debugging */}
+              {/* <ClientBackground /> */}
 
-            <div className="contents relative z-10">
-              <Header />
-              <main className="relative">{children}</main>
-              {/* PWA Bottom Navigation */}
-              <BottomNavigation items={defaultNavItems} />
-            </div>
-          </ErrorBoundary>
-        </PersonalizationProvider>
+              <div className="contents relative z-10">
+                <Header />
+                <main className="relative">{children}</main>
+                {/* PWA Bottom Navigation */}
+                <BottomNavigation items={defaultNavItems} />
+              </div>
+            </ErrorBoundary>
+          </PersonalizationProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

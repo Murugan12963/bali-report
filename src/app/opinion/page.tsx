@@ -27,7 +27,7 @@ const OPINION_ARTICLES: OpinionArticle[] = [
     source: 'Bali Report Editorial',
     sourceUrl: 'https://bali.report',
     authorBio: 'Dr. Maya Sari is a media studies professor at University of Indonesia and expert on Southeast Asian journalism.',
-    authorImage: '/authors/maya-sari.jpg'
+    authorImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80'
   },
   {
     id: 'op-2',

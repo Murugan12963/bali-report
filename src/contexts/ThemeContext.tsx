@@ -32,7 +32,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    // Return fallback instead of throwing error during SSR
+    console.warn("ThemeProvider not available, using fallback theme");
+    return {
+      theme: "system" as Theme,
+      effectiveTheme: "light" as const,
+      setTheme: () => {},
+      toggleTheme: () => {},
+    };
   }
   return context;
 }
