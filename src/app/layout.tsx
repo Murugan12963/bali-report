@@ -9,7 +9,9 @@ import Analytics from "@/components/Analytics";
 import MatomoAnalytics from "@/components/MatomoAnalytics";
 import AdRecovery from "@/components/AdRecovery";
 import PersonalizationProvider from "@/components/PersonalizationProvider";
-import BottomNavigation, { defaultNavItems } from "@/components/pwa/BottomNavigation";
+import BottomNavigation, {
+  defaultNavItems,
+} from "@/components/pwa/BottomNavigation";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -130,7 +132,7 @@ export default function RootLayout({
         />
         <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
         <link rel="mask-icon" href="/icons/icon-base.svg" color="#0d9488" />
-	\t<link rel="stylesheet" href="/anti-adblock.css" />
+        <link rel="stylesheet" href="/anti-adblock.css" />
       </head>
       <body
         className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased theme-transition min-h-screen`}
@@ -155,32 +157,32 @@ export default function RootLayout({
             `,
           }}
         />
-          <Analytics />
-	\t\t<AdRecovery />
-          <Suspense fallback={null}>
-            <MatomoAnalytics />
-          </Suspense>
-          {/* Adsterra Script */}
-          {process.env.NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID && (
-            <Script
-              id="adsterra-script"
-              strategy="lazyOnload"
-              src="//www.highperformancedformats.com/atTag.js"
-            />
-          )}
-          <PersonalizationProvider>
-            <ErrorBoundary>
-              {/* Futuristic Background Effects (dark mode only) - Temporarily disabled for debugging */}
-              {/* <ClientBackground /> */}
+        <Analytics />
+        <AdRecovery />
+        <Suspense fallback={null}>
+          <MatomoAnalytics />
+        </Suspense>
+        {/* Adsterra Script */}
+        {process.env.NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID && (
+          <Script
+            id="adsterra-script"
+            strategy="lazyOnload"
+            src="//www.highperformancedformats.com/atTag.js"
+          />
+        )}
+        <PersonalizationProvider>
+          <ErrorBoundary>
+            {/* Futuristic Background Effects (dark mode only) - Temporarily disabled for debugging */}
+            {/* <ClientBackground /> */}
 
-              <div className="contents relative z-10">
-                <Header />
-                <main className="relative">{children}</main>
-                {/* PWA Bottom Navigation */}
-                <BottomNavigation items={defaultNavItems} />
-              </div>
-            </ErrorBoundary>
-          </PersonalizationProvider>
+            <div className="contents relative z-10">
+              <Header />
+              <main className="relative">{children}</main>
+              {/* PWA Bottom Navigation */}
+              <BottomNavigation items={defaultNavItems} />
+            </div>
+          </ErrorBoundary>
+        </PersonalizationProvider>
       </body>
     </html>
   );

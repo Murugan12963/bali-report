@@ -1,17 +1,22 @@
 import ArticleCard from "@/components/ArticleCard";
 import { Article } from "@/lib/rss-parser";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/articles/brics', {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000");
+    const response = await fetch(`${baseUrl}/api/articles/brics`, {
       next: { revalidate: 60 },
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
     });
-    
+
     if (!response.ok) return [];
     const data = await response.json();
     return data.success ? data.articles : [];
@@ -30,7 +35,8 @@ export default async function BricsPage() {
           🌏 BRICS News & Analysis
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Multi-polar perspectives from Brazil, Russia, India, China, South Africa, and BRICS+ nations.
+          Multi-polar perspectives from Brazil, Russia, India, China, South
+          Africa, and BRICS+ nations.
         </p>
       </div>
 

@@ -1,17 +1,22 @@
 import ArticleCard from "@/components/ArticleCard";
 import { Article } from "@/lib/rss-parser";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/articles/indonesia', {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000");
+    const response = await fetch(`${baseUrl}/api/articles/indonesia`, {
       next: { revalidate: 60 },
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
     });
-    
+
     if (!response.ok) return [];
     const data = await response.json();
     return data.success ? data.articles : [];
@@ -30,14 +35,16 @@ export default async function IndonesiaPage() {
           🇮🇩 Indonesia News
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          National news, politics, economy, and culture from across the Indonesian archipelago.
+          National news, politics, economy, and culture from across the
+          Indonesian archipelago.
         </p>
       </div>
 
       {articles.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 dark:text-gray-400">
-            No Indonesian articles available at the moment. Please check back later.
+            No Indonesian articles available at the moment. Please check back
+            later.
           </p>
         </div>
       ) : (

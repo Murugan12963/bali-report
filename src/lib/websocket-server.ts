@@ -3,10 +3,10 @@
  * Handles live content updates, notifications, and real-time synchronization
  */
 
-import { Server as HTTPServer } from 'http';
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Article } from './rss-parser';
+import { Server as HTTPServer } from "http";
+import { Server as SocketIOServer, Socket } from "socket.io";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Article } from "./rss-parser";
 
 export interface SocketData {
   userId?: string;
@@ -18,13 +18,13 @@ export interface SocketData {
 }
 
 export interface ServerToClientEvents {
-  'new-articles': (articles: Article[]) => void;
-  'article-update': (article: Article) => void;
-  'sync-request': () => void;
-  'content-refresh': (category?: string) => void;
-  'notification': (notification: {
+  "new-articles": (articles: Article[]) => void;
+  "article-update": (article: Article) => void;
+  "sync-request": () => void;
+  "content-refresh": (category?: string) => void;
+  notification: (notification: {
     id: string;
-    type: 'info' | 'success' | 'warning' | 'error';
+    type: "info" | "success" | "warning" | "error";
     title: string;
     message: string;
     timestamp: string;
@@ -32,12 +32,12 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'join-room': (room: string) => void;
-  'leave-room': (room: string) => void;
-  'subscribe-category': (category: 'BRICS' | 'Indonesia' | 'Bali') => void;
-  'unsubscribe-category': (category: 'BRICS' | 'Indonesia' | 'Bali') => void;
-  'sync-saved-articles': (articles: any[]) => void;
-  'heartbeat': () => void;
+  "join-room": (room: string) => void;
+  "leave-room": (room: string) => void;
+  "subscribe-category": (category: "BRICS" | "Indonesia" | "Bali") => void;
+  "unsubscribe-category": (category: "BRICS" | "Indonesia" | "Bali") => void;
+  "sync-saved-articles": (articles: any[]) => void;
+  heartbeat: () => void;
 }
 
 class WebSocketServer {
@@ -54,16 +54,16 @@ class WebSocketServer {
 
   /**
    * Initialize WebSocket server with HTTP server.
-   * 
+   *
    * Args:
    *   server (HTTPServer): HTTP server instance.
-   * 
+   *
    * Returns:
    *   SocketIOServer: Configured Socket.IO server.
    */
   initialize(server: HTTPServer): SocketIOServer {
     this.httpServer = server;
-    
+
     this.io = new SocketIOServer<
       ClientToServerEvents,
       ServerToClientEvents,
@@ -71,20 +71,25 @@ class WebSocketServer {
       SocketData
     >(server, {
       cors: {
-        origin: process.env.NODE_ENV === 'production' 
-          ? ['https://bali.report', 'https://www.bali.report']
-          : ['http://localhost:3000', 'http://127.0.0.1:3000'],
-        methods: ['GET', 'POST'],
+        origin:
+          process.env.NODE_ENV === "production"
+            ? [
+                process.env.NEXT_PUBLIC_SITE_URL || "https://bali.report",
+                "https://bali.report",
+                "https://www.bali.report",
+              ]
+            : ["http://localhost:3000", "http://127.0.0.1:3000"],
+        methods: ["GET", "POST"],
         credentials: true,
       },
-      transports: ['websocket', 'polling'],
+      transports: ["websocket", "polling"],
       pingTimeout: 60000,
       pingInterval: 25000,
     });
 
     this.setupEventHandlers();
-    console.log('🔌 WebSocket server initialized');
-    
+    console.log("🔌 WebSocket server initialized");
+
     return this.io;
   }
 
@@ -94,85 +99,90 @@ class WebSocketServer {
   private setupEventHandlers(): void {
     if (!this.io) return;
 
-    this.io.on('connection', (socket: Socket) => {
+    this.io.on("connection", (socket: Socket) => {
       const sessionId = this.generateSessionId();
       socket.data.sessionId = sessionId;
-      
+
       this.connectedClients.set(socket.id, socket);
       console.log(`🔗 Client connected: ${socket.id} (Session: ${sessionId})`);
 
       // Send welcome message
-      socket.emit('notification', {
+      socket.emit("notification", {
         id: `welcome-${sessionId}`,
-        type: 'info',
-        title: '🌺 Welcome to Bali Report',
-        message: 'Real-time updates are now active. You\'ll receive live news as it happens!',
+        type: "info",
+        title: "🌺 Welcome to Bali Report",
+        message:
+          "Real-time updates are now active. You'll receive live news as it happens!",
         timestamp: new Date().toISOString(),
       });
 
       // Handle room joining (for category subscriptions)
-      socket.on('join-room', (room: string) => {
+      socket.on("join-room", (room: string) => {
         socket.join(room);
         console.log(`📡 Client ${socket.id} joined room: ${room}`);
-        
-        socket.emit('notification', {
+
+        socket.emit("notification", {
           id: `joined-${room}-${Date.now()}`,
-          type: 'success',
-          title: 'Subscribed',
+          type: "success",
+          title: "Subscribed",
           message: `You're now receiving live updates for ${room}`,
           timestamp: new Date().toISOString(),
         });
       });
 
       // Handle room leaving
-      socket.on('leave-room', (room: string) => {
+      socket.on("leave-room", (room: string) => {
         socket.leave(room);
         console.log(`📡 Client ${socket.id} left room: ${room}`);
       });
 
       // Handle category subscriptions
-      socket.on('subscribe-category', (category) => {
+      socket.on("subscribe-category", (category) => {
         socket.join(`category-${category}`);
-        console.log(`📂 Client ${socket.id} subscribed to category: ${category}`);
+        console.log(
+          `📂 Client ${socket.id} subscribed to category: ${category}`,
+        );
       });
 
-      socket.on('unsubscribe-category', (category) => {
+      socket.on("unsubscribe-category", (category) => {
         socket.leave(`category-${category}`);
-        console.log(`📂 Client ${socket.id} unsubscribed from category: ${category}`);
+        console.log(
+          `📂 Client ${socket.id} unsubscribed from category: ${category}`,
+        );
       });
 
       // Handle saved articles sync
-      socket.on('sync-saved-articles', (articles) => {
+      socket.on("sync-saved-articles", (articles) => {
         // Broadcast to other sessions of the same user (if authenticated)
         // For now, we'll just acknowledge the sync
-        socket.emit('notification', {
+        socket.emit("notification", {
           id: `sync-${Date.now()}`,
-          type: 'success',
-          title: 'Sync Complete',
+          type: "success",
+          title: "Sync Complete",
           message: `${articles.length} articles synchronized`,
           timestamp: new Date().toISOString(),
         });
       });
 
       // Handle heartbeat for connection health
-      socket.on('heartbeat', () => {
-        socket.emit('notification', {
+      socket.on("heartbeat", () => {
+        socket.emit("notification", {
           id: `heartbeat-${Date.now()}`,
-          type: 'info',
-          title: 'Connection Active',
-          message: 'Real-time connection is healthy',
+          type: "info",
+          title: "Connection Active",
+          message: "Real-time connection is healthy",
           timestamp: new Date().toISOString(),
         });
       });
 
       // Handle disconnection
-      socket.on('disconnect', (reason) => {
+      socket.on("disconnect", (reason) => {
         this.connectedClients.delete(socket.id);
         console.log(`🔌 Client disconnected: ${socket.id}, reason: ${reason}`);
       });
 
       // Handle connection errors
-      socket.on('error', (error) => {
+      socket.on("error", (error) => {
         console.error(`❌ Socket error for ${socket.id}:`, error);
       });
     });
@@ -180,7 +190,7 @@ class WebSocketServer {
 
   /**
    * Broadcast new articles to subscribed clients.
-   * 
+   *
    * Args:
    *   articles (Article[]): New articles to broadcast.
    *   category (string): Category to broadcast to.
@@ -191,36 +201,38 @@ class WebSocketServer {
     const room = category ? `category-${category}` : undefined;
     const target = room ? this.io.to(room) : this.io;
 
-    target.emit('new-articles', articles);
-    
+    target.emit("new-articles", articles);
+
     // Send notification about new content
-    target.emit('notification', {
+    target.emit("notification", {
       id: `new-articles-${Date.now()}`,
-      type: 'info',
-      title: '📰 Fresh News Available',
-      message: `${articles.length} new article${articles.length > 1 ? 's' : ''} ${category ? `in ${category}` : 'available'}`,
+      type: "info",
+      title: "📰 Fresh News Available",
+      message: `${articles.length} new article${articles.length > 1 ? "s" : ""} ${category ? `in ${category}` : "available"}`,
       timestamp: new Date().toISOString(),
     });
 
-    console.log(`📡 Broadcasted ${articles.length} articles to ${room || 'all clients'}`);
+    console.log(
+      `📡 Broadcasted ${articles.length} articles to ${room || "all clients"}`,
+    );
   }
 
   /**
    * Broadcast article update to all clients.
-   * 
+   *
    * Args:
    *   article (Article): Updated article.
    */
   broadcastArticleUpdate(article: Article): void {
     if (!this.io) return;
 
-    this.io.emit('article-update', article);
+    this.io.emit("article-update", article);
     console.log(`📄 Broadcasted article update: ${article.title}`);
   }
 
   /**
    * Request content refresh from all clients.
-   * 
+   *
    * Args:
    *   category (string): Optional category to refresh.
    */
@@ -230,13 +242,15 @@ class WebSocketServer {
     const room = category ? `category-${category}` : undefined;
     const target = room ? this.io.to(room) : this.io;
 
-    target.emit('content-refresh', category);
-    console.log(`🔄 Requested content refresh for ${category || 'all categories'}`);
+    target.emit("content-refresh", category);
+    console.log(
+      `🔄 Requested content refresh for ${category || "all categories"}`,
+    );
   }
 
   /**
    * Get connected clients count.
-   * 
+   *
    * Returns:
    *   number: Number of connected clients.
    */
@@ -246,7 +260,7 @@ class WebSocketServer {
 
   /**
    * Get server statistics.
-   * 
+   *
    * Returns:
    *   object: Server statistics.
    */
@@ -258,7 +272,7 @@ class WebSocketServer {
   } {
     const rooms = this.io?.sockets.adapter.rooms.size || 0;
     const uptime = process.uptime();
-    
+
     return {
       connectedClients: this.getConnectedClientsCount(),
       totalRooms: rooms,
@@ -269,13 +283,15 @@ class WebSocketServer {
 
   /**
    * Add article to update queue for batch processing.
-   * 
+   *
    * Args:
    *   article (Article): Article to queue for update.
    */
   queueArticleUpdate(article: Article): void {
     this.articleUpdateQueue.push(article);
-    console.log(`📝 Queued article update: ${article.title} (Queue: ${this.articleUpdateQueue.length})`);
+    console.log(
+      `📝 Queued article update: ${article.title} (Queue: ${this.articleUpdateQueue.length})`,
+    );
   }
 
   /**
@@ -289,8 +305,8 @@ class WebSocketServer {
 
     // Group by category for efficient broadcasting
     const categorizedUpdates: Record<string, Article[]> = {};
-    updates.forEach(article => {
-      const category = article.category || 'general';
+    updates.forEach((article) => {
+      const category = article.category || "general";
       if (!categorizedUpdates[category]) {
         categorizedUpdates[category] = [];
       }
@@ -302,7 +318,9 @@ class WebSocketServer {
       this.broadcastNewArticles(articles, category);
     });
 
-    console.log(`📡 Processed ${updates.length} queued updates across ${Object.keys(categorizedUpdates).length} categories`);
+    console.log(
+      `📡 Processed ${updates.length} queued updates across ${Object.keys(categorizedUpdates).length} categories`,
+    );
   }
 
   /**
@@ -313,7 +331,9 @@ class WebSocketServer {
       this.processQueuedUpdates();
     }, this.UPDATE_INTERVAL);
 
-    console.log(`⏰ Started periodic updates every ${this.UPDATE_INTERVAL / 1000}s`);
+    console.log(
+      `⏰ Started periodic updates every ${this.UPDATE_INTERVAL / 1000}s`,
+    );
   }
 
   /**
@@ -323,13 +343,13 @@ class WebSocketServer {
     if (this.updateTimer) {
       clearInterval(this.updateTimer);
       this.updateTimer = null;
-      console.log('⏰ Stopped periodic updates');
+      console.log("⏰ Stopped periodic updates");
     }
   }
 
   /**
    * Generate unique session ID.
-   * 
+   *
    * Returns:
    *   string: Unique session identifier.
    */
@@ -342,16 +362,16 @@ class WebSocketServer {
    */
   async close(): Promise<void> {
     this.stopPeriodicUpdates();
-    
+
     if (this.io) {
       await new Promise<void>((resolve) => {
         this.io!.close(() => {
-          console.log('🔌 WebSocket server closed');
+          console.log("🔌 WebSocket server closed");
           resolve();
         });
       });
     }
-    
+
     this.connectedClients.clear();
   }
 }

@@ -15,17 +15,23 @@ import {
 import { generateBreadcrumbSchema } from "@/lib/metadata";
 
 // Force dynamic rendering with revalidation
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/articles', {
+    // Use relative URL for server-side fetching (works in both dev and production)
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000");
+    const response = await fetch(`${baseUrl}/api/articles`, {
       next: { revalidate: 60 },
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
     });
-    
+
     if (!response.ok) return [];
     const data = await response.json();
     return data.success ? data.articles : [];
@@ -59,9 +65,10 @@ export default async function Home() {
                 Multi-polar News Perspectives
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-4xl mx-auto">
-                Breaking free from Western media monopoly with real-time insights from BRICS nations and Indonesia
+                Breaking free from Western media monopoly with real-time
+                insights from BRICS nations and Indonesia
               </p>
-              
+
               {/* Hero Newsletter Signup */}
               <HeroNewsletterSignup />
             </div>
@@ -82,10 +89,7 @@ export default async function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {featuredArticles.map((article) => (
-                <ArticleCard 
-                  key={article.id} 
-                  article={article}
-                />
+                <ArticleCard key={article.id} article={article} />
               ))}
             </div>
 
@@ -97,7 +101,10 @@ export default async function Home() {
         {/* Adsterra Ads Section */}
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <AdsterraAds type="native" zoneId={process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_ADS} />
+            <AdsterraAds
+              type="native"
+              zoneId={process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_ADS}
+            />
           </div>
         </section>
 
@@ -108,8 +115,8 @@ export default async function Home() {
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 🌍 Latest Updates
               </h2>
-              <a 
-                href="/search" 
+              <a
+                href="/search"
                 className="text-blue-600 hover:text-blue-800 dark:text-teal-400 dark:hover:text-teal-300 font-semibold transition-colors"
               >
                 View All →
@@ -118,10 +125,7 @@ export default async function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {recentArticles.map((article) => (
-                <ArticleCard 
-                  key={article.id} 
-                  article={article}
-                />
+                <ArticleCard key={article.id} article={article} />
               ))}
             </div>
           </div>

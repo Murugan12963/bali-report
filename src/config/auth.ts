@@ -1,5 +1,7 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import type { NextAuthOptions, User, Session } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import VKProvider from "next-auth/providers/vk";
 import YandexProvider from "next-auth/providers/yandex";
@@ -8,7 +10,31 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { DEFAULT_USER_PREFERENCES } from "@/types/user";
 
-export const authOptions = {
+interface ExtendedSession extends Session {
+  user: {
+    id: string;
+    email?: string | null;
+    name?: string | null;
+    image?: string | null;
+    preferences?: typeof DEFAULT_USER_PREFERENCES;
+  };
+}
+
+interface SignInCallbackParams {
+  user: User;
+  account: any;
+  profile?: any;
+  email?: { verificationRequest?: boolean };
+  credentials?: Record<string, any>;
+}
+
+interface SessionCallbackParams {
+  session: ExtendedSession;
+  token: JWT;
+  user: User;
+}
+
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -33,7 +59,7 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -69,36 +95,52 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async session({ session, user }: { session: any; user: any }) {
-      if (session.user) {
-        session.user.id = user.id;
+    async jwt({ token, user }: { token: JWT; user?: User }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({
+      session,
+      token,
+    }: SessionCallbackParams): Promise<ExtendedSession> {
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
+
         // Fetch user preferences
         const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
+          where: { id: token.id as string },
           include: { preferences: true },
         });
+
         session.user.preferences =
           dbUser?.preferences || DEFAULT_USER_PREFERENCES;
       }
       return session;
     },
-    async signIn({ user }: { user: any }) {
-      // Create default preferences for new users
-      const existingUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        include: { preferences: true },
-      });
-
-      if (!existingUser?.preferences) {
-        await prisma.userPreferences.create({
-          data: {
-            userId: user.id,
-            ...DEFAULT_USER_PREFERENCES,
-          },
+    async signIn({ user }: SignInCallbackParams): Promise<boolean> {
+      try {
+        // Create default preferences for new users
+        const existingUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          include: { preferences: true },
         });
-      }
 
-      return true;
+        if (!existingUser?.preferences) {
+          await prisma.userPreferences.create({
+            data: {
+              userId: user.id,
+              ...DEFAULT_USER_PREFERENCES,
+            },
+          });
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Error in signIn callback:", error);
+        return false;
+      }
     },
   },
   pages: {
