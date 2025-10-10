@@ -1,4 +1,5 @@
 import { Article } from "@/lib/rss-parser";
+import { unifiedNewsService } from "@/lib/unified-news-service";
 import ArticleCard from "@/components/ArticleCard";
 import AdsterraAds from "@/components/AdsterraAds";
 import MarketTicker from "@/components/MarketTicker";
@@ -20,22 +21,20 @@ export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    // Use relative URL for server-side fetching (works in both dev and production)
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
-    const response = await fetch(`${baseUrl}/api/articles`, {
-      next: { revalidate: 60 },
-      headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+    console.log('🌺 Homepage: Fetching articles with priority system...');
+    
+    // Use unified news service with priority system: NewsData.io -> RSS -> Scrapers
+    const newsResponse = await unifiedNewsService.fetchAllArticles({ 
+      includeScrapers: true, 
+      limit: 100 
     });
-
-    if (!response.ok) return [];
-    const data = await response.json();
-    return data.success ? data.articles : [];
+    
+    console.log(`📊 Homepage: ${newsResponse.success ? 'Success' : 'Failed'} - Got ${newsResponse.articles.length} articles`);
+    console.log(`🎯 Homepage Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+    
+    return newsResponse.success ? newsResponse.articles : [];
   } catch (err) {
+    console.error('❌ Homepage: Error fetching articles:', err);
     return [];
   }
 }

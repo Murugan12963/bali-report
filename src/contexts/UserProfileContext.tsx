@@ -83,7 +83,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         ...prev,
         preferences: {
           ...prev.preferences,
-          savedSearches: [...prev.preferences.savedSearches, newSearch]
+          savedSearches: [...(prev.preferences.savedSearches || []), newSearch]
         }
       };
     });
@@ -96,7 +96,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         ...prev,
         preferences: {
           ...prev.preferences,
-          savedSearches: prev.preferences.savedSearches.filter(s => s.id !== searchId)
+          savedSearches: (prev.preferences.savedSearches || []).filter(s => s.id !== searchId)
         }
       };
     });

@@ -16,7 +16,7 @@ export interface UserPreferences {
   pushNotifications: boolean;
   articleDisplay: 'compact' | 'comfortable';
   autoplayVideos: boolean;
-  savedSearches: SavedSearch[];
+  savedSearches?: SavedSearch[];
   readingHistory: string[]; // Article IDs
   favoriteTopics: string[];
 }

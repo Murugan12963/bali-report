@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { rssAggregator } from '@/lib/rss-parser';
+import { unifiedNewsService } from '@/lib/unified-news-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -20,10 +20,28 @@ export async function GET() {
   }
 
   try {
-    const articles = await rssAggregator.fetchByCategory('Indonesia', true);
+    console.log('🌺 Fetching Indonesia articles with priority system...');
+    
+    const newsResponse = await unifiedNewsService.fetchByCategory('Indonesia', { 
+      includeScrapers: true, 
+      limit: 50 
+    });
+    
+    console.log(`📊 Indonesia API: ${newsResponse.success ? 'Success' : 'Failed'} - Fetched ${newsResponse.articles.length} articles`);
+    console.log(`🎯 Indonesia Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+    
+    if (!newsResponse.success) {
+      throw new Error('Failed to fetch Indonesia articles');
+    }
+    
     indonesiaCache = {
-      articles: articles.slice(0, 50),
-      metadata: { total: articles.length, fetchTime: Date.now() - startTime, timestamp: new Date().toISOString() },
+      articles: newsResponse.articles,
+      metadata: { 
+        ...newsResponse.metadata,
+        total: newsResponse.articles.length, 
+        fetchTime: Date.now() - startTime, 
+        timestamp: new Date().toISOString() 
+      },
       timestamp: now,
     };
     return NextResponse.json({

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { rssAggregator } from '@/lib/rss-parser';
+import { unifiedNewsService } from '@/lib/unified-news-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -43,13 +43,26 @@ export async function GET() {
   }
 
   try {
-    console.log('🌺 Fetching BRICS articles...');
-    const articles = await rssAggregator.fetchByCategory('BRICS', true);
+    console.log('🌺 Fetching BRICS articles with priority system...');
+    
+    // Use unified news service with priority system: NewsData.io -> RSS -> Scrapers
+    const newsResponse = await unifiedNewsService.fetchByCategory('BRICS', { 
+      includeScrapers: true, 
+      limit: 50 
+    });
+    
+    console.log(`📊 BRICS API: ${newsResponse.success ? 'Success' : 'Failed'} - Fetched ${newsResponse.articles.length} articles`);
+    console.log(`🎯 BRICS Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+    
+    if (!newsResponse.success) {
+      throw new Error('Failed to fetch BRICS articles');
+    }
 
     bricsCache = {
-      articles: articles.slice(0, 50),
+      articles: newsResponse.articles,
       metadata: {
-        total: articles.length,
+        ...newsResponse.metadata,
+        total: newsResponse.articles.length,
         fetchTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
       },

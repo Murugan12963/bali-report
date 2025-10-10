@@ -122,7 +122,10 @@ export function middleware(request: NextRequest) {
   const clientIp = getClientIp(request);
 
   // Determine rate limit config based on path
-  let config = RATE_LIMIT_CONFIG;
+  let config: { windowMs: number; maxRequests: number } = {
+    windowMs: RATE_LIMIT_CONFIG.windowMs,
+    maxRequests: RATE_LIMIT_CONFIG.maxRequests
+  };
   let identifier = `default:${clientIp}`;
 
   if (pathname.startsWith("/api/auth")) {

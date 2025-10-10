@@ -20,6 +20,7 @@
 - **Card Design**: Clean article cards with subtle shadows and borders
 
 ### Content & User Experience
+- **🔍 NewsData.io Priority**: Professional API access to 15,000+ sources as primary content source
 - **📡 Advanced RSS Aggregation**: 662+ daily articles from 33+ sources with web scraping fallback
 - **🌍 Multi-polar Perspective**: RT, TASS, Xinhua, Al Jazeera, CGTN, Press TV, and more
 - **🎯 AI-Powered Features**: x.ai (Grok) integration for content analysis and personalization
@@ -116,7 +117,15 @@ npm run type-check # Run TypeScript checks
 
 ## 📈 Content Sources
 
-### RSS News Sources (33+ Active)
+### Primary: NewsData.io API
+- **15,000+ Professional Sources**: Curated news outlets worldwide with real-time updates
+- **Multi-Category Support**: BRICS-focused, Indonesia news, Bali tourism content
+- **Smart Filtering**: Language and country-based filtering with keyword targeting
+- **Rate Limiting**: Free tier (200 requests/day) with intelligent usage management
+- **Rich Metadata**: AI tags, sentiment analysis, images, and structured data
+- **Quality Control**: Deduplicated articles with professional content curation
+
+### Fallback: RSS News Sources (33+ Active)
 - **BRICS Sources**: RT News, TASS, Xinhua, Al Jazeera, CGTN, Press TV, Global Times, NDTV News
 - **Indonesian Sources**: Antara News, Tempo News, Jakarta Globe, Jakarta Post, Indonesia Business Post
 - **Bali Sources**: Bali Post, Bali Discovery
@@ -135,6 +144,9 @@ npm run type-check # Run TypeScript checks
 # Required for Core Features
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://bali.report
+
+# NewsData.io API (Optional - Free tier: 200 requests/day)
+NEWSDATA_API_KEY=your-newsdata-api-key
 
 # Analytics Services
 NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com

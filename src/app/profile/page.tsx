@@ -6,6 +6,7 @@ import UserProfileForm from "@/components/profile/UserProfileForm";
 import UserPreferencesForm from "@/components/profile/UserPreferencesForm";
 import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
+import { DEFAULT_USER_PREFERENCES } from "@/types/user";
 
 export const metadata: Metadata = {
   title: "Profile Settings - Bali Report",
@@ -50,7 +51,7 @@ export default async function ProfilePage() {
                 <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                   Content Preferences
                 </h2>
-                <UserPreferencesForm preferences={session.user.preferences} />
+                <UserPreferencesForm preferences={(session.user.preferences as any) || DEFAULT_USER_PREFERENCES} />
               </div>
             </div>
 

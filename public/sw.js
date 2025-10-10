@@ -125,8 +125,12 @@ async function cacheFirst(request, cacheName) {
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
-      const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
+      try {
+        const cache = await caches.open(cacheName);
+        await cache.put(request, networkResponse.clone());
+      } catch (cacheError) {
+        console.warn("[SW] Failed to cache response:", cacheError.message);
+      }
     }
     return networkResponse;
   } catch (error) {
@@ -140,8 +144,12 @@ async function networkFirst(request, cacheName) {
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
-      const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
+      try {
+        const cache = await caches.open(cacheName);
+        await cache.put(request, networkResponse.clone());
+      } catch (cacheError) {
+        console.warn("[SW] Failed to cache response:", cacheError.message);
+      }
     }
     return networkResponse;
   } catch (error) {

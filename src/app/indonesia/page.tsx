@@ -6,11 +6,7 @@ export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
+    const baseUrl = "http://localhost:3000"; // Use localhost for dev
     const response = await fetch(`${baseUrl}/api/articles/indonesia`, {
       next: { revalidate: 60 },
       headers: { "Content-Type": "application/json" },

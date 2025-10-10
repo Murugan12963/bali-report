@@ -8,7 +8,7 @@ import YandexProvider from "next-auth/providers/yandex";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { DEFAULT_USER_PREFERENCES } from "@/types/user";
+import { DEFAULT_USER_PREFERENCES, UserPreferences } from "@/types/user";
 
 interface ExtendedSession extends Session {
   user: {
@@ -16,7 +16,7 @@ interface ExtendedSession extends Session {
     email?: string | null;
     name?: string | null;
     image?: string | null;
-    preferences?: typeof DEFAULT_USER_PREFERENCES;
+    preferences?: UserPreferences;
   };
 }
 
@@ -104,7 +104,7 @@ export const authOptions: NextAuthOptions = {
     async session({
       session,
       token,
-    }: SessionCallbackParams): Promise<ExtendedSession> {
+    }: any): Promise<ExtendedSession> {
       if (session.user && token.id) {
         session.user.id = token.id as string;
 
@@ -115,7 +115,11 @@ export const authOptions: NextAuthOptions = {
         });
 
         session.user.preferences =
-          dbUser?.preferences || DEFAULT_USER_PREFERENCES;
+          dbUser?.preferences ? {
+            ...DEFAULT_USER_PREFERENCES,
+            ...(dbUser.preferences as any),
+            savedSearches: [] // Add missing field for compatibility
+          } : DEFAULT_USER_PREFERENCES;
       }
       return session;
     },

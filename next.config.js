@@ -75,14 +75,14 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               // Script sources - specified domains only
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://adsterra.com https://a.adnxs.com https://js.stripe.com data: blob:",
-              "script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://adsterra.com https://a.adnxs.com https://js.stripe.com data:",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://adsterra.com https://a.adnxs.com https://www.highperformanceformats.com https://js.stripe.com https://cdn.matomo.cloud https://bali-report.matomo.cloud data: blob:",
+              "script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://adsterra.com https://a.adnxs.com https://www.highperformanceformats.com https://js.stripe.com https://cdn.matomo.cloud https://bali-report.matomo.cloud data:",
               // Image sources - allow HTTPS images from news sources
               "img-src 'self' data: https: blob:",
               // Connect sources - API and analytics
-              "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.stripe.com https://rumble.com https://adsterra.com https://a.adnxs.com wss: blob:",
+              "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.stripe.com https://rumble.com https://adsterra.com https://a.adnxs.com https://www.highperformanceformats.com https://cdn.matomo.cloud https://bali-report.matomo.cloud wss: blob:",
               // Frame sources - embeds and payments
-              "frame-src 'self' https://www.google.com https://js.stripe.com https://hooks.stripe.com https://rumble.com https://adsterra.com https://a.adnxs.com blob:",
+              "frame-src 'self' https://www.google.com https://js.stripe.com https://hooks.stripe.com https://rumble.com https://adsterra.com https://a.adnxs.com https://www.highperformanceformats.com https://cdn.matomo.cloud https://bali-report.matomo.cloud blob:",
               // Style sources
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://tagmanager.google.com",
               // Font sources

@@ -2,6 +2,7 @@ import Parser from 'rss-parser';
 import { rssCache } from './rss-cache';
 import { webScraper } from './web-scraper';
 import { contentModerationService } from './content-moderation';
+import { newsdataService } from './newsdata-service';
 
 /**
  * RSS Parser configuration and types for Bali Report news aggregation.
@@ -66,7 +67,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Press TV',
     url: 'https://www.presstv.ir/rss.xml',
     category: 'BRICS',
-    active: true, // Re-enabled with backup scraper
+    active: false, // Temporarily disabled - often slow
   },
   {
     name: 'Al Jazeera',
@@ -79,7 +80,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Global Times',
     url: 'https://www.globaltimes.cn/rss/china.xml',
     category: 'BRICS',
-    active: true, // Re-enabled with backup scraper
+    active: false, // Temporarily disabled - RSS feed issues
   },
   {
     name: 'CGTN News',
@@ -109,7 +110,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Jakarta Post',
     url: 'https://www.thejakartapost.com/rss',
     category: 'Indonesia',
-    active: true, // Re-enabled with backup scraper
+    active: false, // Temporarily disabled - often slow
   },
   {
     name: 'Bali Post',
@@ -128,7 +129,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Tempo News',
     url: 'https://www.tempo.co/rss',
     category: 'Indonesia',
-    active: true, // Re-enabled with backup scraper
+    active: false, // Temporarily disabled - 403 Forbidden errors
   },
   // BRICS-aligned Indian sources
   {
@@ -200,7 +201,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Foreign Affairs Geopolitics',
     url: 'https://www.foreignaffairs.com/feeds/topic/Geopolitics/rss.xml',
     category: 'BRICS',
-    active: true,
+    active: false, // Temporarily disabled - paywall issues
   },
   {
     name: 'Geopolitical Economy',
@@ -212,7 +213,7 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'Financial Times Geopolitics',
     url: 'https://www.ft.com/geopolitics?format=rss',
     category: 'BRICS',
-    active: true,
+    active: false, // Temporarily disabled - paywall issues
   },
   {
     name: 'RAND International Affairs',
@@ -249,13 +250,13 @@ export const NEWS_SOURCES: NewsSource[] = [
     name: 'BRICS Policy Center',
     url: 'https://bricspolicycenter.org/en/feed/',
     category: 'BRICS',
-    active: true
+    active: false // Temporarily disabled - often slow
   },
   {
     name: 'TV BRICS',
     url: 'https://tvbrics.com/en/feed/',
     category: 'BRICS',
-    active: true // Will fallback to scraper if RSS fails
+    active: false // Temporarily disabled - often slow
   },
   {
     name: 'BRICS Business Council India',
@@ -331,7 +332,7 @@ class RSSAggregator {
 
   constructor(sources: NewsSource[] = NEWS_SOURCES) {
     this.parser = new Parser({
-      timeout: 20000, // Increased timeout for slow Indonesian servers
+      timeout: 15000, // Increased timeout for better reliability
       headers: {
         'User-Agent': this.getNextUserAgent(),
         'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml',
@@ -381,7 +382,7 @@ class RSSAggregator {
     try {
       // Rotate User-Agent for each retry attempt
       const parser = new Parser({
-        timeout: 25000,
+        timeout: 15000,
         headers: {
           'User-Agent': this.getNextUserAgent(),
           'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml',
@@ -405,14 +406,33 @@ class RSSAggregator {
         },
       });
       
-      return await parser.parseURL(url);
-    } catch (error) {
-      if (retryCount < maxRetries) {
-        console.log(`🔄 Retry ${retryCount + 1}/${maxRetries} for ${url} with different User-Agent`);
+      const feed = await parser.parseURL(url);
+      
+      // Validate that we got actual RSS content
+      if (!feed || !feed.items || feed.items.length === 0) {
+        throw new Error(`No valid RSS content found at ${url}`);
+      }
+      
+      return feed;
+    } catch (error: any) {
+      // Log specific error details for debugging
+      const errorType = error.message?.includes('timeout') ? 'TIMEOUT' :
+                       error.message?.includes('Non-whitespace before first tag') ? 'HTML_RESPONSE' :
+                       error.message?.includes('Status code') ? 'HTTP_ERROR' :
+                       error.message?.includes('ENOTFOUND') ? 'DNS_ERROR' : 'PARSE_ERROR';
+      
+      if (retryCount < maxRetries && errorType !== 'HTML_RESPONSE') {
+        console.log(`🔄 Retry ${retryCount + 1}/${maxRetries} for ${url} (${errorType}) with different User-Agent`);
         // Wait with exponential backoff before retry
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount + 1) * 1000));
         return this.fetchWithRetry(url, retryCount + 1);
       }
+      
+      // Don't retry HTML responses - they won't become RSS feeds
+      if (errorType === 'HTML_RESPONSE') {
+        console.log(`⚠️  ${url} returned HTML instead of RSS - skipping retries`);
+      }
+      
       throw error;
     }
   }
@@ -447,7 +467,7 @@ class RSSAggregator {
         return cached.articles;
       }
     }
-    const maxRetries = 2;
+    const maxRetries = 1; // Reduced retries for faster response
     let lastError: Error | null = null;
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -601,58 +621,197 @@ class RSSAggregator {
   }
 
   /**
-   * Fetch articles from all active sources (RSS + scraped).
+   * Fetch articles from NewsData.io as primary source.
+   * 
+   * Returns:
+   *   Promise<Article[]>: Articles from NewsData.io API.
+   */
+  async fetchFromNewsdata(): Promise<Article[]> {
+    if (!newsdataService.isAvailable()) {
+      const stats = newsdataService.getUsageStats();
+      const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DISABLE_NEWSDATA_CREDIT_TRACKING === 'true';
+      
+      if (isDevelopment) {
+        console.log(`📄 NewsData.io not available (Development Mode - Credit tracking disabled)`);
+      } else {
+        console.log(`📄 NewsData.io not available: ${stats.creditsUsed}/${stats.creditsLimit} credits used`);
+      }
+      return [];
+    }
+
+    try {
+      console.log('🌐 Fetching articles from NewsData.io (primary source with aggressive caching)...');
+      
+      // Optimize article requests for credit efficiency  
+      // Request 10 articles per category (free tier max) = 1 credit per category = 3 total credits for all 3 categories
+      const newsdataArticles = await newsdataService.fetchAllCategories(10);
+      
+      if (newsdataArticles.length > 0) {
+        const stats = newsdataService.getUsageStats();
+        const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DISABLE_NEWSDATA_CREDIT_TRACKING === 'true';
+        
+        console.log(`✅ NewsData.io: ${newsdataArticles.length} high-quality articles fetched`);
+        
+        if (isDevelopment) {
+          console.log(`📊 NewsData.io usage: Development Mode - Credit tracking disabled`);
+        } else {
+          console.log(`📊 NewsData.io usage: ${stats.creditsUsed}/${stats.creditsLimit} credits used (${stats.remainingCredits} credits remaining)`);
+        }
+        
+        console.log(`💾 Cache efficiency: ${(stats.cacheHitRate * 100).toFixed(1)}% hit rate, ${stats.cachedArticles} cached articles`);
+        
+        // Apply content moderation to NewsData.io articles
+        const moderatedResult = await contentModerationService.moderateArticles(newsdataArticles);
+        
+        if (moderatedResult.rejected.length > 0) {
+          console.log(`🛡️ NewsData.io moderation: ${moderatedResult.approved.length} approved, ${moderatedResult.rejected.length} rejected`);
+        }
+        
+        return moderatedResult.approved;
+      }
+      
+      return [];
+      
+    } catch (error: any) {
+      console.warn('⚠️  NewsData.io fetch failed:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Prioritize sources based on reliability and speed.
+   * 
+   * Args:
+   *   sources (NewsSource[]): Sources to prioritize.
+   * 
+   * Returns:
+   *   NewsSource[]: Prioritized sources array.
+   */
+  private prioritizeSources(sources: NewsSource[]): NewsSource[] {
+    // High priority sources (known to be fast and reliable)
+    const highPriority = [
+      'Al Jazeera', 'BBC Indonesia', 'RT News', 'TASS', 'Xinhua News', 
+      'Jakarta Globe', 'Antara News', 'Tempo News', 'CGTN', 'China Daily'
+    ];
+    
+    // Medium priority sources 
+    const mediumPriority = [
+      'Indonesia Business Post', 'Bali Post', 'NDTV News', 'Sputnik Globe',
+      'South China Morning Post', 'Global Times', 'Press TV Iran'
+    ];
+    
+    const high = sources.filter(s => highPriority.includes(s.name));
+    const medium = sources.filter(s => mediumPriority.includes(s.name) && !highPriority.includes(s.name));
+    const others = sources.filter(s => !highPriority.includes(s.name) && !mediumPriority.includes(s.name));
+    
+    return [...high, ...medium, ...others];
+  }
+
+  /**
+   * Process RSS sources in batches with concurrency control.
+   * 
+   * Args:
+   *   sources (NewsSource[]): Sources to process.
+   *   batchSize (number): Number of sources per batch.
+   * 
+   * Returns:
+   *   Promise<Article[]>: Articles from processed sources.
+   */
+  private async processBatchedSources(sources: NewsSource[], batchSize: number = 8): Promise<Article[]> {
+    const allArticles: Article[] = [];
+    const targetArticleCount = 100;
+    let successCount = 0;
+    let failureCount = 0;
+
+    // Process sources in batches to avoid overwhelming servers
+    for (let i = 0; i < sources.length; i += batchSize) {
+      const batch = sources.slice(i, i + batchSize);
+      console.log(`📦 Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(sources.length/batchSize)} (${batch.length} sources)`);
+      
+      const batchPromises = batch.map(source => this.fetchFromSource(source));
+      
+      try {
+        const batchResults = await Promise.allSettled(batchPromises);
+        
+        batchResults.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            allArticles.push(...result.value);
+            if (result.value.length > 0) {
+              successCount++;
+            }
+          } else {
+            failureCount++;
+          }
+        });
+        
+        // Early return if we have enough articles for good user experience
+        if (allArticles.length >= targetArticleCount) {
+          console.log(`🎯 Early return: ${allArticles.length} articles collected (target: ${targetArticleCount})`);
+          break;
+        }
+        
+      } catch (error) {
+        console.error(`❌ Error processing batch ${Math.floor(i/batchSize) + 1}:`, error);
+      }
+    }
+    
+    console.log(`📊 RSS Summary: ${successCount} sources succeeded, ${failureCount} failed, ${allArticles.length} articles`);
+    return allArticles;
+  }
+
+  /**
+   * Fetch articles from all sources with NewsData.io prioritized.
+   * Tries NewsData.io first, then falls back to RSS + scraping as needed.
    * 
    * Returns:
    *   Promise<Article[]>: Combined array of articles from all sources.
    */
   async fetchAllSources(includeScrapers: boolean = false): Promise<Article[]> {
-    const activeSources = this.sources.filter(source => source.active);
-    console.log(`🌍 Fetching articles from ${activeSources.length} active sources...`);
+    const allArticles: Article[] = [];
     
-    const promises = activeSources.map(source => this.fetchFromSource(source));
+    // STEP 1: Try NewsData.io as primary source
+    const newsdataArticles = await this.fetchFromNewsdata();
+    allArticles.push(...newsdataArticles);
     
-    try {
-      const results = await Promise.allSettled(promises);
-      const articles: Article[] = [];
-      let successCount = 0;
-      let failureCount = 0;
+    // STEP 2: Fallback to RSS sources (only if NewsData.io didn't provide enough content)
+    const targetArticleCount = 100; // Target minimum articles
+    const needMoreArticles = allArticles.length < targetArticleCount;
+    
+    if (needMoreArticles || !newsdataService.isAvailable()) {
+      console.log(`📡 Fetching RSS sources (${needMoreArticles ? 'supplementing NewsData.io' : 'NewsData.io unavailable'})...`);
       
-      results.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          articles.push(...result.value);
-          if (result.value.length > 0) {
-            successCount++;
-          }
-        } else {
-          failureCount++;
-          // Silently count failed sources - fallback mechanisms are in place
-        }
-      });
+      const activeSources = this.sources.filter(source => source.active);
+      console.log(`🌍 Processing ${activeSources.length} RSS sources in batches...`);
       
-      console.log(`📊 RSS Summary: ${successCount} sources succeeded, ${failureCount} failed, ${articles.length} total articles`);
+      // Prioritize high-quality sources first
+      const prioritizedSources = this.prioritizeSources(activeSources);
+      
+      // Process sources in batches with early return
+      const rssArticles = await this.processBatchedSources(prioritizedSources, 4);
+      allArticles.push(...rssArticles);
+      
       console.log(`🛡️ All articles have been processed through content moderation`);
-      
-      // Add scraped articles if requested
+    }
+    
+    // STEP 3: Add scraped articles if requested
     if (includeScrapers) {
       try {
-        console.log('🕷️ Attempting to scrape all sources...');
+        console.log('🕷️ Attempting to scrape additional sources...');
         const scrapedArticles = await webScraper.scrapeAllSources();
         if (scrapedArticles.length > 0) {
-          articles.push(...scrapedArticles);
-          console.log(`🕷️ Added ${scrapedArticles.length} scraped articles, new total: ${articles.length}`);
+          allArticles.push(...scrapedArticles);
+          console.log(`🕷️ Added ${scrapedArticles.length} scraped articles`);
         }
       } catch (error) {
         console.error('Failed to scrape additional sources:', error);
       }
     }
     
+    // Final summary
+    console.log(`🎯 Final Summary: ${allArticles.length} total articles (NewsData.io: ${newsdataArticles.length}, RSS: ${allArticles.length - newsdataArticles.length})`);
+    
     // Sort articles by publication date (newest first)
-    return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
-    } catch (error) {
-      console.error('❌ Critical error fetching from multiple sources:', error);
-      return [];
-    }
+    return allArticles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
   }
 
   /**

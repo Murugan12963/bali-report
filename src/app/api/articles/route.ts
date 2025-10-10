@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rssAggregator } from '@/lib/rss-parser';
+import { unifiedNewsService } from '@/lib/unified-news-service';
 import { contentPersonalizationEngine } from '@/lib/content-personalization';
 
 // Cache configuration for instant delivery
@@ -54,25 +54,32 @@ export async function GET(request: NextRequest) {
 
   // If no valid cache, fetch fresh data
   try {
-    console.log('🌺 API: Fetching fresh RSS articles...');
+    console.log('🌺 API: Fetching fresh articles with priority system...');
 
-    const rawArticles = await rssAggregator.fetchAllSources();
-    console.log(`📊 API: Fetched ${rawArticles.length} articles in ${Date.now() - startTime}ms`);
+    // Use unified news service with priority system: NewsData.io -> RSS -> Scrapers
+    const newsResponse = await unifiedNewsService.fetchAllArticles({ 
+      includeScrapers: true, 
+      limit: 100 
+    });
+    console.log(`📊 API: ${newsResponse.success ? 'Success' : 'Failed'} - Fetched ${newsResponse.articles.length} articles`);
+    console.log(`🎯 Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+
+    if (!newsResponse.success) {
+      throw new Error('Unified news service failed to fetch articles');
+    }
 
     // Get personalization preferences
     const searchParams = request.nextUrl.searchParams;
     const interests = searchParams.get('interests')?.split(',') || [];
 
     // Apply personalization if interests provided
-    let articles = rawArticles;
+    let articles = newsResponse.articles;
     if (interests.length > 0) {
       const personalizedArticles = await contentPersonalizationEngine.personalizeContent(
-        rawArticles,
+        newsResponse.articles,
         100
       );
       articles = personalizedArticles.slice(0, 100);
-    } else {
-      articles = rawArticles.slice(0, 100);
     }
 
 
@@ -95,6 +102,7 @@ export async function GET(request: NextRequest) {
         articles: articleCache.articles,
         metadata: {
           ...articleCache.metadata,
+          ...newsResponse.metadata,
           servedFrom: 'fresh',
           responseTime: Date.now() - startTime,
         },
