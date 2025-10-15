@@ -10,9 +10,11 @@ export default function Navigation() {
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/brics', label: 'BRICS News' },
-    { href: '/indonesia', label: 'Indonesia' },
-    { href: '/bali', label: 'Bali' },
+    { href: '/brics', label: 'BRICS+ News' },
+    { href: '/asia', label: 'Asia' },
+    { href: '/eurasia', label: 'Eurasia' },
+    { href: '/africa', label: 'Africa' },
+    { href: '/south-america', label: 'South America' },
     { href: '/events', label: 'Events' },
     { href: '/projects', label: 'Projects' },
     { href: '/impact', label: 'Impact' },

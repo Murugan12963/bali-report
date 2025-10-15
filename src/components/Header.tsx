@@ -90,13 +90,19 @@ const Header: React.FC = () => {
                 Home
               </Link>
               <Link href="/brics" className={navLinkClass}>
-                BRICS
+                BRICS+
               </Link>
-              <Link href="/indonesia" className={navLinkClass}>
-                Indonesia
+              <Link href="/asia" className={navLinkClass}>
+                Asia
               </Link>
-              <Link href="/bali" className={navLinkClass}>
-                Bali
+              <Link href="/eurasia" className={navLinkClass}>
+                Eurasia
+              </Link>
+              <Link href="/africa" className={navLinkClass}>
+                Africa
+              </Link>
+              <Link href="/south-america" className={navLinkClass}>
+                South America
               </Link>
               <Link href="/events" className={navLinkClass}>
                 Events
@@ -186,21 +192,35 @@ const Header: React.FC = () => {
                 className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
                 onClick={closeMobileMenu}
               >
-                🌍 BRICS
+                🌏 BRICS+
               </Link>
               <Link
-                href="/indonesia"
+                href="/asia"
                 className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
                 onClick={closeMobileMenu}
               >
-                🇮🇩 Indonesia
+                🌏 Asia
               </Link>
               <Link
-                href="/bali"
+                href="/eurasia"
                 className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
                 onClick={closeMobileMenu}
               >
-                🏝️ Bali
+                🌍 Eurasia
+              </Link>
+              <Link
+                href="/africa"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                🌍 Africa
+              </Link>
+              <Link
+                href="/south-america"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                🌎 South America
               </Link>
               <Link
                 href="/events"

@@ -1,43 +1,44 @@
 import ArticleCard from "@/components/ArticleCard";
-import { Article, fetchBRICSArticles } from "@/lib/rss-parser";
+import { Article } from "@/lib/rss-parser";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    console.log('🌏 BRICS Page: Fetching articles from RSS.app feeds...');
-    
-    const articles = await fetchBRICSArticles();
-    
-    console.log(`📊 BRICS Page: Got ${articles.length} articles from RSS.app feeds`);
-    
-    return articles;
+    const baseUrl = "http://localhost:3000"; // Use localhost for dev
+    const response = await fetch(`${baseUrl}/api/articles/africa`, {
+      next: { revalidate: 60 },
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.success ? data.articles : [];
   } catch (err) {
-    console.error('❌ BRICS Page: Error fetching RSS.app articles:', err);
     return [];
   }
 }
 
-export default async function BricsPage() {
+export default async function AfricaPage() {
   const articles = await getArticles();
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          🌏 BRICS+ News & Analysis
+          🌍 Africa News & Analysis
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Multi-polar perspectives from Brazil, Russia, India, China, South
-          Africa, and expanded BRICS+ nations. Powered by RSS.app for reliable content delivery.
+          Continental perspectives from across Africa covering politics, economy, development, and cultural developments.
         </p>
       </div>
 
       {articles.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 dark:text-gray-400">
-            No BRICS+ articles available at the moment. Please check back later.
+            No African articles available at the moment. Please check back later.
           </p>
         </div>
       ) : (

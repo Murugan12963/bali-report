@@ -9,173 +9,52 @@
     · webpackBuildWorker
 
  ✓ Starting...
- ✓ Ready in 1352ms
- ✓ Compiled /src/middleware in 135ms (72 modules)
+ ✓ Ready in 1538ms
+ ✓ Compiled /src/middleware in 168ms (72 modules)
+ ✓ Compiled /api/articles/brics in 443ms (61 modules)
+🌺 Fetching BRICS articles with priority system...
+🎯 Unified News Service: Fetching BRICS articles with priority system...
+🚫 RSS and scrapers temporarily disabled - using NewsData.io only for BRICS
+🔍 Fetching BRICS articles from NewsData.io (Development Mode - Credit tracking disabled)
+💾 NewsData.io cache loaded: 3 entries (Development Mode - Credit tracking disabled)
+✅ NewsData.io: 10 BRICS articles received (67 total available)
+💾 NewsData.io cache SET for BRICS (10 articles received, 50 requested, expires in 2h)
+📊 Development Mode: Credit tracking disabled
+✅ Unified Service (BRICS): Fetched 10 articles using: NewsData.io API Only
+📊 BRICS API: Success - Fetched 10 articles
+🎯 BRICS Sources used: NewsData.io API Only
+ GET /api/articles/brics 200 in 1108ms
+ ✓ Compiled /api/articles/indonesia in 252ms (63 modules)
+🌺 Fetching Indonesia articles with priority system...
+🎯 Unified News Service: Fetching Indonesia articles with priority system...
+🚫 RSS and scrapers temporarily disabled - using NewsData.io only for Indonesia
+🔍 Fetching Indonesia articles from NewsData.io (Development Mode - Credit tracking disabled)
+💾 NewsData.io cache loaded: 3 entries (Development Mode - Credit tracking disabled)
+✅ NewsData.io: 10 Indonesia articles received (3125 total available)
+💾 NewsData.io cache SET for Indonesia (10 articles received, 50 requested, expires in 3h)
+📊 Development Mode: Credit tracking disabled
+✅ Unified Service (Indonesia): Fetched 10 articles using: NewsData.io API Only
+📊 Indonesia API: Success - Fetched 10 articles
+🎯 Indonesia Sources used: NewsData.io API Only
+ GET /api/articles/indonesia 200 in 1594ms
  ○ Compiling / ...
- ✓ Compiled / in 3.4s (1155 modules)
+ ✓ Compiled / in 3.4s (754 modules)
 🌺 Homepage: Fetching articles with priority system...
 🎯 Unified News Service: Starting priority-based news fetching...
-🌐 Fetching articles from NewsData.io (primary source with aggressive caching)...
-🔍 Fetching BRICS articles from NewsData.io (0/200 credits used)
-💾 NewsData.io cache loaded: 3 entries, 6/200 credits used today (60/2000 articles)
- GET / 200 in 3903ms
- ✓ Compiled in 944ms (347 modules)
-❌ NewsData.io API error for BRICS: HTTP 422: Unknown error
-⚠️  NewsData.io parameter error
-❌ Failed to fetch BRICS from NewsData.io: HTTP 422: Unknown error
-🔍 Fetching Indonesia articles from NewsData.io (6/200 credits used)
-❌ NewsData.io API error for Indonesia: HTTP 422: Unknown error
-⚠️  NewsData.io parameter error
-❌ Failed to fetch Indonesia from NewsData.io: HTTP 422: Unknown error
-🔍 Fetching Bali articles from NewsData.io (6/200 credits used)
-❌ NewsData.io API error for Bali: HTTP 422: Unknown error
-⚠️  NewsData.io parameter error
-❌ Failed to fetch Bali from NewsData.io: HTTP 422: Unknown error
-🎯 NewsData.io: Total 0 articles across all categories
-📡 Fetching RSS sources (supplementing NewsData.io)...
-🌍 Processing 37 RSS sources in batches...
-📦 Processing batch 1/10 (4 sources)
-Fetching RSS from RT News... (attempt 1/1)
-Fetching RSS from TASS... (attempt 1/1)
-Fetching RSS from Xinhua News... (attempt 1/1)
-Fetching RSS from Antara News... (attempt 1/1)
-✅ Successfully fetched 100 articles from TASS
-✅ Moderation complete: 100 approved, 0 rejected
-📦 Cached 100 articles from TASS (expires in 300s)
-⚠️  http://www.xinhuanet.com/english/rss/worldrss.xml returned HTML instead of RSS - skipping retries
-⚠️  Attempt 1/1 failed for Xinhua News (Parse Error): Non-whitespace before first tag.
-Line: 0
-Column: 1
-Char: 
-🕷️ Attempting web scraping fallback for Xinhua News...
-ℹ️ No scraper configuration found for: Xinhua News
-⚠️  https://www.antaranews.com/rss/terkini.xml returned HTML instead of RSS - skipping retries
-⚠️  Attempt 1/1 failed for Antara News (Parse Error): Non-whitespace before first tag.
-Line: 0
-Column: 1
-Char: �
-🕷️ Attempting web scraping fallback for Antara News...
-🕷️ Scraping fallback for Antara News using config: Antara News (Scraper)
-🕷️ Scraping Antara News (Scraper)...
-❌ HTTP 404 from Antara News (Scraper): Not Found
-⚠️  https://www.rt.com/rss/ returned HTML instead of RSS - skipping retries
-⚠️  Attempt 1/1 failed for RT News (Parse Error): Non-whitespace before first tag.
-Line: 0
-Column: 1
-Char: 
-🕷️ Attempting web scraping fallback for RT News...
-🕷️ Scraping fallback for RT News using config: RT News (Scraper)
-🕷️ Scraping RT News (Scraper)...
-✅ Scraped 12 articles from RT News (Scraper)
-✅ Scraped 12 articles from RT News as RSS fallback
-❌ Article rejected: "Gaza ceasefire in effect – IDF" - Similar to existing article: "Gaza ceasefire in effect – IDF"
-❌ Article rejected: "White House pours scorn on Nobel Peace Prize selection" - Similar to existing article: "White House pours scorn on Nobel Peace Prize selection"
-❌ Article rejected: "Trump snubbed for Nobel Peace Prize" - Similar to existing article: "Trump snubbed for Nobel Peace Prize"
-✅ Moderation complete: 9 approved, 3 rejected
-🛡️ Scraped content moderation: 9 approved, 3 rejected
-📦 Cached 9 articles from RT News (expires in 300s)
-🎯 Early return: 109 articles collected (target: 100)
-📊 RSS Summary: 2 sources succeeded, 0 failed, 109 articles
-🛡️ All articles have been processed through content moderation
-🕷️ Attempting to scrape additional sources...
-🕷️ Scraping 45 websites...
-🕷️ Scraping The Bali Sun...
-🕷️ Scraping NOW! Bali...
-🕷️ Scraping Bali Post (Main)...
-🕷️ Scraping Modern Diplomacy...
-🕷️ Scraping Indonesia Business Post...
-🕷️ Scraping John Helmer...
-🕷️ Scraping Tempo News (Scraper)...
-🕷️ Scraping Kompas News (Scraper)...
-🕷️ Scraping SCMP China (Scraper)...
-🕷️ Scraping SCMP Asia (Scraper)...
-🕷️ Scraping Antara News (Scraper)...
-🕷️ Scraping BBC Asia News (Scraper)...
-🕷️ Scraping RT News (Scraper)...
-🕷️ Scraping Al Jazeera (Scraper)...
-🕷️ Scraping UN News (Scraper)...
-🕷️ Scraping The Diplomat (Scraper)...
-🕷️ Scraping Global Issues (Scraper)...
-🕷️ Scraping E-International Relations (Scraper)...
-🕷️ Scraping Foreign Affairs (Scraper)...
-🕷️ Scraping Geopolitical Economy (Scraper)...
-🕷️ Scraping Financial Times Geopolitics (Scraper)...
-🕷️ Scraping RAND Corporation (Scraper)...
-🕷️ Scraping Geopolitical Futures (Scraper)...
-🕷️ Scraping Fifty Year Perspective (Scraper)...
-🕷️ Scraping Eclinik WordPress...
-🕷️ Scraping Press TV (Scraper)...
-🕷️ Scraping Global Times (Scraper)...
-🕷️ Scraping Jakarta Globe (Scraper)...
-🕷️ Scraping Jakarta Post (Scraper)...
-🕷️ Scraping Bali Post (Scraper)...
-🕷️ Scraping NDTV World (Scraper)...
-🕷️ Scraping NDTV Business (Scraper)...
-🕷️ Scraping South China Morning Post - Business (Scraper)...
-🕷️ Scraping InfoBRICS (Scraper)...
-🕷️ Scraping BRICS Policy Center (Scraper)...
-🕷️ Scraping TV BRICS (Scraper)...
-🕷️ Scraping BRICS Business Council India (Scraper)...
-🕷️ Scraping SA BRICS Business Council (Scraper)...
-🕷️ Scraping BRICS Chamber of Commerce (Scraper)...
-🕷️ Scraping Shanghai Cooperation Organisation (Scraper)...
-🕷️ Scraping Valdai Discussion Club (Scraper)...
-🕷️ Scraping BRICS Universities Association (Scraper)...
-🕷️ Scraping BRICS Brasil (Scraper)...
-🕷️ Scraping BRICS University of Toronto (Scraper)...
-🕷️ Scraping SouthFront (Scraper)...
-✅ Scraped 12 articles from The Bali Sun
-✅ Scraped 8 articles from John Helmer
-✅ Scraped 14 articles from Al Jazeera (Scraper)
-✅ Scraped 0 articles from UN News (Scraper)
-✅ Scraped 0 articles from The Diplomat (Scraper)
-❌ HTTP 404 from Antara News (Scraper): Not Found
-✅ Scraped 0 articles from Tempo News (Scraper)
-✅ Scraped 12 articles from RT News (Scraper)
-✅ Scraped 3 articles from Kompas News (Scraper)
-✅ Scraped 0 articles from BBC Asia News (Scraper)
-✅ Scraped 20 articles from Indonesia Business Post
-✅ Scraped 0 articles from E-International Relations (Scraper)
-✅ Scraped 0 articles from SCMP China (Scraper)
-✅ Scraped 0 articles from Geopolitical Economy (Scraper)
-✅ Scraped 0 articles from SCMP Asia (Scraper)
-✅ Scraped 1 articles from Global Issues (Scraper)
-✅ Scraped 25 articles from Modern Diplomacy
-✅ Scraped 0 articles from Financial Times Geopolitics (Scraper)
-✅ Scraped 0 articles from Foreign Affairs (Scraper)
-✅ Scraped 0 articles from Fifty Year Perspective (Scraper)
-❌ No response from NOW! Bali - site may be down
-❌ No response from Bali Post (Main) - site may be down
-❌ No response from RAND Corporation (Scraper) - site may be down
-❌ No response from Press TV (Scraper) - site may be down
-❌ No response from Global Times (Scraper) - site may be down
-❌ No response from Jakarta Globe (Scraper) - site may be down
-❌ No response from Jakarta Post (Scraper) - site may be down
-❌ No response from Bali Post (Scraper) - site may be down
-❌ No response from NDTV World (Scraper) - site may be down
-❌ No response from NDTV Business (Scraper) - site may be down
-❌ No response from South China Morning Post - Business (Scraper) - site may be down
-❌ No response from InfoBRICS (Scraper) - site may be down
-❌ No response from BRICS Policy Center (Scraper) - site may be down
-❌ No response from TV BRICS (Scraper) - site may be down
-❌ No response from BRICS Business Council India (Scraper) - site may be down
-❌ No response from SA BRICS Business Council (Scraper) - site may be down
-❌ No response from BRICS Chamber of Commerce (Scraper) - site may be down
-❌ No response from Shanghai Cooperation Organisation (Scraper) - site may be down
-❌ No response from Valdai Discussion Club (Scraper) - site may be down
-❌ No response from BRICS Universities Association (Scraper) - site may be down
-❌ No response from BRICS Brasil (Scraper) - site may be down
-❌ No response from BRICS University of Toronto (Scraper) - site may be down
-❌ No response from SouthFront (Scraper) - site may be down
-✅ Scraped 20 articles from Eclinik WordPress
-✅ Scraped 0 articles from Geopolitical Futures (Scraper)
-📊 Scraping complete: 9 succeeded, 0 failed, 115 total articles
-🕷️ Added 115 scraped articles
-🎯 Final Summary: 224 total articles (NewsData.io: 0, RSS: 224)
-✅ Unified Service: Fetched 224 articles using: RSS Feeds + Web Scrapers
-📊 Homepage: Success - Got 100 articles
-🎯 Homepage Sources used: RSS Feeds + Web Scrapers
- ✓ Compiled in 383ms (808 modules)
- ✓ Compiled in 324ms (808 modules)
- ✓ Compiled in 254ms (808 modules)
+🚫 RSS and scrapers temporarily disabled - using NewsData.io only
+🔍 Fetching BRICS articles from NewsData.io (Development Mode - Credit tracking disabled)
+💾 NewsData.io cache loaded: 3 entries (Development Mode - Credit tracking disabled)
+ ✓ Compiled in 711ms (347 modules)
+✅ NewsData.io: 10 BRICS articles received (67 total available)
+💾 NewsData.io cache SET for BRICS (10 articles received, 60 requested, expires in 2h)
+📊 Development Mode: Credit tracking disabled
+💾 NewsData.io cache HIT for Indonesia (10 articles, 0min old)
+💾 NewsData.io cache HIT for Bali (10 articles, 22min old)
+✅ Unified Service: Fetched 30 articles using: NewsData.io API Only
+📊 Homepage: Success - Got 30 articles
+🎯 Homepage Sources used: NewsData.io API Only
+📢 Adsterra: No valid zone ID provided. Current zone ID: 5336445
+📢 Adsterra: Set your actual zone IDs from Adsterra dashboard in environment variables
+📢 Adsterra: Example: NEXT_PUBLIC_ADSTERRA_BANNER_ZONE_ID=1234567
+ GET / 200 in 4438ms
 [?25h

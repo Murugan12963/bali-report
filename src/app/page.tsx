@@ -1,5 +1,4 @@
-import { Article } from "@/lib/rss-parser";
-import { unifiedNewsService } from "@/lib/unified-news-service";
+import { Article, fetchAllArticles } from "@/lib/rss-parser";
 import ArticleCard from "@/components/ArticleCard";
 import AdsterraAds from "@/components/AdsterraAds";
 import MarketTicker from "@/components/MarketTicker";
@@ -21,20 +20,16 @@ export const revalidate = 60;
 
 async function getArticles(): Promise<Article[]> {
   try {
-    console.log('🌺 Homepage: Fetching articles with priority system...');
+    console.log('🌺 Homepage: Fetching articles from RSS.app feeds...');
     
-    // Use unified news service with priority system: NewsData.io -> RSS -> Scrapers
-    const newsResponse = await unifiedNewsService.fetchAllArticles({ 
-      includeScrapers: true, 
-      limit: 100 
-    });
+    // Use RSS.app-only feeds for simplified, reliable news aggregation
+    const articles = await fetchAllArticles();
     
-    console.log(`📊 Homepage: ${newsResponse.success ? 'Success' : 'Failed'} - Got ${newsResponse.articles.length} articles`);
-    console.log(`🎯 Homepage Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+    console.log(`📊 Homepage: Got ${articles.length} articles from RSS.app feeds`);
     
-    return newsResponse.success ? newsResponse.articles : [];
+    return articles;
   } catch (err) {
-    console.error('❌ Homepage: Error fetching articles:', err);
+    console.error('❌ Homepage: Error fetching RSS.app articles:', err);
     return [];
   }
 }
@@ -64,7 +59,7 @@ export default async function Home() {
                 Multi-polar News Perspectives
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-4xl mx-auto">
-                Breaking free from Western media monopoly with real-time
+                Reliable news aggregation powered by RSS.app • Real-time
                 insights from BRICS nations and Indonesia
               </p>
 

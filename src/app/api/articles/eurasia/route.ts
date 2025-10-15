@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { fetchBRICSArticles } from '@/lib/rss-parser';
+import { fetchEurasiaArticles } from '@/lib/rss-parser';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // In-memory cache
-let bricsCache: {
+let eurasiaCache: {
   articles: any[];
   metadata: any;
   timestamp: number;
@@ -17,18 +17,18 @@ export async function GET() {
   const startTime = Date.now();
   const now = Date.now();
   
-  const hasValidCache = bricsCache && (now - bricsCache.timestamp) < CACHE_TTL;
+  const hasValidCache = eurasiaCache && (now - eurasiaCache.timestamp) < CACHE_TTL;
   
-  if (hasValidCache && bricsCache) {
-    console.log('⚡ Serving BRICS+ from cache');
+  if (hasValidCache && eurasiaCache) {
+    console.log('⚡ Serving Eurasia from cache');
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: eurasiaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...eurasiaCache.metadata,
           servedFrom: 'cache',
-          cacheAge: Math.round((now - bricsCache.timestamp) / 1000),
+          cacheAge: Math.round((now - eurasiaCache.timestamp) / 1000),
           responseTime: Date.now() - startTime,
         },
       },
@@ -43,17 +43,17 @@ export async function GET() {
   }
 
   try {
-    console.log('🌺 Fetching BRICS+ articles from RSS.app feeds...');
+    console.log('🌺 Fetching Eurasia articles from RSS.app feeds...');
     
-    const articles = await fetchBRICSArticles();
+    const articles = await fetchEurasiaArticles();
     
-    console.log(`📊 BRICS+ API: Fetched ${articles.length} articles from RSS.app feeds`);
+    console.log(`📊 Eurasia API: Fetched ${articles.length} articles from RSS.app feeds`);
     
     if (articles.length === 0) {
-      throw new Error('No BRICS+ articles available from RSS.app feeds');
+      throw new Error('No Eurasia articles available from RSS.app feeds');
     }
 
-    bricsCache = {
+    eurasiaCache = {
       articles: articles,
       metadata: {
         source: 'RSS.app feeds',
@@ -67,9 +67,9 @@ export async function GET() {
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: eurasiaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...eurasiaCache.metadata,
           servedFrom: 'fresh',
           responseTime: Date.now() - startTime,
         },
@@ -83,14 +83,14 @@ export async function GET() {
       }
     );
   } catch (error) {
-    console.error('❌ Error fetching BRICS+ articles:', error);
+    console.error('❌ Error fetching Eurasia articles:', error);
     
-    if (bricsCache) {
+    if (eurasiaCache) {
       return NextResponse.json(
         {
           success: true,
-          articles: bricsCache.articles,
-          metadata: { ...bricsCache.metadata, servedFrom: 'stale-cache' },
+          articles: eurasiaCache.articles,
+          metadata: { ...eurasiaCache.metadata, servedFrom: 'stale-cache' },
         },
         { status: 200 }
       );

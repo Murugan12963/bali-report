@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { unifiedNewsService } from '@/lib/unified-news-service';
+import { fetchAllArticles } from '@/lib/rss-parser';
 import { contentPersonalizationEngine } from '@/lib/content-personalization';
 
 // Cache configuration for instant delivery
@@ -54,39 +54,22 @@ export async function GET(request: NextRequest) {
 
   // If no valid cache, fetch fresh data
   try {
-    console.log('🌺 API: Fetching fresh articles with priority system...');
+    console.log('🌺 API: Fetching fresh articles from RSS.app feeds...');
 
-    // Use unified news service with priority system: NewsData.io -> RSS -> Scrapers
-    const newsResponse = await unifiedNewsService.fetchAllArticles({ 
-      includeScrapers: true, 
-      limit: 100 
-    });
-    console.log(`📊 API: ${newsResponse.success ? 'Success' : 'Failed'} - Fetched ${newsResponse.articles.length} articles`);
-    console.log(`🎯 Sources used: ${newsResponse.metadata.fallbacksUsed.join(' + ')}`);
+    // Use RSS.app-only feeds for simplified, reliable news aggregation
+    const articles = await fetchAllArticles();
+    
+    console.log(`📊 API: Fetched ${articles.length} articles from RSS.app feeds`);
 
-    if (!newsResponse.success) {
-      throw new Error('Unified news service failed to fetch articles');
+    if (articles.length === 0) {
+      throw new Error('No articles available from RSS.app feeds');
     }
-
-    // Get personalization preferences
-    const searchParams = request.nextUrl.searchParams;
-    const interests = searchParams.get('interests')?.split(',') || [];
-
-    // Apply personalization if interests provided
-    let articles = newsResponse.articles;
-    if (interests.length > 0) {
-      const personalizedArticles = await contentPersonalizationEngine.personalizeContent(
-        newsResponse.articles,
-        100
-      );
-      articles = personalizedArticles.slice(0, 100);
-    }
-
 
     // Update in-memory cache
     articleCache = {
       articles,
       metadata: {
+        source: 'RSS.app feeds',
         total: articles.length,
         fetchTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
@@ -102,7 +85,6 @@ export async function GET(request: NextRequest) {
         articles: articleCache.articles,
         metadata: {
           ...articleCache.metadata,
-          ...newsResponse.metadata,
           servedFrom: 'fresh',
           responseTime: Date.now() - startTime,
         },

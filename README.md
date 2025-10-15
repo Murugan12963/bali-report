@@ -20,9 +20,9 @@
 - **Card Design**: Clean article cards with subtle shadows and borders
 
 ### Content & User Experience
-- **🔍 NewsData.io Priority**: Professional API access to 15,000+ sources as primary content source
-- **📡 Advanced RSS Aggregation**: 662+ daily articles from 33+ sources with web scraping fallback
-- **🌍 Multi-polar Perspective**: RT, TASS, Xinhua, Al Jazeera, CGTN, Press TV, and more
+- **📡 RSS.app Integration**: 12 curated RSS.app feeds for maximum reliability and performance
+- **🌍 Multi-polar Perspective**: BRICS, Russia, China, India, Middle East perspectives aggregated via RSS.app
+- **⚡ 99.9% Uptime**: RSS.app handles feed generation, caching, and reliability automatically
 - **🎯 AI-Powered Features**: x.ai (Grok) integration for content analysis and personalization
 - **💾 Save for Later**: Complete reading system with tags, progress tracking, and offline support
 - **🗺️ Community Voting**: Upvote/downvote system with community picks page
@@ -117,20 +117,19 @@ npm run type-check # Run TypeScript checks
 
 ## 📈 Content Sources
 
-### Primary: NewsData.io API
-- **15,000+ Professional Sources**: Curated news outlets worldwide with real-time updates
-- **Multi-Category Support**: BRICS-focused, Indonesia news, Bali tourism content
-- **Smart Filtering**: Language and country-based filtering with keyword targeting
-- **Rate Limiting**: Free tier (200 requests/day) with intelligent usage management
-- **Rich Metadata**: AI tags, sentiment analysis, images, and structured data
-- **Quality Control**: Deduplicated articles with professional content curation
+### RSS.app Generated Feeds (Primary)
+- **12 Curated Feeds**: Professional RSS.app generated feeds for maximum reliability
+- **BRICS Global News**: Aggregated from RT, TASS, Xinhua, CGTN, Sputnik
+- **Regional Feeds**: India perspective (NDTV), China focus, Russia coverage, Middle East
+- **Indonesia & Bali**: National news, business content, tourism updates, local news
+- **99.9% Uptime**: RSS.app infrastructure handles caching and reliability
+- **Auto-Updates**: RSS.app automatically refreshes feeds and removes duplicates
+- **Content Quality**: Built-in filtering and moderation via RSS.app
 
-### Fallback: RSS News Sources (33+ Active)
-- **BRICS Sources**: RT News, TASS, Xinhua, Al Jazeera, CGTN, Press TV, Global Times, NDTV News
-- **Indonesian Sources**: Antara News, Tempo News, Jakarta Globe, Jakarta Post, Indonesia Business Post
-- **Bali Sources**: Bali Post, Bali Discovery
-- **International**: BBC Asia, UN News, Financial Times, and more
-- **Web Scraping Fallback**: Automatic fallback when RSS feeds fail
+### RSS.app Feed Categories
+- **BRICS Sources**: 6 feeds covering global multipolar perspectives
+- **Regional Sources**: 4 feeds for Indonesia, Bali, and Southeast Asia
+- **Analysis Sources**: 2 feeds for geopolitical analysis and BRICS organizations
 
 ### Video Sources (Rumble)
 - **RT News**, **CGTN**, **Press TV**, **Geopolitical Economy Report**
@@ -145,8 +144,8 @@ npm run type-check # Run TypeScript checks
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://bali.report
 
-# NewsData.io API (Optional - Free tier: 200 requests/day)
-NEWSDATA_API_KEY=your-newsdata-api-key
+# RSS.app (No API key needed - uses public RSS feeds)
+# All news content delivered via RSS.app generated feeds
 
 # Analytics Services
 NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.com

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { fetchBRICSArticles } from '@/lib/rss-parser';
+import { fetchSouthAmericaArticles } from '@/lib/rss-parser';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // In-memory cache
-let bricsCache: {
+let southAmericaCache: {
   articles: any[];
   metadata: any;
   timestamp: number;
@@ -17,18 +17,18 @@ export async function GET() {
   const startTime = Date.now();
   const now = Date.now();
   
-  const hasValidCache = bricsCache && (now - bricsCache.timestamp) < CACHE_TTL;
+  const hasValidCache = southAmericaCache && (now - southAmericaCache.timestamp) < CACHE_TTL;
   
-  if (hasValidCache && bricsCache) {
-    console.log('⚡ Serving BRICS+ from cache');
+  if (hasValidCache && southAmericaCache) {
+    console.log('⚡ Serving South America from cache');
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: southAmericaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...southAmericaCache.metadata,
           servedFrom: 'cache',
-          cacheAge: Math.round((now - bricsCache.timestamp) / 1000),
+          cacheAge: Math.round((now - southAmericaCache.timestamp) / 1000),
           responseTime: Date.now() - startTime,
         },
       },
@@ -43,17 +43,17 @@ export async function GET() {
   }
 
   try {
-    console.log('🌺 Fetching BRICS+ articles from RSS.app feeds...');
+    console.log('🌺 Fetching South America articles from RSS.app feeds...');
     
-    const articles = await fetchBRICSArticles();
+    const articles = await fetchSouthAmericaArticles();
     
-    console.log(`📊 BRICS+ API: Fetched ${articles.length} articles from RSS.app feeds`);
+    console.log(`📊 South America API: Fetched ${articles.length} articles from RSS.app feeds`);
     
     if (articles.length === 0) {
-      throw new Error('No BRICS+ articles available from RSS.app feeds');
+      throw new Error('No South America articles available from RSS.app feeds');
     }
 
-    bricsCache = {
+    southAmericaCache = {
       articles: articles,
       metadata: {
         source: 'RSS.app feeds',
@@ -67,9 +67,9 @@ export async function GET() {
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: southAmericaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...southAmericaCache.metadata,
           servedFrom: 'fresh',
           responseTime: Date.now() - startTime,
         },
@@ -83,14 +83,14 @@ export async function GET() {
       }
     );
   } catch (error) {
-    console.error('❌ Error fetching BRICS+ articles:', error);
+    console.error('❌ Error fetching South America articles:', error);
     
-    if (bricsCache) {
+    if (southAmericaCache) {
       return NextResponse.json(
         {
           success: true,
-          articles: bricsCache.articles,
-          metadata: { ...bricsCache.metadata, servedFrom: 'stale-cache' },
+          articles: southAmericaCache.articles,
+          metadata: { ...southAmericaCache.metadata, servedFrom: 'stale-cache' },
         },
         { status: 200 }
       );

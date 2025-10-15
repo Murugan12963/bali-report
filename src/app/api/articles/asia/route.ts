@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { fetchBRICSArticles } from '@/lib/rss-parser';
+import { fetchIndonesiaArticles, fetchBaliArticles } from '@/lib/rss-parser';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // In-memory cache
-let bricsCache: {
+let asiaCache: {
   articles: any[];
   metadata: any;
   timestamp: number;
@@ -17,18 +17,18 @@ export async function GET() {
   const startTime = Date.now();
   const now = Date.now();
   
-  const hasValidCache = bricsCache && (now - bricsCache.timestamp) < CACHE_TTL;
+  const hasValidCache = asiaCache && (now - asiaCache.timestamp) < CACHE_TTL;
   
-  if (hasValidCache && bricsCache) {
-    console.log('⚡ Serving BRICS+ from cache');
+  if (hasValidCache && asiaCache) {
+    console.log('⚡ Serving Asia from cache');
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: asiaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...asiaCache.metadata,
           servedFrom: 'cache',
-          cacheAge: Math.round((now - bricsCache.timestamp) / 1000),
+          cacheAge: Math.round((now - asiaCache.timestamp) / 1000),
           responseTime: Date.now() - startTime,
         },
       },
@@ -43,20 +43,27 @@ export async function GET() {
   }
 
   try {
-    console.log('🌺 Fetching BRICS+ articles from RSS.app feeds...');
+    console.log('🌺 Fetching Asia articles from RSS.app feeds...');
     
-    const articles = await fetchBRICSArticles();
+    // Fetch Indonesia and Bali articles for Asia region
+    const [indonesiaArticles, baliArticles] = await Promise.all([
+      fetchIndonesiaArticles(),
+      fetchBaliArticles()
+    ]);
     
-    console.log(`📊 BRICS+ API: Fetched ${articles.length} articles from RSS.app feeds`);
+    const articles = [...indonesiaArticles, ...baliArticles];
+    articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+    
+    console.log(`📊 Asia API: Fetched ${articles.length} articles from RSS.app feeds (Indonesia: ${indonesiaArticles.length}, Bali: ${baliArticles.length})`);
     
     if (articles.length === 0) {
-      throw new Error('No BRICS+ articles available from RSS.app feeds');
+      throw new Error('No Asia articles available from RSS.app feeds');
     }
 
-    bricsCache = {
+    asiaCache = {
       articles: articles,
       metadata: {
-        source: 'RSS.app feeds',
+        source: 'RSS.app feeds (Indonesia + Bali)',
         total: articles.length,
         fetchTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
@@ -67,9 +74,9 @@ export async function GET() {
     return NextResponse.json(
       {
         success: true,
-        articles: bricsCache.articles,
+        articles: asiaCache.articles,
         metadata: {
-          ...bricsCache.metadata,
+          ...asiaCache.metadata,
           servedFrom: 'fresh',
           responseTime: Date.now() - startTime,
         },
@@ -83,14 +90,14 @@ export async function GET() {
       }
     );
   } catch (error) {
-    console.error('❌ Error fetching BRICS+ articles:', error);
+    console.error('❌ Error fetching Asia articles:', error);
     
-    if (bricsCache) {
+    if (asiaCache) {
       return NextResponse.json(
         {
           success: true,
-          articles: bricsCache.articles,
-          metadata: { ...bricsCache.metadata, servedFrom: 'stale-cache' },
+          articles: asiaCache.articles,
+          metadata: { ...asiaCache.metadata, servedFrom: 'stale-cache' },
         },
         { status: 200 }
       );
