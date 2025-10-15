@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import VideoCard from '@/components/VideoCard';
-import { VideoService, VideoContent } from '@/lib/video-service';
-import { VideoCrawler } from '@/lib/video-crawler';
-import { videoCache } from '@/lib/video-cache';
+import YouTubeVideoCard from '@/components/YouTubeVideoCard';
+import { youTubeService, YouTubeVideo } from '@/lib/youtube-service';
 
-type CategoryFilter = 'all' | 'BRICS' | 'Indonesia' | 'Bali';
+type CategoryFilter = 'all' | 'podcasts' | 'videos' | 'analysis' | 'interviews';
 type SortOption = 'newest' | 'popular' | 'duration';
+type ContentType = 'video' | 'podcast' | 'audio' | 'essay';
 
 /**
  * Videos Page Client Component
@@ -18,7 +17,7 @@ const VideosPageClient: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [sortOption, setSortOption] = useState<SortOption>('newest');
-  const [videos, setVideos] = useState<VideoContent[]>([]);
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,37 +28,19 @@ const VideosPageClient: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // Check cache first
-        const cached = videoCache.get();
-        if (cached && cached.length > 0) {
-          console.log('📹 Using cached videos');
-          setVideos(cached);
-          setLoading(false);
-          return;
-        }
-
-        // Fetch from Rumble
-        console.log('📹 Fetching videos from Rumble...');
-        const crawler = new VideoCrawler();
-        const fetchedVideos = await crawler.fetchAllVideos();
+        console.log('🎬 Fetching videos from YouTube channels...');
+        const fetchedVideos = await youTubeService.getAllVideos(8); // 8 videos per channel
 
         if (fetchedVideos.length > 0) {
           setVideos(fetchedVideos);
-          videoCache.set(fetchedVideos);
-          console.log(`✅ Loaded ${fetchedVideos.length} videos from Rumble`);
+          console.log(`✅ Loaded ${fetchedVideos.length} videos from YouTube`);
         } else {
-          // Fallback to mock data if no videos fetched
-          console.log('⚠️ No videos fetched, using mock data as fallback');
-          const mockVideos = VideoService.getAllVideos();
-          setVideos(mockVideos);
+          console.log('⚠️ No YouTube videos fetched');
+          setError('No videos available. Please check YouTube API configuration.');
         }
       } catch (err) {
-        console.error('Error fetching videos:', err);
-        setError('Failed to load videos. Showing cached content.');
-        
-        // Fallback to mock data on error
-        const mockVideos = VideoService.getAllVideos();
-        setVideos(mockVideos);
+        console.error('Error fetching YouTube videos:', err);
+        setError('Failed to load videos from YouTube. Please check API configuration.');
       } finally {
         setLoading(false);
       }
@@ -78,6 +59,7 @@ const VideosPageClient: React.FC = () => {
       result = result.filter(video =>
         video.title.toLowerCase().includes(query) ||
         video.description.toLowerCase().includes(query) ||
+        video.channelTitle.toLowerCase().includes(query) ||
         video.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
@@ -90,7 +72,15 @@ const VideosPageClient: React.FC = () => {
     // Apply sorting
     switch (sortOption) {
       case 'popular':
-        result = result.sort((a, b) => (b.views || 0) - (a.views || 0));
+        result = result.sort((a, b) => {
+          const parseViewCount = (count: string) => {
+            const num = parseFloat(count.replace(/[MK]/g, ''));
+            if (count.includes('M')) return num * 1000000;
+            if (count.includes('K')) return num * 1000;
+            return parseInt(count) || 0;
+          };
+          return parseViewCount(b.viewCount) - parseViewCount(a.viewCount);
+        });
         break;
       case 'duration':
         result = result.sort((a, b) => {
@@ -105,7 +95,7 @@ const VideosPageClient: React.FC = () => {
       case 'newest':
       default:
         result = result.sort((a, b) =>
-          new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
         );
     }
 
@@ -114,33 +104,44 @@ const VideosPageClient: React.FC = () => {
 
   const videoStats = useMemo(() => {
     const totalVideos = videos.length;
-    const totalViews = videos.reduce((sum, video) => sum + (video.views || 0), 0);
     
     const categoryCounts = videos.reduce((counts, video) => {
       counts[video.category] = (counts[video.category] || 0) + 1;
       return counts;
     }, {} as Record<string, number>);
 
-    const sourceCounts = videos.reduce((counts, video) => {
-      counts[video.source] = (counts[video.source] || 0) + 1;
+    const channelCounts = videos.reduce((counts, video) => {
+      counts[video.channelTitle] = (counts[video.channelTitle] || 0) + 1;
       return counts;
     }, {} as Record<string, number>);
+
+    // Calculate total views from formatted strings
+    const totalViews = videos.reduce((sum, video) => {
+      const parseViewCount = (count: string) => {
+        const num = parseFloat(count.replace(/[MK]/g, ''));
+        if (count.includes('M')) return num * 1000000;
+        if (count.includes('K')) return num * 1000;
+        return parseInt(count) || 0;
+      };
+      return sum + parseViewCount(video.viewCount);
+    }, 0);
 
     return {
       totalVideos,
       totalViews,
       averageViews: totalVideos > 0 ? Math.round(totalViews / totalVideos) : 0,
       categoryCounts,
-      sourceCounts
+      channelCounts
     };
   }, [videos]);
 
   const getCategoryEmoji = (category: string) => {
     switch (category) {
-      case 'BRICS': return '🌍';
-      case 'Indonesia': return '🇮🇩';
-      case 'Bali': return '🏝️';
-      default: return '📺';
+      case 'podcasts': return '🎧';
+      case 'videos': return '📺';
+      case 'analysis': return '🔍';
+      case 'interviews': return '🎤';
+      default: return '🏝️';
     }
   };
 
@@ -149,21 +150,22 @@ const VideosPageClient: React.FC = () => {
   };
 
   const handleRefresh = async () => {
-    videoCache.clear();
     setLoading(true);
     
     try {
-      const crawler = new VideoCrawler();
-      const fetchedVideos = await crawler.fetchAllVideos();
+      console.log('🔄 Refreshing YouTube videos...');
+      const fetchedVideos = await youTubeService.getAllVideos(8);
       
       if (fetchedVideos.length > 0) {
         setVideos(fetchedVideos);
-        videoCache.set(fetchedVideos);
         setError(null);
+        console.log(`✅ Refreshed ${fetchedVideos.length} videos`);
+      } else {
+        setError('No videos available after refresh.');
       }
     } catch (err) {
-      console.error('Error refreshing videos:', err);
-      setError('Failed to refresh videos');
+      console.error('Error refreshing YouTube videos:', err);
+      setError('Failed to refresh videos from YouTube.');
     } finally {
       setLoading(false);
     }
@@ -172,19 +174,63 @@ const VideosPageClient: React.FC = () => {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 text-white">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="max-w-4xl">
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-3">📺</span>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                Video Library
-              </h1>
+      <div className="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 dark:from-purple-800 dark:via-indigo-800 dark:to-blue-900 text-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ 
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='27' cy='7' r='1'/%3E%3Ccircle cx='47' cy='7' r='1'/%3E%3Ccircle cx='7' cy='27' r='1'/%3E%3Ccircle cx='27' cy='27' r='1'/%3E%3Ccircle cx='47' cy='27' r='1'/%3E%3Ccircle cx='7' cy='47' r='1'/%3E%3Ccircle cx='27' cy='47' r='1'/%3E%3Ccircle cx='47' cy='47' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` 
+          }} />
+        </div>
+        
+        <div className="container mx-auto px-4 py-12 md:py-16 relative">
+          <div className="max-w-5xl">
+            <div className="flex items-center mb-6">
+              <div className="relative">
+                <span className="text-5xl md:text-6xl mr-4">🏯</span>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
+                  <span className="text-xs font-bold">LIVE</span>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
+                  Bali Reports
+                </h1>
+                <div className="text-lg md:text-xl text-purple-200 font-medium">
+                  Multipolar Contrarian Opinion Network
+                </div>
+              </div>
             </div>
-            <p className="text-lg md:text-xl text-blue-100 mb-6 max-w-3xl">
-              Watch exclusive video content from Rumble channels including RT News, CGTN, Press TV, 
-              and independent analysts. Alternative perspectives on global events and BRICS cooperation.
+            
+            <p className="text-lg md:text-xl text-purple-100 mb-8 max-w-4xl leading-relaxed">
+              Breaking through information silos with contrarian perspectives, multipolar podcasts, 
+              and independent analysis. Challenge mainstream narratives with voices from the Global South, 
+              BRICS insights, and unconventional wisdom from around the world.
             </p>
+            
+            {/* Feature Highlights */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">🎧</span>
+                  <span className="font-semibold">Premium Podcasts</span>
+                </div>
+                <p className="text-sm text-purple-200">Spotify-integrated shows with exclusive content</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">📺</span>
+                  <span className="font-semibold">Video Analysis</span>
+                </div>
+                <p className="text-sm text-purple-200">Deep dives into geopolitical developments</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">✍️</span>
+                  <span className="font-semibold">Guest Essays</span>
+                </div>
+                <p className="text-sm text-purple-200">Contrarian perspectives from global voices</p>
+              </div>
+            </div>
             
             {/* Video Stats */}
             <div className="flex flex-wrap gap-6 text-sm">
@@ -198,7 +244,7 @@ const VideosPageClient: React.FC = () => {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
-                <span className="font-medium">{Object.keys(videoStats.sourceCounts).length} Sources</span>
+                <span className="font-medium">{Object.keys(videoStats.channelCounts).length} Channels</span>
               </div>
               <button
                 onClick={handleRefresh}
@@ -255,17 +301,17 @@ const VideosPageClient: React.FC = () => {
             <div className="flex flex-wrap gap-3 items-center">
               {/* Category Filter */}
               <div className="flex bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-1">
-                {(['all', 'BRICS', 'Indonesia', 'Bali'] as CategoryFilter[]).map((category) => (
+                {(['all', 'podcasts', 'videos', 'analysis', 'interviews'] as CategoryFilter[]).map((category) => (
                   <button
                     key={category}
                     onClick={() => setCategoryFilter(category)}
                     className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                       categoryFilter === category
-                        ? 'bg-blue-600 text-white shadow-sm'
+                        ? 'bg-purple-600 text-white shadow-sm'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700'
                     }`}
                   >
-                    {category === 'all' ? '📺 All' : `${getCategoryEmoji(category)} ${category}`}
+                    {category === 'all' ? '🏝️ All' : `${getCategoryEmoji(category)} ${category.charAt(0).toUpperCase() + category.slice(1)}`}
                   </button>
                 ))}
               </div>
@@ -308,7 +354,7 @@ const VideosPageClient: React.FC = () => {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <p className="text-zinc-600 dark:text-zinc-400">Loading videos from Rumble...</p>
+            <p className="text-zinc-600 dark:text-zinc-400">Loading videos from YouTube channels...</p>
           </div>
         )}
 
@@ -323,11 +369,12 @@ const VideosPageClient: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredVideos.map((video) => (
-                <VideoCard
+                <YouTubeVideoCard
                   key={video.id}
                   video={video}
                   size="medium"
                   showDescription={true}
+                  showChannel={true}
                 />
               ))}
             </div>

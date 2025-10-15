@@ -92,6 +92,9 @@ const Header: React.FC = () => {
               <Link href="/brics" className={navLinkClass}>
                 BRICS+
               </Link>
+              <Link href="/brics/social-insights" className={navLinkClass}>
+                📱 Social
+              </Link>
               <Link href="/asia" className={navLinkClass}>
                 Asia
               </Link>
@@ -193,6 +196,13 @@ const Header: React.FC = () => {
                 onClick={closeMobileMenu}
               >
                 🌏 BRICS+
+              </Link>
+              <Link
+                href="/brics/social-insights"
+                className="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-teal-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all duration-200"
+                onClick={closeMobileMenu}
+              >
+                📱 Social Insights
               </Link>
               <Link
                 href="/asia"

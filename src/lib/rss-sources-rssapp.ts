@@ -8,7 +8,7 @@
 export interface NewsSource {
   name: string;
   url: string;
-  category: 'BRICS' | 'Indonesia' | 'Bali' | 'AFRICA' | 'EURASIA' | 'SOUTH_AMERICA';
+  category: 'BRICS' | 'Indonesia' | 'Bali' | 'AFRICA' | 'EURASIA' | 'SOUTH_AMERICA' | 'OPINION';
   active: boolean;
   rssAppId?: string; // RSS.app feed identifier
   description?: string;
@@ -162,6 +162,56 @@ export const RSS_APP_SOURCES: NewsSource[] = [
     active: true,
     rssAppId: 'brics_orgs',
     description: 'Official BRICS organization news and updates'
+  },
+
+  // Opinion & Editorial Feeds (RSS.app generated)
+  {
+    name: 'SCMP Opinion & Analysis',
+    url: 'https://rss.app/feeds/v1.1/_example_scmp_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'scmp_opinion',
+    description: 'South China Morning Post opinion pieces and editorial analysis'
+  },
+  {
+    name: 'NDTV Opinion & Commentary',
+    url: 'https://rss.app/feeds/v1.1/_example_ndtv_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'ndtv_opinion',
+    description: 'NDTV editorial commentary and opinion pieces'
+  },
+  {
+    name: 'Global Times Opinion',
+    url: 'https://rss.app/feeds/v1.1/_example_globaltimes_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'globaltimes_opinion',
+    description: 'Global Times editorial and opinion content'
+  },
+  {
+    name: 'RT Opinion & Op-eds',
+    url: 'https://rss.app/feeds/v1.1/_example_rt_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'rt_opinion',
+    description: 'RT news opinion pieces and editorial content'
+  },
+  {
+    name: 'Jakarta Post Opinion',
+    url: 'https://rss.app/feeds/v1.1/_example_jakartapost_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'jakartapost_opinion',
+    description: 'Jakarta Post editorial and opinion commentary'
+  },
+  {
+    name: 'Multipolar Opinion Aggregator',
+    url: 'https://rss.app/feeds/v1.1/_example_multipolar_opinion.xml', // Replace with actual RSS.app URL
+    category: 'OPINION',
+    active: true,
+    rssAppId: 'multipolar_opinion',
+    description: 'Curated opinion pieces from BRICS and Global South perspectives'
   }
 ];
 
@@ -171,7 +221,11 @@ export const RSS_APP_SOURCES: NewsSource[] = [
 export const RSS_APP_CATEGORIES = {
   BRICS: RSS_APP_SOURCES.filter(source => source.category === 'BRICS'),
   Indonesia: RSS_APP_SOURCES.filter(source => source.category === 'Indonesia'),
-  Bali: RSS_APP_SOURCES.filter(source => source.category === 'Bali')
+  Bali: RSS_APP_SOURCES.filter(source => source.category === 'Bali'),
+  Opinion: RSS_APP_SOURCES.filter(source => source.category === 'OPINION'),
+  Africa: RSS_APP_SOURCES.filter(source => source.category === 'AFRICA'),
+  Eurasia: RSS_APP_SOURCES.filter(source => source.category === 'EURASIA'),
+  SouthAmerica: RSS_APP_SOURCES.filter(source => source.category === 'SOUTH_AMERICA')
 };
 
 /**
@@ -222,7 +276,7 @@ export function getActiveRssAppSources(): NewsSource[] {
 /**
  * Helper function to get sources by category
  */
-export function getRssAppSourcesByCategory(category: 'BRICS' | 'Indonesia' | 'Bali' | 'AFRICA' | 'EURASIA' | 'SOUTH_AMERICA'): NewsSource[] {
+export function getRssAppSourcesByCategory(category: 'BRICS' | 'Indonesia' | 'Bali' | 'AFRICA' | 'EURASIA' | 'SOUTH_AMERICA' | 'OPINION'): NewsSource[] {
   return RSS_APP_SOURCES.filter(source => source.category === category && source.active);
 }
 

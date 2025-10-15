@@ -65,6 +65,19 @@ module.exports = {
         NODE_ENV: 'production',
       },
     },
+    {
+      name: 'x-api-cron',
+      script: './scripts/x-api-cron.js',
+      instances: 1,
+      autorestart: false,
+      watch: false,
+      cron_restart: '0 * * * *', // Every hour
+      env: {
+        NODE_ENV: 'production',
+      },
+      error_file: './logs/x-api-cron.err.log',
+      out_file: './logs/x-api-cron.out.log',
+    },
   ],
 };
 

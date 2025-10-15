@@ -2,21 +2,21 @@ import React from 'react';
 import { Metadata } from 'next';
 import VideosPageClient from './VideosPageClient';
 
-// Static metadata for the videos page
+// Static metadata for the multimedia page
 export const metadata: Metadata = {
-  title: 'Videos | Bali Report - BRICS & Indonesia Video Content',
-  description: 'Watch exclusive videos from BRICS sources, Indonesian news outlets, and Balinese media. Alternative perspectives on global events, infrastructure, and cultural stories.',
-  keywords: 'BRICS videos, Indonesia videos, Bali videos, RT News, CGTN, Press TV, documentary, news videos',
+  title: 'Bali Reports | Multipolar Multimedia & Contrarian Opinions',
+  description: 'Explore contrarian perspectives through podcasts, videos, and multimedia content. Independent analysis challenging mainstream narratives from a multipolar lens.',
+  keywords: 'multipolar podcasts, contrarian opinion, independent media, BRICS multimedia, alternative perspectives, bali reports',
   openGraph: {
-    title: 'Videos | Bali Report - BRICS & Indonesia Video Content',
-    description: 'Watch exclusive videos from BRICS sources, Indonesian news outlets, and Balinese media.',
+    title: 'Bali Reports | Multipolar Multimedia & Contrarian Opinions',
+    description: 'Explore contrarian perspectives through podcasts, videos, and multimedia content.',
     type: 'website',
     url: 'https://bali.report/videos',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Videos | Bali Report - BRICS & Indonesia Video Content',
-    description: 'Watch exclusive videos from BRICS sources, Indonesian news outlets, and Balinese media.',
+    title: 'Bali Reports | Multipolar Multimedia & Contrarian Opinions',
+    description: 'Explore contrarian perspectives through podcasts, videos, and multimedia content.',
   }
 };
 
