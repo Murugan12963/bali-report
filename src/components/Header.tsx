@@ -113,6 +113,9 @@ const Header: React.FC = () => {
               <Link href="/videos" className={navLinkClass}>
                 Videos
               </Link>
+              <Link href="/multimedia" className={navLinkClass}>
+                🎬 Multimedia
+              </Link>
               <Link href="/saved" className={navLinkClass}>
                 Saved
               </Link>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Article } from '@/lib/rss-parser';
+import AutomatedOpinion from '@/components/AutomatedOpinion';
 
 interface OpinionArticle extends Article {
   author: string;
@@ -338,6 +339,61 @@ export default function OpinionPage() {
             <div className="text-gray-600 dark:text-gray-300">Avg. Read Time</div>
           </div>
         </div>
+
+        {/* AI-Powered Opinion Essays */}
+        <section className="mb-12">
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-6 mb-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                🤖 AI-Powered Opinion Essays
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4">
+                Contrarian analysis powered by <strong>Grok AI</strong>, challenging mainstream narratives 
+                while promoting BRICS Partnership for Development values of mutual respect, equality, and sustainability.
+              </p>
+              <div className="flex justify-center gap-3 flex-wrap">
+                <span className="bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm font-medium">
+                  🧠 Grok-4 Powered
+                </span>
+                <span className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                  🌍 Multipolar Perspectives
+                </span>
+                <span className="bg-emerald-100 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 px-3 py-1 rounded-full text-sm font-medium">
+                  🤝 BPD Aligned
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Category Tabs for AI Essays */}
+          <div className="mb-8">
+            <div className="border-b border-gray-200 dark:border-gray-700">
+              <nav className="-mb-px flex space-x-8" aria-label="Opinion categories">
+                {['global', 'brics', 'indonesia', 'bali'].map((category) => {
+                  const isActive = category === 'global'; // Default to global for now
+                  return (
+                    <button
+                      key={category}
+                      className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                        isActive
+                          ? 'border-teal-500 text-teal-600 dark:text-teal-400'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      }`}
+                      onClick={() => {
+                        // Handle category change - for now just refresh the page with category param
+                        window.location.href = `/opinion?ai-category=${category}`;
+                      }}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)} Essays
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
+          
+          <AutomatedOpinion category="global" maxEssays={3} />
+        </section>
 
         {/* Filters */}
         <div className="mb-8">
